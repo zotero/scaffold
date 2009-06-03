@@ -4,8 +4,8 @@
 
   <Description about="urn:mozilla:install-manifest">
   
-    <em:id>scaffold@zotero.org</em:id>
-    <em:name>Scaffold</em:name>
+    <em:id>scaffoldnew@zotero.org</em:id>
+    <em:name>Scaffold-Non-SQL</em:name>
     <em:version>1.0.2</em:version>
     <em:description>An IDE for creation of Zotero translators</em:description>
     <em:creator>Center for History and New Media<br/>George Mason University</em:creator>
