@@ -1,0 +1,37 @@
+<!ENTITY scaffold.toolbar.load.label			"Load from Database">
+<!ENTITY scaffold.toolbar.save.label			"Save to Database">
+<!ENTITY scaffold.toolbar.export.label			"Export">
+<!ENTITY scaffold.toolbar.copy.label			"Copy to Clipboard">
+<!ENTITY scaffold.toolbar.reference.label		"Reference">
+<!ENTITY scaffold.toolbar.fields.label			"Fields">
+<!ENTITY scaffold.toolbar.checkSyntax.label		"Check Syntax">
+<!ENTITY scaffold.toolbar.run.label				"Execute">
+
+<!ENTITY scaffold.tabs.metadata.label			"Metadata">
+<!ENTITY scaffold.tabs.detectCode.label			"Detect Code">
+<!ENTITY scaffold.tabs.code.label				"Code">
+
+<!ENTITY scaffold.testFrame.label				"Test Frame:">
+
+<!ENTITY scaffold.metadata.translatorID.label	"Translator ID:">
+<!ENTITY scaffold.metadata.translatorID.generate	"Generate">
+<!ENTITY scaffold.metadata.label.label			"Label:">
+<!ENTITY scaffold.metadata.creator.label		"Creator:">
+<!ENTITY scaffold.metadata.target.label			"Target:">
+<!ENTITY scaffold.metadata.target.testRegex		"Test Regex">
+<!ENTITY scaffold.metadata.minVersion.label		"Min. Version:">
+<!ENTITY scaffold.metadata.maxVersion.label		"Max. Version:">
+<!ENTITY scaffold.metadata.priority.label		"Priority:">
+<!ENTITY scaffold.metadata.translatorType.label	"Translator Type:">
+<!ENTITY scaffold.metadata.inRepository.label	"In Repository">
+<!ENTITY scaffold.metadata.translatorType.import	"Import">
+<!ENTITY scaffold.metadata.translatorType.export	"Export">
+<!ENTITY scaffold.metadata.translatorType.web	"Web">
+<!ENTITY scaffold.metadata.translatorType.search	"Search">
+
+<!ENTITY scaffold.metadata.label.default		"Untitled">
+<!ENTITY scaffold.metadata.priority.default		"100">
+
+<!ENTITY scaffold.load.title					"Load Translator">
+<!ENTITY scaffold.load.label.label				"Label">
+<!ENTITY scaffold.load.creator.label			"Creator">

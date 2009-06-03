@@ -1,0 +1,62 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+codeeditor {
+	-moz-binding: url("chrome://scaffold/content/code-editor.xml#codeeditor") ;
+}
+
+#tb toolbarbutton .toolbarbutton-text {
+	margin:0 2px;
+}
+#tb .toolbarbutton-menu-dropmarker {
+	margin-right:4px;
+}
+#tb .toolbarbutton-text, #zotero-editpane-dynamic-fields .toolbarbutton-text {
+	margin:0;
+}
+#tb toolbarbutton, #tb toolbarseparator {
+	height:24px;
+}
+
+#tb-load {
+	list-style-image: url('chrome://scaffold/skin/load.png');
+}
+#tb-save {
+	list-style-image: url('chrome://scaffold/skin/save.png');
+}
+#tb-import {
+	list-style-image: url('chrome://scaffold/skin/import.png');
+}
+#tb-export {
+	list-style-image: url('chrome://scaffold/skin/export.png');
+}
+#tb-copy {
+	list-style-image: url('chrome://scaffold/skin/copy.png');
+}
+#tb-checkSyntax {
+	list-style-image: url('chrome://scaffold/skin/checkSyntax.png');
+}
+#tb-run {
+	list-style-image: url('chrome://scaffold/skin/run.png');
+}
+#tb-reference {
+	list-style-image: url('chrome://scaffold/skin/reference.png');
+}
+#tb-fields {
+	list-style-image: url('chrome://scaffold/skin/fields.png');
+}
+
+#tabpanel-metadata textbox {
+	height:2em;
+}
+#tabpanel-metadata hbox, #hbox-testFrame {
+	-moz-box-align: center;
+}
+
+#output {
+	height:200px;
+}
+
+listbox {
+	min-width:200px;
+}

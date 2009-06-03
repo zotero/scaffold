@@ -1,0 +1,5 @@
+content	scaffold				chrome/content/scaffold/
+locale	scaffold	en-US		chrome/locale/en-US/scaffold/
+skin	scaffold	default		chrome/skin/default/scaffold/
+
+overlay	chrome://browser/content/browser.xul	chrome://scaffold/content/overlay.xul

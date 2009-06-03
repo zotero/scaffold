@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!--
+    ***** BEGIN LICENSE BLOCK *****
+    
+    Copyright (c) 2006  Center for History and New Media
+                        George Mason University, Fairfax, Virginia, USA
+                        http://chnm.gmu.edu
+    
+    Licensed under the Educational Community License, Version 1.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+    http://www.opensource.org/licenses/ecl1.php
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+    ***** END LICENSE BLOCK *****
+-->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://scaffold/skin/scaffold.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://scaffold/locale/scaffold.dtd">
+
+<window id="window" width="600" height="600" persist="screenX screenY width height"
+ title="Zotero Scaffold"
+ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script src="chrome://zotero/content/include.js"/>
+	<script src="scaffold.js"/>
+	
+	<keyset>
+		<key id="test" key="w" modifiers="accel" oncommand="Scaffold.close();" />
+	</keyset>
+	
+	<toolbar id="tb" align="center">
+		<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
+		<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save()" />
+		<toolbarbutton id="tb-copy" tooltiptext="&scaffold.toolbar.copy.label;" oncommand="Scaffold.copy()" />
+		<!--<toolbarbutton id="tb-export" tooltiptext="&scaffold.toolbar.export.label;" oncommand="Scaffold.export()" />-->
+		<toolbarseparator/>
+		<!--<toolbarbutton id="tb-reference" tooltiptext="&scaffold.toolbar.reference.label;" oncommand="Scaffold.reference()" />
+		<toolbarbutton id="tb-fields" tooltiptext="&scaffold.toolbar.fields.label;" oncommand="Scaffold.fields()" />
+		<toolbarseparator/>
+		<toolbarbutton id="tb-checkSyntax" tooltiptext="&scaffold.toolbar.checkSyntax.label;" oncommand="Scaffold.checkSyntax()" />-->
+		<toolbarbutton id="tb-run" tooltiptext="&scaffold.toolbar.run.label;" oncommand="Scaffold.run()" />
+	</toolbar>
+	
+	<tabbox flex="1">
+		<tabs id="tabs">
+			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
+			<tab id="tab-detectCode" label="&scaffold.tabs.detectCode.label;"/>
+			<tab id="tab-code" label="&scaffold.tabs.code.label;"/>
+		</tabs>
+		<tabpanels flex="1">
+			<tabpanel flex="1" id="tabpanel-metadata">
+				<vbox flex="1">
+					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.translatorID.label;" control="textbox-translatorID"/>
+						<textbox id="textbox-translatorID" flex="1"/>
+						<button label="&scaffold.metadata.translatorID.generate;" oncommand="Scaffold.generateTranslatorID()"/>
+					</hbox>
+					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.label.label;" control="textbox-label"/>
+						<textbox id="textbox-label" flex="1" value="&scaffold.metadata.label.default;"/>
+					</hbox>
+					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.creator.label;" control="textbox-creator"/>
+						<textbox id="textbox-creator" flex="1"/>
+					</hbox>
+					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.target.label;" control="textbox-target"/>
+						<textbox id="textbox-target" flex="1"/>
+						<button label="&scaffold.metadata.target.testRegex;" oncommand="Scaffold.testTargetRegex()"/>
+					</hbox>
+					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.minVersion.label;" control="textbox-minVersion"/>
+						<textbox id="textbox-minVersion" flex="1" value="1.0"/>
+						<label class="label-metadata" value="&scaffold.metadata.maxVersion.label;" control="textbox-maxVersion"/>
+						<textbox id="textbox-maxVersion" flex="1"/>
+						<label class="label-metadata" value="&scaffold.metadata.priority.label;" control="textbox-priority"/>
+						<textbox id="textbox-priority" flex="1" value="&scaffold.metadata.priority.default;"/>
+					</hbox>
+					<hbox>
+						<checkbox id="checkbox-inRepository"/>
+						<label class="label-metadata" value="&scaffold.metadata.inRepository.label;" control="checkbox-inRepository"/>
+					</hbox>
+					<groupbox>
+						<caption label="&scaffold.metadata.translatorType.label;"/>
+						<checkbox id="checkbox-import" label="&scaffold.metadata.translatorType.import;"/>
+						<checkbox id="checkbox-export" label="&scaffold.metadata.translatorType.export;"/>
+						<checkbox id="checkbox-web" label="&scaffold.metadata.translatorType.web;" checked="true"/>
+						<checkbox id="checkbox-search" label="&scaffold.metadata.translatorType.search;"/>
+					</groupbox>
+				</vbox>
+			</tabpanel>
+			<tabpanel flex="1" id="tabpanel-detectCode">
+				<codeeditor id="editor-detectCode" flex="1"/>
+			</tabpanel>
+			<tabpanel flex="1" id="tabpanel-code">
+				<codeeditor id="editor-code" flex="1"/>
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
+	
+	<splitter resizeafter="farthest"/>
+	
+	<hbox id="hbox-testFrame">
+		<label control="menulist-testFrame" id="label-testFrame" value="&scaffold.testFrame.label;"/>
+		<menulist id="menulist-testFrame"/>
+	</hbox>
+	
+	<textbox id="output" multiline="true" readonly="true"/>
+</window>

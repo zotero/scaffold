@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<bindings id="code-editor-bindings"
+	xmlns="http://www.mozilla.org/xbl"
+	xmlns:xbl="http://www.mozilla.org/xbl"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+
+	<binding id="codeeditor">
+		<content>
+			<xul:textbox 
+				anonid="code-textbox" 
+				multiline="true" 
+				wrap="off" 
+				flex="1" 
+				onkeypress="parentNode._handleKeyPressEvent(event);"
+				/>
+		</content>
+		<implementation>
+			<constructor>
+				<![CDATA[
+				this._codeTextbox = document.getAnonymousElementByAttribute(this, "anonid", "code-textbox");
+				]]>
+			</constructor>
+			<property name="textbox" readonly="true"
+				onget="return this._codeTextbox;" />
+				
+			<method name="_indent">
+				<parameter name="s"/>
+				<body>
+					<![CDATA[
+						return "\t" + s;
+					]]>
+				</body>
+			</method>
+			<method name="_unindent">
+				<parameter name="s"/>
+				<body>
+					<![CDATA[
+						if (s.length >= 1) {
+							if (s.charAt(0) == "\t")
+								return s.substr(1);
+							
+							if (s.length >= 2 && s.substr(0,2) == "	")
+								return s.substr(2);
+						}
+						return s;
+					]]>
+				</body>
+			</method>
+			<method name="_findHome">
+				<parameter name="s"/>
+				<body>
+					<![CDATA[
+						if (s.length >= 1) {
+							if (s.charAt(0) == "\t")
+								return s.substr(1);
+							
+							if (s.length >= 2 && s.substr(0,2) == "	")
+								return s.substr(2);
+						}
+						return s;
+					]]>
+				</body>
+			</method>
+			
+			<method name="_handleKeyPressEvent">
+				<parameter name="aEvent"/>
+				<body>
+					<![CDATA[
+						var cancel = false;
+						var textbox = this._codeTextbox;
+						var scrollTop = textbox.inputField.scrollTop;
+						
+						if (aEvent.keyCode == KeyEvent.DOM_VK_TAB &&
+								!aEvent.ctrlKey && 
+								!aEvent.metaKey &&
+								!aEvent.altKey) {
+								
+							var text = textbox.value;
+							if (textbox.selectionStart != textbox.selectionEnd) {
+								// indent/unindent existing code block
+								
+								var selectionStart = Math.min(textbox.selectionStart, textbox.selectionEnd);
+								var selectionEnd = Math.max(textbox.selectionStart, textbox.selectionEnd);
+								
+								var start = text.lastIndexOf("\n", Math.max(0, selectionStart-1)) + 1;
+								var end = text.indexOf("\n", Math.max(0, selectionEnd-1));
+								if (end == -1)
+									end = text.length;
+								
+								var prefix = text.substr(0, start);
+								var selection = text.substring(start, end);
+								var suffix = text.substr(end);
+								
+								var lines = selection.split("\n");
+								var newLines = [];
+								for (var l = 0; l < lines.length; l++) {
+									newLines[l] = aEvent.shiftKey ? 
+										this._unindent(lines[l]) : 
+										this._indent(lines[l]);
+								}
+								
+								var newSelection = newLines.join("\n");
+								text = prefix + newSelection + suffix;
+								
+								textbox.value = text;
+								textbox.selectionStart = start;
+								textbox.selectionEnd = start + newSelection.length;
+							} else {
+								// insert/remove indentation
+								var i = textbox.selectionStart;
+								var prefix = text.substr(0, i);
+								var suffix = text.substr(i);
+								var insert = this._indent("");
+								
+								textbox.value = prefix + insert + suffix;
+								textbox.selectionEnd = textbox.selectionStart = i + insert.length;
+							}
+							
+							cancel = true;
+							textbox.inputField.scrollTop = scrollTop;
+						} else if (aEvent.keyCode == KeyEvent.DOM_VK_HOME && !aEvent.ctrlKey && !aEvent.metaKey) {
+							var text = textbox.value;
+							var selectionStart = textbox.selectionStart;
+							var selectionEnd = textbox.selectionEnd;
+							
+							var lineStart = text.lastIndexOf("\n", Math.max(0, selectionEnd-1)) + 1;
+							var lineEnd = text.indexOf("\n", selectionEnd);
+							if (lineEnd < 0)
+								lineEnd = text.length;
+								
+							var linePrefix = text.substring(lineStart, lineEnd);
+							var i = linePrefix.search(/\S/);
+							if (i > 0 && i + lineStart != selectionEnd) {
+								selectionEnd = lineStart + i;
+								if (!aEvent.shiftKey)
+									selectionStart = selectionEnd;
+								
+								textbox.setSelectionRange(
+									Math.min(selectionStart, selectionEnd),
+									Math.max(selectionStart, selectionEnd));
+									
+								cancel = true;
+							}
+						} else if (
+								aEvent.keyCode == KeyEvent.DOM_VK_ENTER || 
+								aEvent.keyCode == KeyEvent.DOM_VK_RETURN) {
+								
+							if (aEvent.ctrlKey || aEvent.metaKey) {
+								// Run the code
+								this._fireEvent(this, "run");
+								cancel = true;
+							} else if (textbox.selectionStart == textbox.selectionEnd) {
+								// Auto-indent, auto-close brace
+								
+								var text = textbox.value;
+								var i = textbox.selectionEnd;
+								var prefix = text.substr(0, i);
+								var suffix = text.substr(i);
+								
+								var lineStart = text.lastIndexOf("\n", Math.max(0, i-1)) + 1;
+								var line = text.substring(lineStart, i);
+								var commentIndex = line.lastIndexOf("//");
+								if (commentIndex < 0)
+									commentIndex = line.length;
+								
+								var indentationIndex = line.search(/\S/);
+								var indentation = indentationIndex < 0 ? line : line.substr(0, indentationIndex);
+								var indentFurther = false;
+								
+								var endingWithOpenBrace = /\{\s*$/.test(line.substr(0, commentIndex));
+								if (endingWithOpenBrace)
+									indentFurther = true;
+								
+								var preInsert = "\n";
+								var postInsert = "";
+								
+								if (indentFurther)
+									preInsert += this._indent(indentation);
+								else
+									preInsert += indentation;
+									
+								if (endingWithOpenBrace)
+									postInsert += "\n" + indentation + "}";
+									
+								textbox.value = prefix + preInsert + postInsert + suffix;
+								textbox.selectionStart = i + preInsert.length;
+								textbox.selectionEnd = textbox.selectionStart;
+								
+								cancel = true;
+								textbox.inputField.scrollTop = scrollTop;
+							}
+						}
+						
+						if (cancel) {
+							aEvent.stopPropagation();
+							aEvent.preventDefault();
+						}
+					]]>
+				</body>
+			</method>
+			
+			<method name="_fireEvent">
+				<parameter name="aTarget"/>
+				<parameter name="aType"/>
+				<body>
+				<![CDATA[
+					var event = document.createEvent("Events");
+					event.initEvent(aType, false, true);
+					
+					// handle dom event handlers
+					var noCancel = aTarget.dispatchEvent(event);
+					
+					// handle any xml attribute event handlers
+					var handler = aTarget.getAttribute("on"+aType);
+					if (handler != "") {
+						var fn = new Function("event", handler);
+						var returned = fn.apply(aTarget, [event]);
+						if (returned == false)
+							noCancel = false;
+					}
+
+					return noCancel;
+				]]>
+				</body>
+			</method>
+		</implementation>
+	</binding>
+</bindings>
