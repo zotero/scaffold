@@ -75,7 +75,7 @@ var Scaffold = new function() {
 		for(var id in _propertyMap) {
 			document.getElementById(id).value = translator[_propertyMap[id]];
 		}
-		document.getElementById('editor-detectCode').textbox.value = translator.detectCode;
+		//document.getElementById('editor-detectCode').textbox.value = translator.detectCode;
 		document.getElementById('editor-code').textbox.value = translator.code;
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
 
