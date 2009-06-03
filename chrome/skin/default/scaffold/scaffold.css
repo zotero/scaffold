@@ -36,8 +36,11 @@ codeeditor {
 #tb-checkSyntax {
 	list-style-image: url('chrome://scaffold/skin/checkSyntax.png');
 }
-#tb-run {
-	list-style-image: url('chrome://scaffold/skin/run.png');
+#tb-detectWeb {
+	list-style-image: url('chrome://scaffold/skin/detectWeb.png');
+}
+#tb-doWeb {
+	list-style-image: url('chrome://scaffold/skin/doWeb.png');
 }
 #tb-reference {
 	list-style-image: url('chrome://scaffold/skin/reference.png');

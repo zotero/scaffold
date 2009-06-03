@@ -38,20 +38,14 @@
 	<toolbar id="tb" align="center">
 		<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
 		<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save()" />
-		<toolbarbutton id="tb-copy" tooltiptext="&scaffold.toolbar.copy.label;" oncommand="Scaffold.copy()" />
-		<!--<toolbarbutton id="tb-export" tooltiptext="&scaffold.toolbar.export.label;" oncommand="Scaffold.export()" />-->
 		<toolbarseparator/>
-		<!--<toolbarbutton id="tb-reference" tooltiptext="&scaffold.toolbar.reference.label;" oncommand="Scaffold.reference()" />
-		<toolbarbutton id="tb-fields" tooltiptext="&scaffold.toolbar.fields.label;" oncommand="Scaffold.fields()" />
-		<toolbarseparator/>
-		<toolbarbutton id="tb-checkSyntax" tooltiptext="&scaffold.toolbar.checkSyntax.label;" oncommand="Scaffold.checkSyntax()" />-->
-		<toolbarbutton id="tb-run" tooltiptext="&scaffold.toolbar.run.label;" oncommand="Scaffold.run()" />
+		<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run()" />
+		<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run()" />
 	</toolbar>
 	
 	<tabbox flex="1">
 		<tabs id="tabs">
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
-			<tab id="tab-detectCode" label="&scaffold.tabs.detectCode.label;"/>
 			<tab id="tab-code" label="&scaffold.tabs.code.label;"/>
 		</tabs>
 		<tabpanels flex="1">
@@ -95,9 +89,6 @@
 						<checkbox id="checkbox-search" label="&scaffold.metadata.translatorType.search;"/>
 					</groupbox>
 				</vbox>
-			</tabpanel>
-			<tabpanel flex="1" id="tabpanel-detectCode">
-				<codeeditor id="editor-detectCode" flex="1"/>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">
 				<codeeditor id="editor-code" flex="1"/>
