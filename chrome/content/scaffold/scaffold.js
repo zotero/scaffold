@@ -181,7 +181,7 @@ var Scaffold = new function() {
 	 */
 	function testTargetRegex() {
 		var testDoc = _getDocument();
-		var url = Zotero.Ingester.ProxyMonitor.proxyToProper(testDoc.location.href);
+		var url = Zotero.Proxies.proxyToProper(testDoc.location.href);
 		
 		try {
 			var targetRe = new RegExp(document.getElementById('textbox-target').value, "i");
