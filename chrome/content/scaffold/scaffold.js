@@ -30,7 +30,6 @@ var Scaffold = new function() {
 	this.onLoad = onLoad;
 	this.load = load;
 	this.save = save;
-	this.copy = copy;
 	this.run = run;
 	this.generateTranslatorID = generateTranslatorID;
 	this.testTargetRegex = testTargetRegex;
@@ -100,24 +99,6 @@ var Scaffold = new function() {
 		Zotero.debug("Clearing translator cache");
 		Zotero.Translate.cache = null;
 		Zotero.Translate.init();
-	}
-	
-	/*
-	 * copy translator to cipboard
-	 */
-	function copy() {
-		var transferable = Components.classes["@mozilla.org/widget/transferable;1"].
-						   createInstance(Components.interfaces.nsITransferable);
-		var clipboardService = Components.classes["@mozilla.org/widget/clipboard;1"].
-							   getService(Components.interfaces.nsIClipboard);
-		
-		var str = Components.classes["@mozilla.org/supports-string;1"].
-			      createInstance(Components.interfaces.nsISupportsString);
-		str.data = _generateSQL();
-		transferable.addDataFlavor("text/unicode");
-		transferable.setTransferData("text/unicode", str, str.data.length*2);
-		
-		clipboardService.setData(transferable, null, Components.interfaces.nsIClipboard.kGlobalClipboard);
 	}
 	
 	/*
