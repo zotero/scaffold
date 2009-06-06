@@ -76,7 +76,8 @@ var Scaffold = new function() {
 			document.getElementById(id).value = translator[_propertyMap[id]];
 		}
 		//document.getElementById('editor-detectCode').textbox.value = translator.detectCode;
-		document.getElementById('editor-code').textbox.value = translator.code;
+		metadataRegex = /{(?:(?:"(?:[^"\r\n]*(?:\\")?)*")*[^}"]*)*}[\n]*/;
+		document.getElementById('editor-code').textbox.value = translator.code.replace(metadataRegex,"");//Strip JSON metadata
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
 
 		// get translator type; might as well have some fun here

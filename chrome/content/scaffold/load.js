@@ -49,9 +49,6 @@ var Scaffold_Load = new function() {
 	function accept() {
 		var translatorID = document.getElementById("listbox").selectedItem.getAttribute("value");
 		var translator = Zotero.Translators.get(translatorID);
-		//Strip JSON metadata (put elsewhere, where code is read)
-		//metadataRegex = /{(?:(?:"(?:[^"\r\n]*(?:\\")?)*")*[^}"]*)*}[\n]*/;
-		//translator.code = translator.code.replace(metadataRegex,"");
 		
 		Zotero.debug(translatorID);
 		window.arguments[0].dataOut = translator;
