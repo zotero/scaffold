@@ -268,7 +268,7 @@ var Scaffold = new function() {
 	 */
 	 function _translators(obj, translators) {
 	 	if(translators && translators.length != 0) {
-	 		_logOutput('detectCode returned type "'+translators[0].itemType+'"');
+	 		_logOutput('detectWeb returned type "'+translators[0].itemType+'"');
 	 	}
 	 }
 	
@@ -302,7 +302,6 @@ var Scaffold = new function() {
 		for(var id in _propertyMap) {
 			translator[_propertyMap[id]] = document.getElementById(id).value;
 		}
-		translator.detectCode = document.getElementById('editor-detectCode').textbox.value;
 		translator.code = document.getElementById('editor-code').textbox.value;
 		translator.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
 		
