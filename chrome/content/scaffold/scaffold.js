@@ -93,12 +93,45 @@ var Scaffold = new function() {
 	 * save translator to database
 	 */
 	function save() {
-		Zotero.DB.query(_generateSQL());
-
-		// Rebuild the translator cache
-		Zotero.debug("Clearing translator cache");
-		Zotero.Translate.cache = null;
-		Zotero.Translate.init();
+		//seems like duplicating some effort from _getTranslator
+		var code = document.getElementById('editor-code').textbox.value;
+		
+		var metadata = {
+			translatorID: document.getElementById('textbox-translatorID').value,
+			label: document.getElementById('textbox-label').value,
+			creator: document.getElementById('textbox-creator').value,
+			target: document.getElementById('textbox-target').value,
+			minVersion: document.getElementById('textbox-minVersion').value,
+			maxVersion: document.getElementById('textbox-maxVersion').value,
+			priority: parseInt(document.getElementById('textbox-priority').value)
+		};
+		
+		metadata.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
+		
+		metadata.translatorType = 0;
+		if(document.getElementById('checkbox-import').checked) {
+			metadata.translatorType += 1;
+		}
+		if(document.getElementById('checkbox-export').checked) {
+			metadata.translatorType += 2;
+		}
+		if(document.getElementById('checkbox-web').checked) {
+			metadata.translatorType += 4;
+		}
+		if(document.getElementById('checkbox-search').checked) {
+			metadata.translatorType += 8;
+		}
+		
+		var date = new Date();
+		metadata.lastUpdated = date.getFullYear()
+			+"-"+Zotero.Utilities.prototype.lpad(date.getMonth()+1, '0', 2)
+			+"-"+Zotero.Utilities.prototype.lpad(date.getDate(), '0', 2)
+			+" "+Zotero.Utilities.prototype.lpad(date.getHours(), '0', 2)
+			+":"+Zotero.Utilities.prototype.lpad(date.getMinutes(), '0', 2)
+			+":"+Zotero.Utilities.prototype.lpad(date.getSeconds(), '0', 2);
+		
+		Zotero.Translators.save(metadata,code);
+		Zotero.Translators.init();
 	}
 	
 	/*
@@ -311,39 +344,6 @@ var Scaffold = new function() {
 			guid += str.length == 1 ? '0' + str : str;
 		}
 		return guid;
-	}
-	
-	/*
-	 * generates the SQL code to insert the translator
-	 */
-	function _generateSQL() {
-		var translator = _getTranslator();
-		
-		var date = new Date();
-		var lastUpdated = date.getFullYear()
-			+"-"+Zotero.Utilities.prototype.lpad(date.getMonth()+1, '0', 2)
-			+"-"+Zotero.Utilities.prototype.lpad(date.getDate(), '0', 2)
-			+" "+Zotero.Utilities.prototype.lpad(date.getHours(), '0', 2)
-			+":"+Zotero.Utilities.prototype.lpad(date.getMinutes(), '0', 2)
-			+":"+Zotero.Utilities.prototype.lpad(date.getSeconds(), '0', 2);
-		
-		var text = "REPLACE INTO translators VALUES (";
-		var fieldArray = [
-			translator.translatorID, translator.minVersion,
-			translator.maxVersion, lastUpdated, translator.inRepository,
-			translator.priority, translator.translatorType, translator.label,
-			translator.creator, translator.target, translator.detectCode,
-			translator.code
-		];
-		
-		for each(var field in fieldArray) {
-			field = field.toString();
-			// include a return before long fields
-			if(field.indexOf("\n") != -1) text += "\n";
-			text += "'"+field.replace(/'/g, "''")+"', ";
-		}
-		
-		return text.substr(0, text.length-2)+");";
 	}
 	
 	/*
