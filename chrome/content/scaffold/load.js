@@ -28,7 +28,7 @@ var Scaffold_Load = new function() {
 		var listbox = document.getElementById("listbox");
 		
 		//var translators = Zotero.DB.query("SELECT translatorID, label, creator FROM translators ORDER BY translatorType <> 4, label");
-		var translators = Zotero.Translators.getAllForType("web");//How does the SQL sorting work? First by translatorType, then by label?
+		var translators = Zotero.Translators.getAllForType("web");//To do: list other translator types, implement some kind of sorting?
 		
 		for each(var translator in translators) {
 			var listitem = document.createElement("listitem");
@@ -38,8 +38,7 @@ var Scaffold_Load = new function() {
 			listcell.setAttribute("label", translator.label);
 			listitem.appendChild(listcell);
 			var listcell = document.createElement("listcell");
-			//listcell.setAttribute("label", translator.creator);
-			listcell.setAttribute("label", "Doe");//need to modify Zotero.Translator to read "creator","minVersion" and "maxVersion" data from JSON block
+			listcell.setAttribute("label", translator.creator);
 			listitem.appendChild(listcell);
 			
 			listbox.appendChild(listitem);

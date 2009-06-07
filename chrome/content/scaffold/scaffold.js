@@ -137,7 +137,7 @@ var Scaffold = new function() {
 	/*
 	 * run translator
 	 */
-	function run() {
+	function run(functionToRun) {
 		if (document.getElementById('textbox-label').value == 'Untitled') {
 			alert("Translator title not set");
 			return;
@@ -147,31 +147,38 @@ var Scaffold = new function() {
 		
 		save();
 		
-		var selectedTab = document.getElementById("tabs").selectedItem.id;
-		
 		// for now, only web translation is supported
 		
 		// generate new translator; do not save
-		var translate = new Zotero.Translate("web", false);
+		var translate = new Zotero.Translate("web");
 		translate.setDocument(_getDocument());
 		translate.setHandler("error", _error);
 		translate.setHandler("debug", _debug);
 		
-		if(selectedTab == "tab-detectCode") {
+		
+		//To do: both functions don't work properly
+		//detectWeb give error: 11:20:07 detectWeb returned type "undefined"
+		//doWeb saves item to library and outputs wrong stuff
+		if (functionToRun == "detectWeb") {
 			// for now, assuming web translation
-			
+			Zotero.debug(functionToRun);
 			// get translator
 			var translator = _getTranslator();
+			Zotero.debug(translator.creator);
 			// don't let target prevent translator from operating
 			translator.target = null;
 			// generate sandbox
 			translate._generateSandbox();
+			
+			_logOutput('test');
+			
 			translate.setHandler("translators", _translators);
+			_logOutput('test2');
 			// run translator search
 			translatorSearch = new Zotero.Translate.TranslatorSearch(translate, [translator]);
-		} else if(selectedTab == "tab-code") {
-			// for now, assuming web translation
-			
+			Zotero.debug("raar");
+		} else if (functionToRun == "doWeb") {
+			Zotero.debug(functionToRun);		
 			// get translator
 			var translator = _getTranslator();
 			// don't let the detectCode prevent the translator from operating
