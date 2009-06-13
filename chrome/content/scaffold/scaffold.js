@@ -148,35 +148,24 @@ var Scaffold = new function() {
 		save();
 		
 		// for now, only web translation is supported
-		
 		// generate new translator; do not save
 		var translate = new Zotero.Translate("web");
 		translate.setDocument(_getDocument());
 		translate.setHandler("error", _error);
 		translate.setHandler("debug", _debug);
-		
-		
 		//To do: both functions don't work properly
 		//detectWeb give error: 11:20:07 detectWeb returned type "undefined"
 		//doWeb saves item to library and outputs wrong stuff
 		if (functionToRun == "detectWeb") {
-			// for now, assuming web translation
-			Zotero.debug(functionToRun);
 			// get translator
 			var translator = _getTranslator();
-			Zotero.debug(translator.creator);
 			// don't let target prevent translator from operating
 			translator.target = null;
 			// generate sandbox
 			translate._generateSandbox();
-			
-			_logOutput('test');
-			
 			translate.setHandler("translators", _translators);
-			_logOutput('test2');
 			// run translator search
 			translatorSearch = new Zotero.Translate.TranslatorSearch(translate, [translator]);
-			Zotero.debug("raar");
 		} else if (functionToRun == "doWeb") {
 			Zotero.debug(functionToRun);		
 			// get translator
@@ -275,7 +264,7 @@ var Scaffold = new function() {
 	 */
 	 function _translators(obj, translators) {
 	 	if(translators && translators.length != 0) {
-	 		_logOutput('detectWeb returned type "'+translators[0].itemType+'"');
+			_logOutput('detectWeb returned type "'+translators[0].itemType+'"');
 	 	}
 	 }
 	
@@ -309,7 +298,9 @@ var Scaffold = new function() {
 		for(var id in _propertyMap) {
 			translator[_propertyMap[id]] = document.getElementById(id).value;
 		}
-		translator.code = document.getElementById('editor-code').textbox.value;
+		//RZ: prefix for translator.code is hack to force correct parsing in translate.js
+		//after completion of Zotero.Translate.prototype._parseCode, the code will start with "var translatorInfo = 1;", and detectWeb will be detected
+		translator.code = "1;" + document.getElementById('editor-code').textbox.value;
 		translator.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
 		
 		// load translator type
