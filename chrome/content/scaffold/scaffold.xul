@@ -42,7 +42,7 @@
 		<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run('detectWeb')" />
 		<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run('doWeb')" />
 	</toolbar>
-	
+<hbox>
 	<tabbox flex="1">
 		<tabs id="tabs">
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
@@ -95,8 +95,10 @@
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
-	
+
 	<splitter resizeafter="farthest"/>
+
+<vbox>
 	
 	<hbox id="hbox-testFrame">
 		<label control="menulist-testFrame" id="label-testFrame" value="&scaffold.testFrame.label;"/>
@@ -104,4 +106,6 @@
 	</hbox>
 	
 	<textbox id="output" multiline="true" readonly="true"/>
+</vbox>
+</hbox>
 </window>

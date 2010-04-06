@@ -1,22 +1,22 @@
 /*
     ***** BEGIN LICENSE BLOCK *****
-    
+
     Copyright (c) 2006  Center for History and New Media
                         George Mason University, Fairfax, Virginia, USA
                         http://chnm.gmu.edu
-    
+
     Licensed under the Educational Community License, Version 1.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-    
+
     http://www.opensource.org/licenses/ecl1.php
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-    
+
     ***** END LICENSE BLOCK *****
 */
 
@@ -33,9 +33,9 @@ var Scaffold = new function() {
 	this.run = run;
 	this.generateTranslatorID = generateTranslatorID;
 	this.testTargetRegex = testTargetRegex;
-	
+
 	var _browser, _frames, _document;
-	
+
 	var _propertyMap = {
 		'textbox-translatorID':'translatorID',
 		'textbox-label':'label',
@@ -44,24 +44,24 @@ var Scaffold = new function() {
 		'textbox-minVersion':'minVersion',
 		'textbox-maxVersion':'maxVersion',
 		'textbox-priority':'priority'
-	}
-	
+	};
+
 	function onLoad() {
 		_document = document;
-		
+
 		_browser = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 						   .getService(Components.interfaces.nsIWindowMediator)
 						   .getMostRecentWindow("navigator:browser");
-		
+
 		_browser.document.getElementById("content").addEventListener("TabSelect",
 			_updateFrames, true);
 		_browser.document.getElementById("appcontent").addEventListener("pageshow",
 			_updateFrames, true);
 		_updateFrames();
-		
+
 		generateTranslatorID();
 	}
-	
+
 	/*
 	 * load translator from database
 	 */
@@ -70,12 +70,12 @@ var Scaffold = new function() {
 		window.openDialog("chrome://scaffold/content/load.xul",
 			"_blank","chrome,modal", io);
 		var translator = io.dataOut;
-		
+
 		for(var id in _propertyMap) {
 			document.getElementById(id).value = translator[_propertyMap[id]];
 		}
 		//document.getElementById('editor-detectCode').textbox.value = translator.detectCode;
-		metadataRegex = /{(?:(?:"(?:[^"\r\n]*(?:\\")?)*")*[^}"]*)*}[\n]*/;
+		var metadataRegex = /{(?:(?:"(?:[^"\r\n]*(?:\\")?)*")*[^}"]*)*}[\n]*/;
 		document.getElementById('editor-code').textbox.value = translator.code.replace(metadataRegex,"");//Strip JSON metadata
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
 
@@ -88,14 +88,14 @@ var Scaffold = new function() {
 			if(mod) type -= mod;
 		}
 	}
-	
+
 	/*
 	 * save translator to database
 	 */
 	function save() {
 		//seems like duplicating some effort from _getTranslator
 		var code = document.getElementById('editor-code').textbox.value;
-		
+
 		var metadata = {
 			translatorID: document.getElementById('textbox-translatorID').value,
 			label: document.getElementById('textbox-label').value,
@@ -105,9 +105,9 @@ var Scaffold = new function() {
 			maxVersion: document.getElementById('textbox-maxVersion').value,
 			priority: parseInt(document.getElementById('textbox-priority').value)
 		};
-		
+
 		metadata.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
-		
+
 		metadata.translatorType = 0;
 		if(document.getElementById('checkbox-import').checked) {
 			metadata.translatorType += 1;
@@ -121,7 +121,7 @@ var Scaffold = new function() {
 		if(document.getElementById('checkbox-search').checked) {
 			metadata.translatorType += 8;
 		}
-		
+
 		var date = new Date();
 		metadata.lastUpdated = date.getFullYear()
 			+"-"+Zotero.Utilities.prototype.lpad(date.getMonth()+1, '0', 2)
@@ -129,11 +129,11 @@ var Scaffold = new function() {
 			+" "+Zotero.Utilities.prototype.lpad(date.getHours(), '0', 2)
 			+":"+Zotero.Utilities.prototype.lpad(date.getMinutes(), '0', 2)
 			+":"+Zotero.Utilities.prototype.lpad(date.getSeconds(), '0', 2);
-		
+
 		Zotero.Translators.save(metadata,code);
 		Zotero.Translators.init();
 	}
-	
+
 	/*
 	 * run translator
 	 */
@@ -142,11 +142,11 @@ var Scaffold = new function() {
 			alert("Translator title not set");
 			return;
 		}
-		
+
 		document.getElementById('output').value = '';
-		
+
 		save();
-		
+
 		// for now, only web translation is supported
 		// generate new translator; do not save
 		var translate = new Zotero.Translate("web");
@@ -165,43 +165,45 @@ var Scaffold = new function() {
 			translate._generateSandbox();
 			translate.setHandler("translators", _translators);
 			// run translator search
-			translatorSearch = new Zotero.Translate.TranslatorSearch(translate, [translator]);
+			var translatorSearch = new Zotero.Translate.TranslatorSearch(translate, [translator]);
 		} else if (functionToRun == "doWeb") {
-			Zotero.debug(functionToRun);		
+			Zotero.debug("I AM HERE");
+			Zotero.debug(functionToRun);
 			// get translator
 			var translator = _getTranslator();
 			// don't let the detectCode prevent the translator from operating
 			translator.detectCode = null;
 			translate.setTranslator(translator);
 			translate.setHandler("select", _selectItems);
-			translate.setHandler("itemDone", _itemDone);
+			translate.clearHandlers("itemDone");
+			translate.setHandler("itemDone", _myItemDone);
 			translate.translate();
 		}
 	}
-	
+
 	/*
 	 * generate translator GUID
 	 */
 	function generateTranslatorID() {
 		document.getElementById("textbox-translatorID").value = _generateGUID();
 	}
-	
+
 	/*
 	 * test target regular expression against document URL
 	 */
 	function testTargetRegex() {
 		var testDoc = _getDocument();
 		var url = Zotero.Proxies.proxyToProper(testDoc.location.href);
-		
+
 		try {
 			var targetRe = new RegExp(document.getElementById('textbox-target').value, "i");
 		} catch(e) {
 			_logOutput("Regex parse error:\n"+Zotero.varDump(e));
 		}
-		
+
 		_logOutput(targetRe.test(url));
 	}
-	
+
 	/*
 	 * called to select items
 	 */
@@ -209,10 +211,10 @@ var Scaffold = new function() {
 		var io = { dataIn:itemList, dataOut:null }
 		var newDialog = window.openDialog("chrome://zotero/content/ingester/selectitems.xul",
 			"_blank","chrome,modal,centerscreen,resizable=yes", io);
-		
+
 		return io.dataOut;
 	}
-	
+
 	/*
 	 * called if an error occurs
 	 */
@@ -222,43 +224,43 @@ var Scaffold = new function() {
 			var start = 0;
 			var lineCount = 0;
 			var textbox = document.getElementById('editor-code').textbox;
-			
+
 			while(start < textbox.value.length && lineCount < error.lineNumber) {
 				start = textbox.value.indexOf("\n", start+1);
 				lineCount++;
 			}
-			
+
 			if(start != -1) {
 				var end = textbox.value.indexOf("\n", start+1);
 				if(end == -1) end = textbox.value.length-1;
-				
+
 				textbox.selectionStart = start;
 				textbox.selectionEnd = end;
 			}
 		}
 	}
-	
+
 	/*
 	 * logs translator output (instead of logging in the console)
 	 */
 	function _debug(obj, string) {
 		_logOutput(string);
 	}
-	
+
 	/*
 	 * logs item output
 	 */
-	function _itemDone(obj, item) {
+	function _myItemDone(obj, item) {
 		// Clear attachment document objects
 		if (item && item.attachments && item.attachments.length) {
 			for (var i=0; i<item.attachments.length; i++) {
 				item.attachments[i].document = "[object]";
 			}
 		}
-		
-		_logOutput("Returned item:\n"+Zotero.varDump(item));
+
+		_logOutput("Returned item:\n"+Zotero.varDump(item._itemData));
 	}
-	
+
 	/*
 	 * prints information from detectCode to window
 	 */
@@ -267,19 +269,19 @@ var Scaffold = new function() {
 			_logOutput('detectWeb returned type "'+translators[0].itemType+'"');
 	 	}
 	 }
-	
+
 	/*
 	 * logs debug info (instead of console)
 	 */
 	function _logOutput(string) {
 		var date = new Date();
 		var output = document.getElementById('output');
-		
+
 		// use vardump on non-strings
 		if(typeof string != "string") {
 			string = Zotero.varDump(string);
 		}
-		
+
 		if(output.value) output.value += "\n";
 		output.value += Zotero.Utilities.prototype.lpad(date.getHours(), '0', 2)
 				+":"+Zotero.Utilities.prototype.lpad(date.getMinutes(), '0', 2)
@@ -288,7 +290,7 @@ var Scaffold = new function() {
 		// move to end
 		output.inputField.scrollTop = output.inputField.scrollHeight;
 	}
-	
+
 	/*
 	 * gets translator data from the metadata pane
 	 */
@@ -302,7 +304,7 @@ var Scaffold = new function() {
 		//after completion of Zotero.Translate.prototype._parseCode, the code will start with "var translatorInfo = 1;", and detectWeb will be detected
 		translator.code = "1;" + document.getElementById('editor-code').textbox.value;
 		translator.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
-		
+
 		// load translator type
 		translator.translatorType = 0;
 		if(document.getElementById('checkbox-import').checked) {
@@ -317,10 +319,10 @@ var Scaffold = new function() {
 		if(document.getElementById('checkbox-search').checked) {
 			translator.translatorType += 8;
 		}
-		
+
 		return translator;
 	}
-	
+
 	/*
 	 * generates an RFC 4122 compliant random GUID
 	 */
@@ -328,10 +330,10 @@ var Scaffold = new function() {
 		var guid = "";
 		for(var i=0; i<16; i++) {
 			var bite = Math.floor(Math.random() * 255);
-			
+
 			if(i == 4 || i == 6 || i == 8 || i == 10) {
 				guid += "-";
-				
+
 				// version
 				if(i == 6) bite = bite & 0x0f | 0x40;
 				// variant
@@ -342,20 +344,20 @@ var Scaffold = new function() {
 		}
 		return guid;
 	}
-	
+
 	/*
 	 * updates list of available frames
 	 */
 	function _updateFrames() {
 		var doc = _browser.document.getElementById("content").contentDocument;
 		var menulist = _document.getElementById("menulist-testFrame");
-		
+
 		menulist.removeAllItems();
 		var popup = _document.createElement("menupopup");
 		menulist.appendChild(popup);
-		
+
 		_frames = new Array();
-		
+
 		var frames = doc.getElementsByTagName("frame");
 		if(frames.length) {
 			_getFrames(frames, popup);
@@ -363,13 +365,13 @@ var Scaffold = new function() {
 			var item = _document.createElement("menuitem");
 			item.setAttribute("label", "Default");
 			popup.appendChild(item);
-			
+
 			_frames = [doc];
 		}
-		
+
 		menulist.selectedIndex = 0;
 	}
-	
+
 	/*
 	 * recursively searches for frames
 	 */
@@ -385,20 +387,20 @@ var Scaffold = new function() {
 				} else {
 					frameName = frame.contentDocument.location.href;
 				}
-				
+
 				// add frame
 				var item = _document.createElement("menuitem");
 				item.setAttribute("label", frameName);
 				popup.appendChild(item);
 				_frames.push(frame.contentDocument);
-				
+
 				// see if frame has its own frames
 				var subframes = frame.contentDocument.getElementsByTagName("frame");
 				if(subframes.length) _getFrames(subframes, popup);
 			}
 		}
 	}
-	
+
 	/*
 	 * gets selected frame/document
 	 */
