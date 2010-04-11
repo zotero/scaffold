@@ -248,6 +248,151 @@ var Scaffold = new function() {
 	}
 
 	/*
+	 * field names mapping
+	 */
+var fieldnames = [
+    "???",
+    "url",
+    "rights",
+    "series",
+    "volume",
+    "issue",
+    "edition",
+    "place",
+    "publisher",
+    "???",
+    "pages",
+    "ISBN",
+    "publicationTitle",
+    "ISSN",
+    "date",
+    "section",
+    "???",
+    "???",
+    "callNumber",
+    "archiveLocation",
+    "???",
+    "distributor",
+    "extra",
+    "???",
+    "???",
+    "journalAbbreviation",
+    "DOI",
+    "accessDate",
+    "seriesTitle",
+    "seriesText",
+    "seriesNumber",
+    "institution",
+    "reportType",
+    "???",
+    "???",
+    "???",
+    "code",
+    "???",
+    "???",
+    "???",
+    "session",
+    "legislativeBody",
+    "history",
+    "reporter",
+    "court",
+    "numberOfVolumes",
+    "committee",
+    "???",
+    "assignee",
+    "???",
+    "patentNumber",
+    "priorityNumbers",
+    "issueDate",
+    "references",
+    "legalStatus",
+    "codeNumber",
+    "???",
+    "???",
+    "???",
+    "artworkMedium",
+    "number",
+    "artworkSize",
+    "libraryCatalog",
+    "videoRecordingFormat",
+    "interviewMedium",
+    "letterType",
+    "manuscriptType",
+    "mapType",
+    "scale",
+    "thesisType",
+    "websiteType",
+    "audioRecordingFormat",
+    "label",
+    "???",
+    "presentationType",
+    "meetingName",
+    "studio",
+    "runningTime",
+    "network",
+    "postType",
+    "audioFileType",
+    "version",
+    "system",
+    "company",
+    "conferenceName",
+    "encyclopediaTitle",
+    "dictionaryTitle",
+    "language",
+    "programmingLanguage",
+    "university",
+    "abstractNote",
+    "websiteTitle",
+    "reportNumber",
+    "billNumber",
+    "codeVolume",
+    "codePages",
+    "dateDecided",
+    "reporterVolume",
+    "firstPage",
+    "documentNumber",
+    "dateEnacted",
+    "publicLawNumber",
+    "country",
+    "applicationNumber",
+    "forumTitle",
+    "episodeNumber",
+    "???",
+    "blogTitle",
+    "type",
+    "medium",
+    "title",
+    "caseName",
+    "nameOfAct",
+    "subject",
+    "proceedingsTitle",
+    "bookTitle",
+    "shortTitle",
+    "docketNumber",
+    "numPages",
+    "programTitle",
+    "issuingAuthority",
+    "filingDate",
+    "genre",
+    "archive"
+]
+
+
+
+	/*
+	 * remangles result of varDump to produce meaningful output
+	 */
+	 function dumpItemData(item) {
+		 var str, lst, pos, len;
+		 str = Zotero.varDump(item._itemData);
+		 lst = str.split(/\'([0-9]+)\' *=>/);
+		 for (pos = 1, len = lst.length; pos < len; pos += 2) {
+			 lst[pos] = "'" + fieldnames[parseInt(lst[pos], 10)] + "' =>";
+		 }
+		 return lst.join("");
+	 }
+
+	/*
 	 * logs item output
 	 */
 	function _myItemDone(obj, item) {
@@ -258,7 +403,8 @@ var Scaffold = new function() {
 			}
 		}
 
-		_logOutput("Returned item:\n"+Zotero.varDump(item._itemData));
+		// _logOutput("Returned item:\n"+Zotero.varDump(item._itemData));
+		_logOutput("Returned item:\n"+dumpItemData(item));
 	}
 
 	/*
