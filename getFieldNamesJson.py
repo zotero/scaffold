@@ -34,12 +34,17 @@ else:
     cp.read(config)
 
 conn = dbapi2.connect(cp.get("paths", "db"))
-got = conn.execute("SELECT fieldName from fields ORDER BY fieldID");
+got = conn.execute("SELECT fieldID,fieldName from fields ORDER BY fieldID");
 
 fields = []
 
+count = 0;
 for row in got:
-    fields.append(row[0])
+    while count < int(row[0]):
+        fields.append("???")
+        count += 1
+    fields.append(row[1])
+    count += 1
 
 sys.stdout.write("var fieldnames = ")
 
