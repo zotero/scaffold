@@ -1,0 +1,17 @@
+A TODO list for the Scaffold code base
+
+
+A few items that should probably be fixed:
+
+- The two horizontal boxes should be of equal width 
+  initially, and their height should adjust in parallel.
+
+- If possible, error feedback should show up in the
+  window when there is a syntax error in the translator
+  JS code.  At the moment, it just issues no output.
+
+- It would be nice if the selected translator could
+  be made persistent.  It's a little annoying in 
+  development to have to keep re-selecting the thing 
+  after reach restart.
+
