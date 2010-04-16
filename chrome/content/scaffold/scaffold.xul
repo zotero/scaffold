@@ -31,7 +31,7 @@
 	<script src="chrome://zotero/content/include.js"/>
 	<script src="scaffold.js"/>
 
-<vbox>
+<vbox flex="1">
 	
 	<keyset>
 		<key id="test" key="w" modifiers="accel" oncommand="Scaffold.close();" />
@@ -44,7 +44,7 @@
 		<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run('detectWeb')" />
 		<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run('doWeb')" />
 	</toolbar>
-<hbox>
+<hbox flex="1">
 	<tabbox flex="1" width="300">
 		<tabs id="tabs">
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
