@@ -53,7 +53,7 @@ var Scaffold = new function() {
 						   .getService(Components.interfaces.nsIWindowMediator)
 						   .getMostRecentWindow("navigator:browser");
 
-		_browser.document.getElementById("content").addEventListener("TabSelect",
+		_browser.document.getElementById("content").tabContainer.addEventListener("TabSelect",
 			_updateFrames, true);
 		_browser.document.getElementById("appcontent").addEventListener("pageshow",
 			_updateFrames, true);
@@ -75,8 +75,11 @@ var Scaffold = new function() {
 			document.getElementById(id).value = translator[_propertyMap[id]];
 		}
 		//document.getElementById('editor-detectCode').textbox.value = translator.detectCode;
-		var metadataRegex = /{(?:(?:"(?:[^"\r\n]*(?:\\")?)*")*[^}"]*)*}[\n]*/;
-		document.getElementById('editor-code').textbox.value = translator.code.replace(metadataRegex,"");//Strip JSON metadata
+		//Strip JSON metadata
+		var lastUpdatedIndex = translator.code.indexOf('"lastUpdated"');
+		var header = translator.code.substr(0, lastUpdatedIndex + 50);
+		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
+		document.getElementById('editor-code').textbox.value = translator.code.substr(m[0].length);
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
 
 		// get translator type; might as well have some fun here
@@ -124,11 +127,11 @@ var Scaffold = new function() {
 
 		var date = new Date();
 		metadata.lastUpdated = date.getFullYear()
-			+"-"+Zotero.Utilities.prototype.lpad(date.getMonth()+1, '0', 2)
-			+"-"+Zotero.Utilities.prototype.lpad(date.getDate(), '0', 2)
-			+" "+Zotero.Utilities.prototype.lpad(date.getHours(), '0', 2)
-			+":"+Zotero.Utilities.prototype.lpad(date.getMinutes(), '0', 2)
-			+":"+Zotero.Utilities.prototype.lpad(date.getSeconds(), '0', 2);
+			+"-"+Zotero.Utilities.lpad(date.getMonth()+1, '0', 2)
+			+"-"+Zotero.Utilities.lpad(date.getDate(), '0', 2)
+			+" "+Zotero.Utilities.lpad(date.getHours(), '0', 2)
+			+":"+Zotero.Utilities.lpad(date.getMinutes(), '0', 2)
+			+":"+Zotero.Utilities.lpad(date.getSeconds(), '0', 2);
 
 		Zotero.Translators.save(metadata,code);
 		Zotero.Translators.init();
@@ -149,7 +152,7 @@ var Scaffold = new function() {
 
 		// for now, only web translation is supported
 		// generate new translator; do not save
-		var translate = new Zotero.Translate("web");
+		var translate = new Zotero.Translate.Web();
 		translate.setDocument(_getDocument());
 		translate.setHandler("error", _error);
 		translate.setHandler("debug", _debug);
@@ -162,10 +165,12 @@ var Scaffold = new function() {
 			// don't let target prevent translator from operating
 			translator.target = null;
 			// generate sandbox
-			translate._generateSandbox();
 			translate.setHandler("translators", _translators);
-			// run translator search
-			var translatorSearch = new Zotero.Translate.TranslatorSearch(translate, [translator]);
+			// internal hack to call detect on this translator
+			translate._potentialTranslators = [translator];
+			translate._foundTranslators = [];
+			translate._currentState = "detect";
+			translate._detect();
 		} else if (functionToRun == "doWeb") {
 			// get translator
 			var translator = _getTranslator();
@@ -250,6 +255,8 @@ var Scaffold = new function() {
 	 * logs item output
 	 */
 	function _myItemDone(obj, item) {
+		Zotero.debug("Item returned");
+		
 		// Clear attachment document objects
 		if (item && item.attachments && item.attachments.length) {
 			for (var i=0; i<item.attachments.length; i++) {
@@ -283,9 +290,9 @@ var Scaffold = new function() {
 		}
 
 		if(output.value) output.value += "\n";
-		output.value += Zotero.Utilities.prototype.lpad(date.getHours(), '0', 2)
-				+":"+Zotero.Utilities.prototype.lpad(date.getMinutes(), '0', 2)
-				+":"+Zotero.Utilities.prototype.lpad(date.getSeconds(), '0', 2)
+		output.value += Zotero.Utilities.lpad(date.getHours(), '0', 2)
+				+":"+Zotero.Utilities.lpad(date.getMinutes(), '0', 2)
+				+":"+Zotero.Utilities.lpad(date.getSeconds(), '0', 2)
 				+" "+string.replace(/\n/g, "\n         ");
 		// move to end
 		output.inputField.scrollTop = output.inputField.scrollHeight;

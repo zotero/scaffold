@@ -4,12 +4,12 @@
 
   <Description about="urn:mozilla:install-manifest">
   
-    <em:id>scaffold2@zotero.org</em:id>
-    <em:name>Scaffold 2.0</em:name>
-    <em:version>2.0.0</em:version>
+    <em:id>scaffold@zotero.org</em:id>
+    <em:name>Scaffold</em:name>
+    <em:version>2.1.0</em:version>
     <em:description>An IDE for creation of Zotero translators</em:description>
     <em:creator>Center for History and New Media<br/>George Mason University</em:creator>
-    <em:updateURL>https://www.zotero.org/download/scaffold2.rdf</em:updateURL>
+    <em:updateURL>https://www.zotero.org/download/scaffold.rdf</em:updateURL>
     <em:type>2</em:type> <!-- type=extension -->
     
     <!-- Firefox -->
@@ -17,7 +17,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>3.5.4</em:minVersion>
-        <em:maxVersion>3.6.*</em:maxVersion>
+        <em:maxVersion>4.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   
