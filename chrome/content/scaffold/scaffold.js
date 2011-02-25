@@ -74,13 +74,23 @@ var Scaffold = new function() {
 		for(var id in _propertyMap) {
 			document.getElementById(id).value = translator[_propertyMap[id]];
 		}
-		//document.getElementById('editor-detectCode').textbox.value = translator.detectCode;
+
 		//Strip JSON metadata
 		var lastUpdatedIndex = translator.code.indexOf('"lastUpdated"');
 		var header = translator.code.substr(0, lastUpdatedIndex + 50);
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
 		document.getElementById('editor-code').textbox.value = translator.code.substr(m[0].length);
+		
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
+		
+		var configOptions = JSON.stringify(translator.configOptions);
+		if(configOptions != '{}') {
+		    document.getElementById('textbox-configOptions').value = configOptions;
+		}
+		var configOptions = JSON.stringify(translator.displayOptions);
+		if(displayOptions != '{}') {
+		    document.getElementById('textbox-displayOptions').value = displayOptions;
+		}
 
 		// get translator type; might as well have some fun here
 		var type = translator.translatorType;
@@ -109,6 +119,13 @@ var Scaffold = new function() {
 			priority: parseInt(document.getElementById('textbox-priority').value)
 		};
 
+		if(document.getElementById('textbox-configOptions').value != '') {
+		    metadata.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
+		}
+		if(document.getElementById('textbox-displayOptions').value != '') {
+		    metadata.displayOptions = JSON.parse(document.getElementById('textbox-displayOptions').value);
+		}
+		
 		metadata.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
 
 		metadata.translatorType = 0;

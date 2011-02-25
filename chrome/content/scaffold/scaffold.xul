@@ -72,6 +72,14 @@
 						<button label="&scaffold.metadata.target.testRegex;" oncommand="Scaffold.testTargetRegex()"/>
 					</hbox>
 					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.configOptions.label;" control="textbox-configOptions"/>
+						<textbox id="textbox-configOptions" flex="1"/>
+					</hbox>
+					<hbox>
+						<label class="label-metadata" value="&scaffold.metadata.displayOptions.label;" control="textbox-displayOptions"/>
+						<textbox id="textbox-displayOptions" flex="1"/>
+					</hbox>
+					<hbox>
 						<label class="label-metadata" value="&scaffold.metadata.minVersion.label;" control="textbox-minVersion"/>
 						<textbox id="textbox-minVersion" flex="1" value="1.0"/>
 						<label class="label-metadata" value="&scaffold.metadata.maxVersion.label;" control="textbox-maxVersion"/>
