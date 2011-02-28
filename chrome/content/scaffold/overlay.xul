@@ -16,4 +16,9 @@
 		<menuitem id="scaffold-menuitem" insertafter="tools-zotero"
 			oncommand="window.open('chrome://scaffold/content/scaffold.xul','scaffold','chrome,resizable');" label="Scaffold"/>
 	</menupopup>
+
+  <vbox id="appmenuPrimaryPane">
+    <menuitem id="scaffold-appmenu" oncommand="window.open('chrome://scaffold/content/scaffold.xul','scaffold','chrome,resizable');" label="Scaffold" insertbefore="appmenu_webDeveloper"/>
+  </vbox>
+  
 </overlay>
