@@ -85,11 +85,16 @@ var Scaffold = new function() {
 		
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
 		
-		var configOptions = JSON.stringify(translator.configOptions);
+		var configOptions, displayOptions;
+		if(translator.configOptions) {
+		    configOptions = JSON.stringify(translator.configOptions);
+		}
 		if(configOptions != '{}') {
 		    document.getElementById('textbox-configOptions').value = configOptions;
 		}
-		var displayOptions = JSON.stringify(translator.displayOptions);
+		if(translator.displayOptions) {
+		    displayOptions = JSON.stringify(translator.displayOptions);
+		}
 		if(displayOptions != '{}') {
 		    document.getElementById('textbox-displayOptions').value = displayOptions;
 		}
