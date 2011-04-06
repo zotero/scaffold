@@ -28,7 +28,8 @@ var Scaffold_Load = new function() {
 		var listbox = document.getElementById("listbox");
 		
 		//var translators = Zotero.DB.query("SELECT translatorID, label, creator FROM translators ORDER BY translatorType <> 4, label");
-		var translators = Zotero.Translators.getAllForType("web");//To do: list other translator types, implement some kind of sorting?
+		var translators = Zotero.Translators.getAllForType("web").sort(function(a, b) { return a.label.localeCompare(b.label) });
+		//TODO: list other translator types
 		
 		for each(var translator in translators) {
 			var listitem = document.createElement("listitem");
