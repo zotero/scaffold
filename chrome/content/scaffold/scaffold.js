@@ -82,7 +82,7 @@ var Scaffold = new function() {
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
 		var fixedCode = translator.code.substr(m[0].length).replace(/^\/\* FW LINE \d+:[a-fA-F0-9]+ \*\/[^\n]*\n/,'\n');
 		document.getElementById('editor-code').textbox.value = fixedCode;
-		Zotero.debug(fixedCode);
+		
 		document.getElementById('checkbox-inRepository').checked = !!translator.inRepository;
 		
 		var configOptions = JSON.stringify(translator.configOptions);
@@ -128,13 +128,11 @@ var Scaffold = new function() {
 		    metadata.displayOptions = JSON.parse(document.getElementById('textbox-displayOptions').value);
 		}
 		
-		metadata.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
+		metadata.inRepository = document.getElementById('checkbox-inRepository').checked ? true : false;
 		
 		if(document.getElementById('checkbox-inRepository').checked) {
 			code = _FW + '\n' + code;
-			Zotero.debug(code);
 		}
-		
 
 		metadata.translatorType = 0;
 		if(document.getElementById('checkbox-import').checked) {
@@ -336,7 +334,7 @@ var Scaffold = new function() {
 		//RZ: prefix for translator.code is hack to force correct parsing in translate.js
 		//after completion of Zotero.Translate.prototype._parseCode, the code will start with "var translatorInfo = 1;", and detectWeb will be detected
 		translator.code = "1;" + document.getElementById('editor-code').textbox.value;
-		translator.inRepository = document.getElementById('checkbox-inRepository').checked ? "1" : "0";
+		translator.inRepository = document.getElementById('checkbox-inRepository').checked ? true : false;
 
 		// load translator type
 		translator.translatorType = 0;
