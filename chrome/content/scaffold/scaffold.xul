@@ -88,8 +88,8 @@
 						<textbox id="textbox-priority" flex="1" value="&scaffold.metadata.priority.default;"/>
 					</hbox>
 					<hbox>
-						<checkbox id="checkbox-inRepository"/>
-						<label class="label-metadata" value="&scaffold.metadata.inRepository.label;" control="checkbox-inRepository"/>
+						<checkbox id="checkbox-framework"/>
+						<label class="label-metadata" value="&scaffold.metadata.framework.label;" control="checkbox-framework"/>
 					</hbox>
 					<groupbox>
 						<caption label="&scaffold.metadata.translatorType.label;"/>

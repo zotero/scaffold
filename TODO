@@ -2,8 +2,8 @@ Relatively important
  - Fix error selection in code
  - Provide guidance on translator options
  - Links to documentation (why not?)
- - Implement FW with less of a hack
  - Type-to-find in translator load window
+ - Add support for import translators
 
 Not very important
  - Automatic gisting?
