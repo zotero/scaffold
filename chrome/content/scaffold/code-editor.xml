@@ -180,7 +180,8 @@
 								else
 									preInsert += indentation;
 									
-								if (endingWithOpenBrace)
+								// XXX Disabled because it's annoying!
+								if (false && endingWithOpenBrace)
 									postInsert += "\n" + indentation + "}";
 									
 								textbox.value = prefix + preInsert + postInsert + suffix;

@@ -388,6 +388,8 @@ var Scaffold = new function() {
 	 */
 	function _updateFrames() {
 		var doc = _browser.document.getElementById("content").contentDocument;
+		// No need to run if Scaffold isn't open
+		if (!_document) return true;
 		var menulist = _document.getElementById("menulist-testFrame");
 
 		menulist.removeAllItems();

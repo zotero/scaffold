@@ -27,13 +27,16 @@ var Scaffold_Load = new function() {
 	function onLoad() {
 		var listbox = document.getElementById("listbox");
 		
-		//var translators = Zotero.DB.query("SELECT translatorID, label, creator FROM translators ORDER BY translatorType <> 4, label");
+		// Get the web translators
 		var translators = Zotero.Translators.getAllForType("web").sort(function(a, b) { return a.label.localeCompare(b.label) });
-		//TODO: list other translator types
 		
 		for each(var translator in translators) {
 			var listitem = document.createElement("listitem");
-			listitem.setAttribute("value", translator.translatorID);
+			// Since type-to-find is based on the value, we need to put the label there
+			// But we still can't get type-to-find to work
+			listitem.setAttribute("value", translator.label);
+			// And the ID goes in DOM user data
+			listitem.setUserData("zotero-id", translator.translatorID, null);
 			
 			var listcell = document.createElement("listcell");
 			listcell.setAttribute("label", translator.label);
@@ -47,7 +50,7 @@ var Scaffold_Load = new function() {
 	}
 	
 	function accept() {
-		var translatorID = document.getElementById("listbox").selectedItem.getAttribute("value");
+		var translatorID = document.getElementById("listbox").selectedItem.getUserData("zotero-id");
 		var translator = Zotero.Translators.get(translatorID);
 		
 		Zotero.debug(translatorID);
