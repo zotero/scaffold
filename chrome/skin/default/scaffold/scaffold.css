@@ -5,6 +5,10 @@ codeeditor {
 	-moz-binding: url("chrome://scaffold/content/code-editor.xml#codeeditor") ;
 }
 
+importeditor {
+	-moz-binding: url("chrome://scaffold/content/import.xml#importeditor") ;
+}
+
 #tb toolbarbutton .toolbarbutton-text {
 	margin:0 2px;
 }
@@ -40,6 +44,12 @@ codeeditor {
 	list-style-image: url('chrome://scaffold/skin/detectWeb.png');
 }
 #tb-doWeb {
+	list-style-image: url('chrome://scaffold/skin/doWeb.png');
+}
+#tb-detectImport {
+	list-style-image: url('chrome://scaffold/skin/detectWeb.png');
+}
+#tb-doImport {
 	list-style-image: url('chrome://scaffold/skin/doWeb.png');
 }
 #tb-reference {

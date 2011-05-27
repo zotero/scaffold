@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<bindings id="import-bindings"
+	xmlns="http://www.mozilla.org/xbl"
+	xmlns:xbl="http://www.mozilla.org/xbl"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+
+	<binding id="importeditor">
+		<content>
+			<xul:textbox 
+				anonid="import-textbox" 
+				multiline="true" 
+				wrap="off" 
+				flex="1" 
+				/>
+		</content>
+		<implementation>
+			<constructor>
+				<![CDATA[
+				this._importTextbox = document.getAnonymousElementByAttribute(this, "anonid", "import-textbox");
+				]]>
+			</constructor>
+			<property name="textbox" readonly="true"
+				onget="return this._importTextbox;" />
+		</implementation>
+	</binding>
+</bindings>

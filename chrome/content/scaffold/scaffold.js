@@ -182,8 +182,13 @@ var Scaffold = new function() {
 
 		// for now, only web translation is supported
 		// generate new translator; do not save
-		var translate = new Zotero.Translate.Web();
-		translate.setDocument(_getDocument());
+		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
+			var translate = new Zotero.Translate.Web();
+			translate.setDocument(_getDocument());
+		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
+			var translate = new Zotero.Translate.Import();
+			translate.setString(_getImport());
+		}
 		translate.setHandler("error", _error);
 		translate.setHandler("debug", _debug);
 		//To do: both functions don't work properly
@@ -208,6 +213,28 @@ var Scaffold = new function() {
 			translator.detectCode = null;
 			translate.setTranslator(translator);
 			translate.setHandler("select", _selectItems);
+			translate.clearHandlers("itemDone");
+			translate.setHandler("itemDone", _myItemDone);
+			// disable output to database
+			translate.translate(false);
+		} else if (functionToRun == "detectImport") {
+			// get translator
+			var translator = _getTranslator();
+			// don't let target prevent translator from operating
+			translator.target = null;
+			// generate sandbox
+			translate.setHandler("translators", _translatorsImport);
+			// internal hack to call detect on this translator
+			translate._potentialTranslators = [translator];
+			translate._foundTranslators = [];
+			translate._currentState = "detect";
+			translate._detect();
+		} else if (functionToRun == "doImport") {
+			// get translator
+			var translator = _getTranslator();
+			// don't let the detectCode prevent the translator from operating
+			translator.detectCode = null;
+			translate.setTranslator(translator);
 			translate.clearHandlers("itemDone");
 			translate.setHandler("itemDone", _myItemDone);
 			// disable output to database
@@ -307,6 +334,15 @@ var Scaffold = new function() {
 			_logOutput('detectWeb returned type "'+translators[0].itemType+'"');
 	 	}
 	 }
+	
+	/*
+	 * prints information from detectCode to window, for import
+	 */
+	 function _translatorsImport(obj, translators) {
+	 	if(translators && translators.length != 0) {
+			_logOutput('detect returned "'+translators[0]+'"');
+	 	}
+	 }
 
 	/*
 	 * logs debug info (instead of console)
@@ -330,6 +366,14 @@ var Scaffold = new function() {
 	}
 
 	/*
+	 * gets import text for import translator
+	 */
+	function _getImport() {
+		var text = document.getElementById('editor-import').textbox.value;
+		return text;
+	}
+
+	/*
 	 * gets translator data from the metadata pane
 	 */
 	function _getTranslator() {
@@ -337,6 +381,17 @@ var Scaffold = new function() {
 		var translator = new Object();
 		for(var id in _propertyMap) {
 			translator[_propertyMap[id]] = document.getElementById(id).value;
+		}
+		// load options
+		if(document.getElementById('textbox-configOptions').value != '') {
+		    translator.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
+		} else {
+		    translator.configOptions = {};
+		}
+		if(document.getElementById('textbox-displayOptions').value != '') {
+		    translator.displayOptions = JSON.parse(document.getElementById('textbox-displayOptions').value);
+		} else {
+		    translator.displayOptions = {};
 		}
 		//RZ: prefix for translator.code is hack to force correct parsing in translate.js
 		//after completion of Zotero.Translate.prototype._parseCode, the code will start with "var translatorInfo = 1;", and detectWeb will be detected

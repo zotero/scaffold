@@ -3,9 +3,12 @@
 <!ENTITY scaffold.toolbar.export.label			"Export">
 <!ENTITY scaffold.toolbar.detectWeb.label		"Run detectWeb">
 <!ENTITY scaffold.toolbar.doWeb.label			"Run doWeb">
+<!ENTITY scaffold.toolbar.detectImport.label		"Run detectImport">
+<!ENTITY scaffold.toolbar.doImport.label		"Run doImport">
 
 <!ENTITY scaffold.tabs.metadata.label			"Metadata">
 <!ENTITY scaffold.tabs.code.label			"Code">
+<!ENTITY scaffold.tabs.import.label			"Import">
 
 <!ENTITY scaffold.testFrame.label			"Test Frame:">
 

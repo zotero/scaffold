@@ -43,12 +43,16 @@
 		<toolbarseparator/>
 		<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run('detectWeb')" />
 		<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run('doWeb')" />
+		<toolbarseparator/>
+		<toolbarbutton id="tb-detectImport" tooltiptext="&scaffold.toolbar.detectImport.label;" oncommand="Scaffold.run('detectImport')" />
+		<toolbarbutton id="tb-doImport" tooltiptext="&scaffold.toolbar.doImport.label;" oncommand="Scaffold.run('doImport')" />
 	</toolbar>
 <hbox flex="1">
 	<tabbox flex="1" width="300">
 		<tabs id="tabs">
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
 			<tab id="tab-code" label="&scaffold.tabs.code.label;"/>
+			<tab id="tab-import" label="&scaffold.tabs.import.label;"/>
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" id="tabpanel-metadata">
@@ -102,6 +106,9 @@
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">
 				<codeeditor id="editor-code" flex="1"/>
+			</tabpanel>
+			<tabpanel flex="1" id="tabpanel-import">
+				<importeditor id="editor-import" flex="1"/>
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
