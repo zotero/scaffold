@@ -47,10 +47,10 @@ importeditor {
 	list-style-image: url('chrome://scaffold/skin/doWeb.png');
 }
 #tb-detectImport {
-	list-style-image: url('chrome://scaffold/skin/detectWeb.png');
+	list-style-image: url('chrome://scaffold/skin/detectImport.png');
 }
 #tb-doImport {
-	list-style-image: url('chrome://scaffold/skin/doWeb.png');
+	list-style-image: url('chrome://scaffold/skin/doImport.png');
 }
 #tb-reference {
 	list-style-image: url('chrome://scaffold/skin/reference.png');
