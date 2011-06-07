@@ -62,6 +62,7 @@ importeditor {
 #tabpanel-metadata textbox {
 	height:2em;
 }
+
 #tabpanel-metadata hbox, #hbox-testFrame {
 	-moz-box-align: center;
 }
@@ -72,4 +73,9 @@ importeditor {
 
 listbox {
 	min-width:200px;
+}
+
+#editor-code textbox, #editor-import textbox {
+	font-family: monospace;
+	font-size: 80%;
 }
