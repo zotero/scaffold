@@ -370,16 +370,21 @@ var Scaffold = new function() {
 	 function _translators(obj, translators) {
 	 	if(translators && translators.length != 0) {
 			_logOutput('detectWeb returned type "'+translators[0].itemType+'"');
-	 	}
+	 	} else {
+			_logOutput('detectWeb did not match');
+		}
+			
 	 }
-	
+
 	/*
 	 * prints information from detectCode to window, for import
 	 */
 	 function _translatorsImport(obj, translators) {
-	 	if(translators && translators.length != 0) {
-			_logOutput('detect returned "'+translators[0]+'"');
-	 	}
+	 	if(translators && translators.length != 0 && translators[0].itemType) {
+			_logOutput('detectImport matched');
+	 	} else {
+			_logOutput('detectImport did not match');
+		}
 	 }
 
 	/*
