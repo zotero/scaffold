@@ -82,13 +82,28 @@ var Scaffold = new function() {
 		this.editors["import"] = this.ace.edit('editor-import');
 		this.editors["import"].getSession().setMode(new this.TextMode);
 		this.editors["code"] = this.ace.edit('editor-code');
+
 		// Ignore complaint about javascript_worker.js
 		try {
 			this.editors["code"].getSession().setMode(new this.JavaScriptMode);
 		} catch (e) {
 			Zotero.debug("Caught exception on setting JavaScriptMode");
 		}
+
+		// Set resize handler
+		_document.addEventListener("resize", this.onResize, false);
+		_document.getElementById("tabpanel-code").addEventListener("resize", this.onResize, false);
+		_document.getElementById("tabpanel-import").addEventListener("resize", this.onResize, false);
+
 		generateTranslatorID();
+	}
+
+	function onResize() {
+		// We try to let ACE resize itself
+		this.editors["import"].resize();
+		this.editors["code"].resize();
+
+		return true;
 	}
 
 	/*
