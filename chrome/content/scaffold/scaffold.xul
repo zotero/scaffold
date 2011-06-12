@@ -105,10 +105,10 @@
 				</vbox>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">
-				<codeeditor id="editor-code" flex="1"/>
+				<hbox id="editor-code" flex="1"/>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-import">
-				<importeditor id="editor-import" flex="1"/>
+				<hbox id="editor-import" flex="1"/>
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
