@@ -43,10 +43,6 @@ var Scaffold = new function() {
 
 	Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 		.getService(Components.interfaces.mozIJSSubScriptLoader)
-		.loadSubScript("chrome://scaffold/content/ace/mode-xml.js");
-
-	Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(Components.interfaces.mozIJSSubScriptLoader)
 		.loadSubScript("chrome://scaffold/content/ace/mode-javascript.js");
 
         this.ace = ace;
