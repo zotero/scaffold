@@ -48,7 +48,7 @@
 		<toolbarbutton id="tb-doImport" tooltiptext="&scaffold.toolbar.doImport.label;" oncommand="Scaffold.run('doImport')" />
 	</toolbar>
 <hbox flex="1">
-	<tabbox flex="1" width="300">
+	<tabbox id="left-tabbox" flex="1" width="300">
 		<tabs id="tabs">
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
 			<tab id="tab-code" label="&scaffold.tabs.code.label;"/>
@@ -112,10 +112,9 @@
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
+	<splitter resizeafter="farthest" oncommand="Scaffold.onResize();" />
 
-	<splitter resizeafter="farthest"/>
-
-<vbox flex="1">
+<vbox id="right-pane" flex="1">
 	
 	<hbox id="hbox-testFrame" width="300">
 		<label control="menulist-testFrame" id="label-testFrame" value="&scaffold.testFrame.label;"/>

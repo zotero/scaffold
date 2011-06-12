@@ -33,6 +33,7 @@ var Scaffold = new function() {
 	this.run = run;
 	this.generateTranslatorID = generateTranslatorID;
 	this.testTargetRegex = testTargetRegex;
+	this.onResize = onResize;
 
 	var _browser, _frames, _document;
 
@@ -49,11 +50,10 @@ var Scaffold = new function() {
 		.loadSubScript("chrome://scaffold/content/ace/mode-javascript.js");
 
         this.ace = ace;
-        this.JavaScriptMode = require("ace/mode/javascript").Mode;
-        this.TextMode = require("ace/mode/text").Mode;
-        this.EditSession = require("ace/edit_session").EditSession;
-
-	this.editors = [];
+        var _JavaScriptMode = require("ace/mode/javascript").Mode;
+        var _TextMode = require("ace/mode/text").Mode;
+        var _EditSession = require("ace/edit_session").EditSession;
+	var _editors = {};
 
 	var _propertyMap = {
 		'textbox-translatorID':'translatorID',
@@ -78,30 +78,25 @@ var Scaffold = new function() {
 		_browser.document.getElementById("appcontent").addEventListener("pageshow",
 			_updateFrames, true);
 		_updateFrames();
-	
-		this.editors["import"] = this.ace.edit('editor-import');
-		this.editors["import"].getSession().setMode(new this.TextMode);
-		this.editors["code"] = this.ace.edit('editor-code');
 
-		// Ignore complaint about javascript_worker.js
-		try {
-			this.editors["code"].getSession().setMode(new this.JavaScriptMode);
-		} catch (e) {
-			Zotero.debug("Caught exception on setting JavaScriptMode");
-		}
+		_editors["import"] = this.ace.edit('editor-import');
+		_editors["code"] = this.ace.edit('editor-code');
+
+		_editors["code"].getSession().setUseWorker(false);
+		_editors["code"].getSession().setMode(new _JavaScriptMode);
+		
+		_editors["import"].getSession().setMode(new _TextMode);
 
 		// Set resize handler
 		_document.addEventListener("resize", this.onResize, false);
-		_document.getElementById("tabpanel-code").addEventListener("resize", this.onResize, false);
-		_document.getElementById("tabpanel-import").addEventListener("resize", this.onResize, false);
 
 		generateTranslatorID();
 	}
 
 	function onResize() {
 		// We try to let ACE resize itself
-		this.editors["import"].resize();
-		this.editors["code"].resize();
+		_editors["import"].resize();
+		_editors["code"].resize();
 
 		return true;
 	}
@@ -126,7 +121,7 @@ var Scaffold = new function() {
 		var usesFW = (translator.code.substr(m[0].length).match(/^\/\* FW LINE \d+:[a-fA-F0-9]+/) == true);
 		if(usesFW) var fixedCode = translator.code.substr(m[0].length).replace(/^\/\* FW LINE \d+:[a-fA-F0-9]+[^\n]*\n/,'\n');
 		else var fixedCode = translator.code.substr(m[0].length);
-		this.editors["code"].getSession().setValue(fixedCode);
+		_editors["code"].getSession().setValue(fixedCode);
 		
 		document.getElementById('checkbox-framework').checked = usesFW;
 		
@@ -159,7 +154,7 @@ var Scaffold = new function() {
 	 */
 	function save() {
 		//seems like duplicating some effort from _getTranslator
-		var code = this.editors["code"].getSession().getValue();
+		var code = _editors["code"].getSession().getValue();
 
 		var metadata = {
 			translatorID: document.getElementById('textbox-translatorID').value,
@@ -412,7 +407,7 @@ var Scaffold = new function() {
 	 * gets import text for import translator
 	 */
 	function _getImport() {
-		var text = this.editors["import"].getSession().getValue();
+		var text = _editors["import"].getSession().getValue();
 		return text;
 	}
 
@@ -439,7 +434,7 @@ var Scaffold = new function() {
 		//RZ: prefix for translator.code is hack to force correct parsing in translate.js
 		//after completion of Zotero.Translate.prototype._parseCode, the code will start with "var translatorInfo = 1;", and detectWeb will be detected
 		var locFW = document.getElementById('checkbox-framework').checked ? _FW : '';
-		translator.code = "1;" + locFW + this.editors["code"].getSession().getValue();
+		translator.code = "1;" + locFW + _editors["code"].getSession().getValue();
 
 		// load translator type
 		translator.translatorType = 0;
