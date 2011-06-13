@@ -2,8 +2,12 @@ Relatively important
  - Fix error selection in code
  - Provide guidance on translator options
  - Links to documentation (why not?)
- - Type-to-find in translator load window
  - Translator testing
+ - JS(H|L)int, comes nearly free with ACE
+ - search within translator code
+ - show matching translators for given page (import)
+ - tools for writing export and search translators
 
 Not very important
  - Automatic gisting? Or maybe something like Frank's style test generator? 
+ - Type-to-find in translator load window

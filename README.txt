@@ -1,4 +1,6 @@
-To build the XPI installer, enter this directory and zip the contents
-and its subfolders:
+To build the XPI installer, enter this directory and run build.sh:
 
-  zip -r scaffold.xpi *
+  ./build.sh
+
+This will create a file scaffold.xpi, which you can open in Firefox
+to install.
