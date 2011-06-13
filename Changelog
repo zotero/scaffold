@@ -1,0 +1,9 @@
+Version 2.1.3 (June 13, 2011)
+ * Include Ajax.org Cloud9 Editor (ACE)
+ * Fix output for detectImport and doImport
+
+Version 2.1.2
+ * Add support for import translators
+
+Version 2.1.1
+ * Incorporate Erik's Translator Framework
