@@ -9,6 +9,7 @@
 <!ENTITY scaffold.tabs.metadata.label			"Metadata">
 <!ENTITY scaffold.tabs.code.label			"Code">
 <!ENTITY scaffold.tabs.import.label			"Import">
+<!ENTITY scaffold.tabs.testing.label			"Testing">
 
 <!ENTITY scaffold.testFrame.label			"Test Frame:">
 
@@ -36,3 +37,8 @@
 <!ENTITY scaffold.load.title				"Load Translator">
 <!ENTITY scaffold.load.label.label			"Label">
 <!ENTITY scaffold.load.creator.label			"Creator">
+
+<!ENTITY scaffold.testing.description			"First, select one of the following tests.">
+<!ENTITY scaffold.testing.input.label			"Input">
+<!ENTITY scaffold.testing.status.label			"Status">
+<!ENTITY scaffold.testing.populate			"Repopulate tests">

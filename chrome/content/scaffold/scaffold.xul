@@ -53,6 +53,7 @@
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
 			<tab id="tab-code" label="&scaffold.tabs.code.label;"/>
 			<tab id="tab-import" label="&scaffold.tabs.import.label;"/>
+			<tab id="tab-testing" label="&scaffold.tabs.testing.label;"/>
 		</tabs>
 		<tabpanels flex="1">
 			<tabpanel flex="1" id="tabpanel-metadata">
@@ -109,6 +110,26 @@
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-import">
 				<hbox id="editor-import" flex="1"/>
+			</tabpanel>
+			<tabpanel flex="1" id="tabpanel-testing">
+				<vbox flex="1"><hbox><description>&scaffold.testing.description;</description></hbox>
+					<hbox flex="1">
+					<listbox id="testing-listbox" flex="1">
+					<listhead>
+						<listheader label="&scaffold.testing.input.label;"/>
+						<listheader label="&scaffold.testing.status.label;"/>
+					</listhead>
+					<listcols>
+					<listcol flex="1"/>
+						<listcol width="130"/>
+					</listcols>
+				</listbox>
+				</hbox>
+				<hbox>
+					<button label="&scaffold.testing.populate;" oncommand="Scaffold.populateTests()"/>
+					<button label="Save tests" oncommand="Scaffold.saveTests()"/>
+					<button label="Run selected test" oncommand="Scaffold.runSelectedTest()"/>
+				</hbox></vbox>
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 find . -name '.hg' -prune -o \
+       -name '.hgtags' -prune -o \
        -name '.svn' -prune -o \
        -name '.git' -prune -o \
        -name '.hgignore' -prune -o \

@@ -34,6 +34,9 @@ var Scaffold = new function() {
 	this.generateTranslatorID = generateTranslatorID;
 	this.testTargetRegex = testTargetRegex;
 	this.onResize = onResize;
+	this.populateTests = populateTests;
+	this.saveTests = saveTests;
+	this.runSelectedTest = runSelectedTest;
 
 	var _browser, _frames, _document;
 
@@ -115,8 +118,10 @@ var Scaffold = new function() {
 		var lastUpdatedIndex = translator.code.indexOf('"lastUpdated"');
 		var header = translator.code.substr(0, lastUpdatedIndex + 50);
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
-		var usesFW = (translator.code.substr(m[0].length).match(/^\/\* FW LINE \d+:[a-fA-F0-9]+/) == true);
-		if(usesFW) var fixedCode = translator.code.substr(m[0].length).replace(/^\/\* FW LINE \d+:[a-fA-F0-9]+[^\n]*\n/,'\n');
+		var usesFW = (translator.code.substr(m[0].length).indexOf("/* FW LINE ") !== -1);
+		if(usesFW) var fixedCode = translator.code
+						.substr(m[0].length)
+						.replace(/\/\* FW LINE [^\n]*\n/,'\n');
 		else var fixedCode = translator.code.substr(m[0].length);
 		_editors["code"].getSession().setValue(fixedCode);
 		
@@ -144,6 +149,9 @@ var Scaffold = new function() {
 			document.getElementById('checkbox-'+types.shift()).checked = !!mod;
 			if(mod) type -= mod;
 		}
+
+		// Set up the tests pane too
+		populateTests();
 	}
 
 	/*
@@ -162,6 +170,11 @@ var Scaffold = new function() {
 			maxVersion: document.getElementById('textbox-maxVersion').value,
 			priority: parseInt(document.getElementById('textbox-priority').value)
 		};
+		
+		if (metadata.label === "Untitled") {
+			_logOutput("Can't save an untitled translator.");
+			return;
+		}
 
 		if(document.getElementById('textbox-configOptions').value != '') {
 		    metadata.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
@@ -214,28 +227,36 @@ var Scaffold = new function() {
 		document.getElementById('output').value = '';
 
 		save();
+		
+		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
+			_run(functionToRun, _getDocument(), _selectItems, _myItemDone, _translators, function(){});
+		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
+			_run(functionToRun, _getImport(), _selectItems, _myItemDone, _translatorsImport, function(){});
+		}
+	}
 
-		// for now, only web translation is supported
-		// generate new translator; do not save
+	/*
+	 * run translator in given mode with given input
+	 */
+	function _run(functionToRun, input, selectItems, itemDone, detectHandler, done) {
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
 			var translate = new Zotero.Translate.Web();
-			translate.setDocument(_getDocument());
+			translate.setDocument(input);
 		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
 			var translate = new Zotero.Translate.Import();
-			translate.setString(_getImport());
+			translate.setString(input);
 		}
 		translate.setHandler("error", _error);
 		translate.setHandler("debug", _debug);
-		//To do: both functions don't work properly
-		//detectWeb give error: 11:20:07 detectWeb returned type "undefined"
-		//doWeb saves item to library and outputs wrong stuff
+		translate.setHandler("done", done);
+		
 		if (functionToRun == "detectWeb") {
 			// get translator
 			var translator = _getTranslator();
 			// don't let target prevent translator from operating
 			translator.target = null;
 			// generate sandbox
-			translate.setHandler("translators", _translators);
+			translate.setHandler("translators", detectHandler);
 			// internal hack to call detect on this translator
 			translate._potentialTranslators = [translator];
 			translate._foundTranslators = [];
@@ -247,9 +268,9 @@ var Scaffold = new function() {
 			// don't let the detectCode prevent the translator from operating
 			translator.detectCode = null;
 			translate.setTranslator(translator);
-			translate.setHandler("select", _selectItems);
+			translate.setHandler("select", selectItems);
 			translate.clearHandlers("itemDone");
-			translate.setHandler("itemDone", _myItemDone);
+			translate.setHandler("itemDone", itemDone);
 			// disable output to database
 			translate.translate(false);
 		} else if (functionToRun == "detectImport") {
@@ -258,7 +279,7 @@ var Scaffold = new function() {
 			// don't let target prevent translator from operating
 			translator.target = null;
 			// generate sandbox
-			translate.setHandler("translators", _translatorsImport);
+			translate.setHandler("translators", detectHandler);
 			// internal hack to call detect on this translator
 			translate._potentialTranslators = [translator];
 			translate._foundTranslators = [];
@@ -271,7 +292,7 @@ var Scaffold = new function() {
 			translator.detectCode = null;
 			translate.setTranslator(translator);
 			translate.clearHandlers("itemDone");
-			translate.setHandler("itemDone", _myItemDone);
+			translate.setHandler("itemDone", itemDone);
 			// disable output to database
 			translate.translate(false);
 		}
@@ -315,26 +336,12 @@ var Scaffold = new function() {
 	 * called if an error occurs
 	 */
 	function _error(obj, error) {
-		/* FIXME This just is annoying now, since it doesn't work
+		/* We no longer have meaningful long numbers, so no line jumping!
 		if(error && error.lineNumber) {
-			// highlight the line with the error
-			var start = 0;
-			var lineCount = 0;
-			var textbox = document.getElementById('editor-code').textbox;
-
-			while(start < textbox.value.length && lineCount < error.lineNumber) {
-				start = textbox.value.indexOf("\n", start+1);
-				lineCount++;
-			}
-
-			if(start != -1) {
-				var end = textbox.value.indexOf("\n", start+1);
-				if(end == -1) end = textbox.value.length-1;
-
-				textbox.selectionStart = start;
-				textbox.selectionEnd = end;
-			}
-		}*/
+			_logOutput("Trying to go to line:\n"+error.lineNumber);
+			_editors["code"].gotoLine(error.lineNumber);
+		}
+		*/
 	}
 
 	/*
@@ -454,6 +461,216 @@ var Scaffold = new function() {
 		}
 
 		return translator;
+	}
+
+	/*
+	 * loads the translator's tests from its code
+	 */
+	function _loadTests() {
+		var code = _editors["code"].getSession().getValue();
+		var testStart = code.indexOf("/** BEGIN TEST CASES **/");
+		var testEnd   = code.indexOf("/** END TEST CASES **/"); 
+		if (testStart !== -1 && testEnd !== -1) {
+			test = code.substring(testStart + 24, testEnd);
+			test = test.replace(/var testCases = /,'');
+			// The JSON parser doesn't like final semicolons
+			if (test.lastIndexOf(';') == (test.length-1))
+				test = test.slice(0,-1);
+			try {
+				var testObject = JSON.parse(test);
+				return testObject;
+			} catch (e) {
+				_logOutput("Exception parsing JSON");
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	/*
+	 * writes tests back into the translator
+	 */
+	function _writeTests(tests) {
+		var code = _editors["code"].getSession().getValue();
+		var testStart = code.indexOf("/** BEGIN TEST CASES **/");
+		var testEnd   = code.indexOf("/** END TEST CASES **/"); 
+		if (testStart !== -1 && testEnd !== -1) {
+			code = code.substring(0,testStart) 
+				+ "/** BEGIN TEST CASES **/\nvar testCases = "
+				+ JSON.stringify(tests, null, 4) // pretty-print
+				+ "\n/** END TEST CASES **/"
+				+ code.slice(testEnd + 22);
+			_logOutput("Tests updated, replacing existing test section.");
+		} else { // We don't have a well-formed test section, so we'll append
+			code = code
+				+ "/** BEGIN TEST CASES **/\nvar testCases = "
+				+ JSON.stringify(tests, null, 4) // pretty-print
+				+ "\n/** END TEST CASES **/"
+			_logOutput("New test section added to code.");
+		}
+		_editors["code"].getSession().setValue(code);
+	}
+	
+	/* clear tests pane */
+	function _clearTests() {
+		var listbox = document.getElementById("testing-listbox");
+		var count = listbox.itemCount;
+		while(count-- > 0){
+			listbox.removeItemAt(0);
+		}
+	}
+			
+	/*
+	 * Fetch document from specified URL and return DOM
+	 */
+	function _fetchDocument(url) {
+		_logOutput("Totally cheating by grabbing current doc.");
+		return _getDocument();
+	}
+	
+	/*
+	 * Run tests
+	 */
+	function _runTest(test, callback) {
+		document.getElementById('output').value = '';
+
+		_logOutput("Running test");
+		_logOutput(Zotero.varDump(test));
+
+		var detect;
+		var results = [];
+	
+		if (test.type == "web") {
+			var doc = _fetchDocument(test.url);
+			_logOutput("Running detectWeb");
+			_run("detectWeb",
+				doc,
+				null,
+				null,
+				function (obj, translators) {
+	 				if(translators && translators.length != 0) {
+						detect = translators[0].itemType;
+					} else {
+						detect = false;
+					}
+					callback({detect: detect});
+				},
+				function (val) { // "done" handler for detect
+					_logOutput("detectWeb called 'done'");
+				}
+			);
+			_run("doWeb",
+				doc,
+				function (items) { return Object.keys(items); },
+				function (obj, item) { callback({item:item}); },
+				null,
+				function (val) { // "done" handler for do
+					_logOutput("doWeb called 'done'");
+				}
+			);
+		} else if (test.type == "import") {
+			_run("detectImport",
+				test.input,
+				null,
+				null,
+	 			function(obj, translators) {
+					if(translators && translators.length != 0 && translators[0].itemType) {
+						detect = true;
+					} else {
+						detect = false;
+					}
+				});
+			_run("doImport",
+				test.input,
+				null,
+				function (obj, item) { results.push(item); },
+				null);
+		}
+	}
+
+	/*
+	 * populate tests pane
+	 */
+	function populateTests() {
+		_clearTests();
+		var tests = _loadTests();
+		// We've got tests, let's display them
+		var listbox = document.getElementById("testing-listbox");
+		for each (var test in tests) {
+			var listitem = document.createElement("listitem");
+			var listcell = document.createElement("listcell");
+			if (test.type == "web")
+				listcell.setAttribute("label", test.url);
+			else if (test.type == "import")
+				listcell.setAttribute("label", test.input);
+			else continue; // unknown test type
+			listitem.appendChild(listcell);
+			listcell = document.createElement("listcell");
+			listcell.setAttribute("label", "Not run");
+			listitem.appendChild(listcell);
+			// Put the serialized JSON in user data
+			listitem.setUserData("test-string", JSON.stringify(test), null);
+			listbox.appendChild(listitem);
+		}
+	}
+
+	
+	/*
+	 * Save tests back to translator
+	 */
+	function saveTests() {
+		var tests = [];
+		var item;
+		var i = 0;
+		var listbox = document.getElementById("testing-listbox");
+		var count = listbox.itemCount;
+		while(i < count){
+			item = listbox.getItemAtIndex(i);
+			tests.push(JSON.parse(item.getUserData("test-string")));
+			i++;
+		}
+		_writeTests(tests);
+	}
+	
+	/*
+	 * Run selected test(s)
+	 */
+	function runSelectedTest() {
+		var listbox = document.getElementById("testing-listbox");
+		var item = listbox.getSelectedItem(0);
+		if(!item) return false; // No action if nothing selected
+		item.getElementsByTagName("listcell")[1].setAttribute("label", "Running");
+		var test = JSON.parse(item.getUserData("test-string"));
+		test["result-items"] = [];
+		_runTest(test, function (results) {
+			if (results["detect"] !== undefined) {
+				if(results["detect"]) {
+					_logOutput("Detect succeeded.");
+					test["result-detect"] = results["detect"];
+				} else {
+					item.getElementsByTagName("listcell")[1].setAttribute("label", "Detect failed");
+					_logOutput("Detect failed.");
+					test["result-detect"] = false;
+				}
+			}
+			if (results["item"] !== undefined) {
+				// We don't really know a priori what to expect, so we'll test each time
+				test["result-items"].push(results["item"]);
+				_logOutput("Latest result: ");
+				_logOutput(JSON.stringify(test["result-items"],null,4));
+				item.getElementsByTagName("listcell")[1]
+					.setAttribute("label",
+						_compare(test["result-items"], test["items"]));
+			}
+		});
+	}
+
+	/*
+	 * Compare items or sets thereof
+	 */
+	function _compare(i, j) {
+		return "Not my job";	
 	}
 
 	/*
