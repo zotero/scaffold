@@ -36,7 +36,9 @@ var Scaffold = new function() {
 	this.onResize = onResize;
 	this.populateTests = populateTests;
 	this.saveTests = saveTests;
-	this.runSelectedTest = runSelectedTest;
+	this.runSelectedTests = runSelectedTests;
+	this.deleteSelectedTests = deleteSelectedTests;
+	this.newTestFromCurrent = newTestFromCurrent;
 
 	var _browser, _frames, _document;
 
@@ -241,7 +243,20 @@ var Scaffold = new function() {
 	function _run(functionToRun, input, selectItems, itemDone, detectHandler, done) {
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
 			var translate = new Zotero.Translate.Web();
-			translate.setDocument(input);
+			var utilities = new Zotero.Utilities.Translate(translate);
+			// If this is a string, assume it's a URL
+			if (typeof input == 'string') {
+					try {
+						var doc = utilities.retrieveDocument(input);
+					} catch (e) {
+						// Time's up!
+						_logMessage("retrieveDocument timed out");
+						return false;
+					}
+				translate.setDocument(doc);
+			} else { 
+				translate.setDocument(input);
+			}
 		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
 			var translate = new Zotero.Translate.Import();
 			translate.setString(input);
@@ -522,30 +537,18 @@ var Scaffold = new function() {
 	}
 			
 	/*
-	 * Fetch document from specified URL and return DOM
-	 */
-	function _fetchDocument(url) {
-		_logOutput("Totally cheating by grabbing current doc.");
-		return _getDocument();
-	}
-	
-	/*
 	 * Run tests
 	 */
 	function _runTest(test, callback) {
 		document.getElementById('output').value = '';
 
-		_logOutput("Running test");
-		_logOutput(Zotero.varDump(test));
-
 		var detect;
 		var results = [];
 	
 		if (test.type == "web") {
-			var doc = _fetchDocument(test.url);
 			_logOutput("Running detectWeb");
 			_run("detectWeb",
-				doc,
+				test.url,
 				null,
 				null,
 				function (obj, translators) {
@@ -557,19 +560,20 @@ var Scaffold = new function() {
 					callback({detect: detect});
 				},
 				function (val) { // "done" handler for detect
-					_logOutput("detectWeb called 'done'");
+					displayTestResultStatus(test);
 				}
 			);
 			_run("doWeb",
-				doc,
+				test.url,
 				function (items) { return Object.keys(items); },
 				function (obj, item) { callback({item:item}); },
 				null,
 				function (val) { // "done" handler for do
-					_logOutput("doWeb called 'done'");
+					displayTestResultStatus(test);
 				}
 			);
 		} else if (test.type == "import") {
+			// TODO Write this code!
 			_run("detectImport",
 				test.input,
 				null,
@@ -587,6 +591,41 @@ var Scaffold = new function() {
 				function (obj, item) { results.push(item); },
 				null);
 		}
+	}
+	
+	/*
+	 * adds a new test from the current page/translator
+	 * web only for now
+	 */
+	function newTestFromCurrent() {
+		var listbox = document.getElementById("testing-listbox");
+		var doc = _getDocument();
+		var url = Zotero.Proxies.proxyToProper(doc.location.href);
+		var newTest = {
+			"type" : "web",
+			"url"  : url,
+			"items" : []
+		};
+
+		// Calls _run with the doc, adds a test. The test isn't saved yet!
+		_run("doWeb",
+			doc,
+			function (items) { return Object.keys(items); }, // select all
+			function (obj, item) { newTest["items"].push(item); },
+			null,
+			function (val) { // "done" handler for do
+				var listitem = document.createElement("listitem");
+				var listcell = document.createElement("listcell");
+				listcell.setAttribute("label", newTest.url);
+				listitem.appendChild(listcell);
+				listcell = document.createElement("listcell");
+				listcell.setAttribute("label", "New unsaved test");
+				listitem.appendChild(listcell);
+				// Put the serialized JSON in user data
+				listitem.setUserData("test-string", JSON.stringify(newTest), null);
+				listbox.appendChild(listitem);
+			}
+		);
 	}
 
 	/*
@@ -617,7 +656,7 @@ var Scaffold = new function() {
 
 	
 	/*
-	 * Save tests back to translator
+	 * Save tests back to translator, and save the translator
 	 */
 	function saveTests() {
 		var tests = [];
@@ -631,46 +670,154 @@ var Scaffold = new function() {
 			i++;
 		}
 		_writeTests(tests);
+		save();
+	}
+
+	/*
+	 * Delete selected test(s), from UI
+	 */
+	function deleteSelectedTests() {
+		var listbox = document.getElementById("testing-listbox");
+		var items = listbox.selectedItems;
+		if(!items || items.length == 0) return false; // No action if nothing selected
+		var i;	
+		for (i in items) {
+			listbox.removeItemAt(listbox.getIndexOfItem(items[i]));
+		}
 	}
 	
 	/*
 	 * Run selected test(s)
+	 * TODO Make running in parallel work.
 	 */
-	function runSelectedTest() {
+	function runSelectedTests() {
 		var listbox = document.getElementById("testing-listbox");
-		var item = listbox.getSelectedItem(0);
-		if(!item) return false; // No action if nothing selected
-		item.getElementsByTagName("listcell")[1].setAttribute("label", "Running");
-		var test = JSON.parse(item.getUserData("test-string"));
-		test["result-items"] = [];
-		_runTest(test, function (results) {
-			if (results["detect"] !== undefined) {
-				if(results["detect"]) {
-					_logOutput("Detect succeeded.");
-					test["result-detect"] = results["detect"];
-				} else {
-					item.getElementsByTagName("listcell")[1].setAttribute("label", "Detect failed");
-					_logOutput("Detect failed.");
-					test["result-detect"] = false;
+		var items = listbox.selectedItems;
+		if(!items || items.length == 0) return false; // No action if nothing selected
+		var i;
+		for (i in items) {
+			items[i].getElementsByTagName("listcell")[1].setAttribute("label", "Running");
+			var test = JSON.parse(items[i].getUserData("test-string"));
+			test["result-items"] = [];
+			test["result-do"] = "?";
+			test["result-detect"] = "?";
+			test["ui-item"] = items[i];
+			_runTest(test, function (results) {
+				if (results["detect"] !== undefined) {
+					if(results["detect"]) {
+						_logOutput("Detect succeeded.");
+						test["result-detect"] = results["detect"];
+						if (test["result-detect"] === true) test["result-detect"] = "Pass";
+					} else {
+						_logOutput("Detect failed.");
+						test["result-detect"] = "Fail";
+					}
+					displayTestResultStatus(test);
 				}
-			}
-			if (results["item"] !== undefined) {
-				// We don't really know a priori what to expect, so we'll test each time
-				test["result-items"].push(results["item"]);
-				_logOutput("Latest result: ");
-				_logOutput(JSON.stringify(test["result-items"],null,4));
-				item.getElementsByTagName("listcell")[1]
-					.setAttribute("label",
-						_compare(test["result-items"], test["items"]));
-			}
-		});
+				if (results["item"] !== undefined) {
+					// We don't really know a priori what to expect, so we'll test each time
+					test["result-items"].push(results["item"]);
+					_logOutput("Latest result: ");
+					_logOutput(JSON.stringify(test["result-items"],null,4));
+					test["result-do"] = _compare(test["result-items"], test["items"]) ? "Pass" : "Fail";
+					displayTestResultStatus(test);
+				}
+			});
+		}
+	}
+
+	/* display test status */
+	function displayTestResultStatus(test) {
+		var out = "Detect: " + test["result-detect"] +
+			  " Do: " + test["result-do"];
+		test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", out);
 	}
 
 	/*
 	 * Compare items or sets thereof
 	 */
 	function _compare(i, j) {
-		return "Not my job";	
+		var match = false;
+		if (Object.prototype.toString.apply(i) === '[object Array]') {
+			if (Object.prototype.toString.apply(j) === '[object Array]') {
+				if (i.length !== j.length) {
+					_logOutput("Item set lengths differ");
+					return true;
+				} else do {
+					match = _compare(i.pop(), j.pop());
+				} while (match && i.length);
+				if (match)
+					return true;
+				else
+					return false;
+			} else {
+				_logOutput("i is array, j is not");
+				return false;
+			}
+		} else if (Object.prototype.toString.apply(j) === '[object Array]') {
+			_logOutput("j is array, i is not");
+			return false;
+		}
+
+		// Neither is an array
+		if(_objectCompare(i, j)) {
+			return true;
+		} else {
+			_logOutput(JSON.stringify({i:i, j:j}));
+			_logOutput("Items don't match");
+			return false;
+		}
+	}
+
+	function _objectCompare(x, y) {
+		// Special handlers
+		var special = { "complete" : function(a,b) { _logOutput("Ignoring parameter 'complete'"); return true }
+		};
+
+		var returner = function(param) {
+				if (special[param]) return special[param](x[param], y[param]);
+				else return false;
+		}
+
+		for(p in y) { if(typeof(x[p])=='undefined') {
+				_logOutput("Param "+p+" in y not defined in x");
+				return returner(p);
+			}
+		}
+
+		for(p in y) { if (y[p]) {
+			switch(typeof(y[p])) {
+				case 'object':
+					if (!_objectCompare(y[p],x[p])) { 
+						return returner(p);
+					};
+					break;
+				case 'function':
+					if (typeof(x[p])=='undefined' 
+						|| (y[p].toString() != x[p].toString())) {
+						_logOutput("Function "+p+" defined in y, not in x, or definitions differ");
+						return returner(p) };
+					break;
+				default:
+					if (y[p] != x[p]) {
+						_logOutput("Param "+p+" differs: " + JSON.stringify({x:x[p], y:y[p]}));
+						return returner(p);
+					}
+			}
+		} else {
+			if (x[p]) { 
+				_logOutput("Param "+p+" true in x, not in y");
+				return returner(p);
+			}
+		} }
+
+		for(p in x) {
+			if(typeof(y[p])=='undefined') {
+				_logOutput("Param "+p+" in x not defined in y");
+				return returner(p);
+			}
+		}
+		return true;
 	}
 
 	/*

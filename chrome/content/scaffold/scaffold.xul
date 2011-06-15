@@ -120,15 +120,17 @@
 						<listheader label="&scaffold.testing.status.label;"/>
 					</listhead>
 					<listcols>
-					<listcol flex="1"/>
-						<listcol width="130"/>
+						<listcol flex="1"/>
+						<listcol/>
 					</listcols>
 				</listbox>
 				</hbox>
 				<hbox>
-					<button label="&scaffold.testing.populate;" oncommand="Scaffold.populateTests()"/>
-					<button label="Save tests" oncommand="Scaffold.saveTests()"/>
-					<button label="Run selected test" oncommand="Scaffold.runSelectedTest()"/>
+					<button label="&scaffold.testing.populate;" tooltiptext="Load test definitions from the current translator" oncommand="Scaffold.populateTests()"/>
+					<button label="&scaffold.testing.save;" tooltiptext="Save the above test definitions into the current translator, and save the translator"  oncommand="Scaffold.saveTests()"/>
+					<button label="&scaffold.testing.delete;" tooltiptext="Delete the selected tests"  oncommand="Scaffold.deleteSelectedTests()"/>
+					<button label="&scaffold.testing.run;" tooltiptext="Run the selected tests"  oncommand="Scaffold.runSelectedTests()"/>
+					<button label="&scaffold.testing.new;" tooltiptext="Create a new test from the current page"  oncommand="Scaffold.newTestFromCurrent()"/>
 				</hbox></vbox>
 			</tabpanel>
 		</tabpanels>
