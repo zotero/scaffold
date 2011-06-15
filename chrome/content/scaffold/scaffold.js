@@ -519,7 +519,7 @@ var Scaffold = new function() {
 			_logOutput("Tests updated, replacing existing test section.");
 		} else { // We don't have a well-formed test section, so we'll append
 			code = code
-				+ "/** BEGIN TEST CASES **/\nvar testCases = "
+				+ "\n\n/** BEGIN TEST CASES **/\nvar testCases = "
 				+ JSON.stringify(tests, null, 4) // pretty-print
 				+ "\n/** END TEST CASES **/"
 			_logOutput("New test section added to code.");
@@ -606,24 +606,30 @@ var Scaffold = new function() {
 			"url"  : url,
 			"items" : []
 		};
+		
+		var listitem = document.createElement("listitem");
+		var listcell = document.createElement("listcell");
+		listcell.setAttribute("label", newTest.url);
+		listitem.appendChild(listcell);
+		listcell = document.createElement("listcell");
+		listcell.setAttribute("label", "New unsaved test");
+		listitem.appendChild(listcell);
+		// Put the serialized JSON in user data
+		listitem.setUserData("test-string", JSON.stringify(newTest), null);
+		listbox.appendChild(listitem);
 
 		// Calls _run with the doc, adds a test. The test isn't saved yet!
+		// function _run(functionToRun, input, selectItems, itemDone, detectHandler, done) {
 		_run("doWeb",
 			doc,
 			function (items) { return Object.keys(items); }, // select all
-			function (obj, item) { newTest["items"].push(item); },
+			function (obj, item) {
+				newTest["items"].push(item);
+				listitem.setUserData("test-string", JSON.stringify(newTest), null);
+			},
 			null,
 			function (val) { // "done" handler for do
-				var listitem = document.createElement("listitem");
-				var listcell = document.createElement("listcell");
-				listcell.setAttribute("label", newTest.url);
-				listitem.appendChild(listcell);
-				listcell = document.createElement("listcell");
-				listcell.setAttribute("label", "New unsaved test");
-				listitem.appendChild(listcell);
-				// Put the serialized JSON in user data
 				listitem.setUserData("test-string", JSON.stringify(newTest), null);
-				listbox.appendChild(listitem);
 			}
 		);
 	}
@@ -740,12 +746,9 @@ var Scaffold = new function() {
 		var match = false;
 		if (Object.prototype.toString.apply(i) === '[object Array]') {
 			if (Object.prototype.toString.apply(j) === '[object Array]') {
-				if (i.length !== j.length) {
-					_logOutput("Item set lengths differ");
-					return true;
-				} else do {
+				do {
 					match = _compare(i.pop(), j.pop());
-				} while (match && i.length);
+				} while (match && i.length && j.length);
 				if (match)
 					return true;
 				else
@@ -771,12 +774,20 @@ var Scaffold = new function() {
 
 	function _objectCompare(x, y) {
 		// Special handlers
-		var special = { "complete" : function(a,b) { _logOutput("Ignoring parameter 'complete'"); return true }
+		var special = { 
+			"complete" : function(a,b) { _logOutput("Ignoring non-matching parameter 'complete'"); return true },
+			"accessDate" : function(a,b) { _logOutput("Ignoring non-matching parameter 'accessDate'"); return true },
+			"checkFields" : function(a,b) { _logOutput("Ignoring non-matching parameter 'checkFields'"); return true }
 		};
 
 		var returner = function(param) {
 				if (special[param]) return special[param](x[param], y[param]);
 				else return false;
+		}
+
+		if ((y === undefined && x !== undefined)
+			|| (x === undefined && y !== undefined)) {
+			return false;
 		}
 
 		for(p in y) { if(typeof(x[p])=='undefined') {
