@@ -2,7 +2,6 @@ Relatively important
  - Fix error selection in code
  - Provide guidance on translator options
  - Links to documentation (why not?)
- - Translator testing
  - JS(H|L)int, comes nearly free with ACE
  - search within translator code
  - show matching translators for given page (import)
@@ -10,4 +9,7 @@ Relatively important
 
 Not very important
  - Automatic gisting? Or maybe something like Frank's style test generator? 
+	See: http://developer.github.com/v3/gists/
+	Not sure how we'd handle that-- no need to gist existing translators,
+	so only useful for new code
  - Type-to-find in translator load window
