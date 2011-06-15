@@ -564,9 +564,12 @@ var Scaffold = new function() {
 				}
 			);
 			_run("doWeb",
+				// _run can get a document for the URL
 				test.url,
+				// selectItems handler-- select all
 				function (items) { return Object.keys(items); },
-				function (obj, item) { callback({item:item}); },
+				// itemDone handler
+				function (obj, item) { callback({ item : _sanitizeItem(item) }); },
 				null,
 				function (val) { // "done" handler for do
 					displayTestResultStatus(test);
@@ -588,9 +591,20 @@ var Scaffold = new function() {
 			_run("doImport",
 				test.input,
 				null,
-				function (obj, item) { results.push(item); },
+				function (obj, item) { results.push(_sanitizeItem(item)); },
 				null);
 		}
+	}
+
+	/* turns an item into a test-safe item */
+	function _sanitizeItem(item) {
+		// Clear attachment document objects
+		if (item && item.attachments && item.attachments.length) {
+			for (var i=0; i<item.attachments.length; i++) {
+				item.attachments[i].document = "[object]";
+			}
+		}
+		return item;
 	}
 	
 	/*
@@ -624,7 +638,7 @@ var Scaffold = new function() {
 			doc,
 			function (items) { return Object.keys(items); }, // select all
 			function (obj, item) {
-				newTest["items"].push(item);
+				newTest["items"].push(_sanitizeItem(item));
 				listitem.setUserData("test-string", JSON.stringify(newTest), null);
 			},
 			null,
