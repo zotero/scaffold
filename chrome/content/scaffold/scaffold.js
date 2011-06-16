@@ -570,7 +570,7 @@ var Scaffold = new function() {
 				// _run can get a document for the URL
 				test.url,
 				// selectItems handler-- select all
-				function (items) { return Object.keys(items); },
+				function (obj, items) { return Object.keys(items); },
 				// itemDone handler
 				function (obj, item) { callback({ item : _sanitizeItem(item) }); },
 				null,
