@@ -112,6 +112,9 @@ var Scaffold = new function() {
 			"_blank","chrome,modal", io);
 		var translator = io.dataOut;
 
+		// No translator was selected in the dialog.
+		if (!translator) return false;
+
 		for(var id in _propertyMap) {
 			document.getElementById(id).value = translator[_propertyMap[id]];
 		}
@@ -601,7 +604,8 @@ var Scaffold = new function() {
 		// Clear attachment document objects
 		if (item && item.attachments && item.attachments.length) {
 			for (var i=0; i<item.attachments.length; i++) {
-				item.attachments[i].document = "[object]";
+				if (item.attachments[i].document)
+					item.attachments[i].document = "[object]";
 			}
 		}
 		return item;
