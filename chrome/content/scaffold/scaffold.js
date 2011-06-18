@@ -477,6 +477,11 @@ var Scaffold = new function() {
 		if(document.getElementById('checkbox-search').checked) {
 			translator.translatorType += 8;
 		}
+		
+		// make sure translator gets run in browser in Zotero >2.1
+		if(Zotero.Translator.RUN_MODE_IN_BROWSER) {
+			translator.runMode = Zotero.Translator.RUN_MODE_IN_BROWSER;
+		}
 
 		return translator;
 	}
