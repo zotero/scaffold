@@ -154,6 +154,14 @@ var Scaffold = new function() {
 			document.getElementById('checkbox-'+types.shift()).checked = !!mod;
 			if(mod) type -= mod;
 		}
+		
+		// get browser support
+		var browserSupport = translator.browserSupport;
+		if(!browserSupport) browserSupport = "g";
+		const browsers = ["gecko", "chrome", "safari", "ie"];
+		for each(var browser in browsers) {
+			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
+		}
 
 		// Set up the tests pane too
 		populateTests();
@@ -206,6 +214,20 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-search').checked) {
 			metadata.translatorType += 8;
+		}
+		
+		metadata.browserSupport = "";
+		if(document.getElementById('checkbox-gecko').checked) {
+			metadata.browserSupport += "g";
+		}
+		if(document.getElementById('checkbox-chrome').checked) {
+			metadata.browserSupport += "c";
+		}
+		if(document.getElementById('checkbox-safari').checked) {
+			metadata.browserSupport += "s";
+		}
+		if(document.getElementById('checkbox-ie').checked) {
+			metadata.browserSupport += "i";
 		}
 
 		var date = new Date();
@@ -478,6 +500,20 @@ var Scaffold = new function() {
 			translator.translatorType += 8;
 		}
 		
+		translator.browserSupport = "";
+		if(document.getElementById('checkbox-gecko').checked) {
+			translator.browserSupport += "g";
+		}
+		if(document.getElementById('checkbox-chrome').checked) {
+			translator.browserSupport += "c";
+		}
+		if(document.getElementById('checkbox-safari').checked) {
+			translator.browserSupport += "s";
+		}
+		if(document.getElementById('checkbox-ie').checked) {
+			translator.browserSupport += "i";
+		}
+		
 		// make sure translator gets run in browser in Zotero >2.1
 		if(Zotero.Translator.RUN_MODE_IN_BROWSER) {
 			translator.runMode = Zotero.Translator.RUN_MODE_IN_BROWSER;
@@ -543,66 +579,6 @@ var Scaffold = new function() {
 			listbox.removeItemAt(0);
 		}
 	}
-			
-	/*
-	 * Run tests
-	 */
-	function _runTest(test, callback) {
-		document.getElementById('output').value = '';
-
-		var detect;
-		var results = [];
-	
-		if (test.type == "web") {
-			_logOutput("Running detectWeb");
-			_run("detectWeb",
-				test.url,
-				null,
-				null,
-				function (obj, translators) {
-	 				if(translators && translators.length != 0) {
-						detect = translators[0].itemType;
-					} else {
-						detect = false;
-					}
-					callback({detect: detect});
-				},
-				function (val) { // "done" handler for detect
-					displayTestResultStatus(test);
-				}
-			);
-			_run("doWeb",
-				// _run can get a document for the URL
-				test.url,
-				// selectItems handler-- select all
-				function (obj, items) { return Object.keys(items); },
-				// itemDone handler
-				function (obj, item) { callback({ item : _sanitizeItem(item) }); },
-				null,
-				function (val) { // "done" handler for do
-					displayTestResultStatus(test);
-				}
-			);
-		} else if (test.type == "import") {
-			// TODO Write this code!
-			_run("detectImport",
-				test.input,
-				null,
-				null,
-	 			function(obj, translators) {
-					if(translators && translators.length != 0 && translators[0].itemType) {
-						detect = true;
-					} else {
-						detect = false;
-					}
-				});
-			_run("doImport",
-				test.input,
-				null,
-				function (obj, item) { results.push(_sanitizeItem(item)); },
-				null);
-		}
-	}
 
 	/* turns an item into a test-safe item */
 	function _sanitizeItem(item) {
@@ -621,40 +597,27 @@ var Scaffold = new function() {
 	 * web only for now
 	 */
 	function newTestFromCurrent() {
-		var listbox = document.getElementById("testing-listbox");
 		var doc = _getDocument();
-		var url = Zotero.Proxies.proxyToProper(doc.location.href);
-		var newTest = {
-			"type" : "web",
-			"url"  : url,
-			"items" : []
-		};
-		
+		var listbox = document.getElementById("testing-listbox");
 		var listitem = document.createElement("listitem");
 		var listcell = document.createElement("listcell");
-		listcell.setAttribute("label", newTest.url);
+		listcell.setAttribute("label", Zotero.Proxies.proxyToProper(doc.location.href));
 		listitem.appendChild(listcell);
 		listcell = document.createElement("listcell");
-		listcell.setAttribute("label", "New unsaved test");
+		listcell.setAttribute("label", "Creating...");
 		listitem.appendChild(listcell);
-		// Put the serialized JSON in user data
-		listitem.setUserData("test-string", JSON.stringify(newTest), null);
 		listbox.appendChild(listitem);
 
-		// Calls _run with the doc, adds a test. The test isn't saved yet!
-		// function _run(functionToRun, input, selectItems, itemDone, detectHandler, done) {
-		_run("doWeb",
-			doc,
-			function (items) { return Object.keys(items); }, // select all
-			function (obj, item) {
-				newTest["items"].push(_sanitizeItem(item));
+		// Creates the test. The test isn't saved yet!
+		var tester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
+		tester.newTest(doc, function (obj, newTest) { // "done" handler for do
+			if(newTest) {
+				listcell.setAttribute("label", "New unsaved test");
 				listitem.setUserData("test-string", JSON.stringify(newTest), null);
-			},
-			null,
-			function (val) { // "done" handler for do
-				listitem.setUserData("test-string", JSON.stringify(newTest), null);
+			} else {
+				listcell.setAttribute("label", "Creation failed");
 			}
-		);
+		});
 	}
 
 	/*
@@ -695,7 +658,11 @@ var Scaffold = new function() {
 		var count = listbox.itemCount;
 		while(i < count){
 			item = listbox.getItemAtIndex(i);
-			tests.push(JSON.parse(item.getUserData("test-string")));
+			if(item.label === "New unsaved test") {
+				item.label = "New test";
+			}
+			var test = item.getUserData("test-string");
+			if(test) tests.push(JSON.parse(test));
 			i++;
 		}
 		_writeTests(tests);
@@ -724,134 +691,19 @@ var Scaffold = new function() {
 		var items = listbox.selectedItems;
 		if(!items || items.length == 0) return false; // No action if nothing selected
 		var i;
+		var tests = [];
 		for (i in items) {
 			items[i].getElementsByTagName("listcell")[1].setAttribute("label", "Running");
 			var test = JSON.parse(items[i].getUserData("test-string"));
-			test["result-items"] = [];
-			test["result-do"] = "?";
-			test["result-detect"] = "?";
 			test["ui-item"] = items[i];
-			_runTest(test, function (results) {
-				if (results["detect"] !== undefined) {
-					if(results["detect"]) {
-						_logOutput("Detect succeeded.");
-						test["result-detect"] = results["detect"];
-						if (test["result-detect"] === true) test["result-detect"] = "Pass";
-					} else {
-						_logOutput("Detect failed.");
-						test["result-detect"] = "Fail";
-					}
-					displayTestResultStatus(test);
-				}
-				if (results["item"] !== undefined) {
-					// We don't really know a priori what to expect, so we'll test each time
-					test["result-items"].push(results["item"]);
-					_logOutput("Latest result: ");
-					_logOutput(JSON.stringify(test["result-items"],null,4));
-					test["result-do"] = _compare(test["result-items"], test["items"]) ? "Pass" : "Fail";
-					displayTestResultStatus(test);
-				}
-			});
+			tests.push(test);
 		}
-	}
-
-	/* display test status */
-	function displayTestResultStatus(test) {
-		var out = "Detect: " + test["result-detect"] +
-			  " Do: " + test["result-do"];
-		test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", out);
-	}
-
-	/*
-	 * Compare items or sets thereof
-	 */
-	function _compare(i, j) {
-		var match = false;
-		if (Object.prototype.toString.apply(i) === '[object Array]') {
-			if (Object.prototype.toString.apply(j) === '[object Array]') {
-				do {
-					match = _compare(i.pop(), j.pop());
-				} while (match && i.length && j.length);
-				if (match)
-					return true;
-				else
-					return false;
-			} else {
-				_logOutput("i is array, j is not");
-				return false;
-			}
-		} else if (Object.prototype.toString.apply(j) === '[object Array]') {
-			_logOutput("j is array, i is not");
-			return false;
-		}
-
-		// Neither is an array
-		if(_objectCompare(i, j)) {
-			return true;
-		} else {
-			_logOutput(JSON.stringify({i:i, j:j}));
-			_logOutput("Items don't match");
-			return false;
-		}
-	}
-
-	function _objectCompare(x, y) {
-		// Special handlers
-		var special = { 
-			"complete" : function(a,b) { _logOutput("Ignoring non-matching parameter 'complete'"); return true },
-			"accessDate" : function(a,b) { _logOutput("Ignoring non-matching parameter 'accessDate'"); return true },
-			"checkFields" : function(a,b) { _logOutput("Ignoring non-matching parameter 'checkFields'"); return true }
-		};
-
-		var returner = function(param) {
-				if (special[param]) return special[param](x[param], y[param]);
-				else return false;
-		}
-
-		if ((y === undefined && x !== undefined)
-			|| (x === undefined && y !== undefined)) {
-			return false;
-		}
-
-		for(p in y) { if(typeof(x[p])=='undefined') {
-				_logOutput("Param "+p+" in y not defined in x");
-				return returner(p);
-			}
-		}
-
-		for(p in y) { if (y[p]) {
-			switch(typeof(y[p])) {
-				case 'object':
-					if (!_objectCompare(y[p],x[p])) { 
-						return returner(p);
-					};
-					break;
-				case 'function':
-					if (typeof(x[p])=='undefined' 
-						|| (y[p].toString() != x[p].toString())) {
-						_logOutput("Function "+p+" defined in y, not in x, or definitions differ");
-						return returner(p) };
-					break;
-				default:
-					if (y[p] != x[p]) {
-						_logOutput("Param "+p+" differs: " + JSON.stringify({x:x[p], y:y[p]}));
-						return returner(p);
-					}
-			}
-		} else {
-			if (x[p]) { 
-				_logOutput("Param "+p+" true in x, not in y");
-				return returner(p);
-			}
-		} }
-
-		for(p in x) {
-			if(typeof(y[p])=='undefined') {
-				_logOutput("Param "+p+" in x not defined in y");
-				return returner(p);
-			}
-		}
-		return true;
+		
+		var tester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
+		tester.setTests(tests);
+		tester.runTests(function(obj, test, status, message) {
+			test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", message);
+		});
 	}
 
 	/*

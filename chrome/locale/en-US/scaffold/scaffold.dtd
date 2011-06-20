@@ -30,6 +30,11 @@
 <!ENTITY scaffold.metadata.translatorType.export	"Export">
 <!ENTITY scaffold.metadata.translatorType.web		"Web">
 <!ENTITY scaffold.metadata.translatorType.search	"Search">
+<!ENTITY scaffold.metadata.browserSupport.label		"Browser Support:">
+<!ENTITY scaffold.metadata.browserSupport.gecko		"Gecko (Firefox)">
+<!ENTITY scaffold.metadata.browserSupport.chrome	"Chrome">
+<!ENTITY scaffold.metadata.browserSupport.safari	"Safari">
+<!ENTITY scaffold.metadata.browserSupport.ie		"Internet Explorer">
 
 <!ENTITY scaffold.metadata.label.default		"Untitled">
 <!ENTITY scaffold.metadata.priority.default		"100">
