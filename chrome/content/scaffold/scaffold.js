@@ -229,7 +229,7 @@ var Scaffold = new function() {
 			metadata.browserSupport += "s";
 		}
 		if(document.getElementById('checkbox-ie').checked) {
-			metadata.browserSupport += "I";
+			metadata.browserSupport += "i";
 		}
 
 		var date = new Date();
@@ -513,7 +513,7 @@ var Scaffold = new function() {
 			translator.browserSupport += "s";
 		}
 		if(document.getElementById('checkbox-ie').checked) {
-			translator.browserSupport += "I";
+			translator.browserSupport += "i";
 		}
 		
 		// make sure translator gets run in browser in Zotero >2.1
