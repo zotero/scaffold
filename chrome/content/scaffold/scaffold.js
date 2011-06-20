@@ -160,9 +160,7 @@ var Scaffold = new function() {
 		if(!browserSupport) browserSupport = "g";
 		const browsers = ["gecko", "chrome", "safari", "ie"];
 		for each(var browser in browsers) {
-			if(browserSupport.indexOf(browser[0]) !== -1) {
-				document.getElementById('checkbox-'+browser).checked = true;
-			}
+			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
 		}
 
 		// Set up the tests pane too
