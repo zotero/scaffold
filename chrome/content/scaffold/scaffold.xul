@@ -97,7 +97,12 @@
 						<checkbox id="checkbox-framework"/>
 						<label class="label-metadata" value="&scaffold.metadata.framework.label;" control="checkbox-framework"/>
 					</hbox>
-					<groupbox>
+					<grid flex="1">
+						<columns>
+							<column flex="2"/>
+							<column flex="1"/>
+						</columns>
+					<rows><row><groupbox>
 						<caption label="&scaffold.metadata.translatorType.label;"/>
 						<checkbox id="checkbox-import" label="&scaffold.metadata.translatorType.import;"/>
 						<checkbox id="checkbox-export" label="&scaffold.metadata.translatorType.export;"/>
@@ -110,7 +115,8 @@
 						<checkbox id="checkbox-chrome" label="&scaffold.metadata.browserSupport.chrome;"/>
 						<checkbox id="checkbox-safari" label="&scaffold.metadata.browserSupport.safari;"/>
 						<checkbox id="checkbox-ie" label="&scaffold.metadata.browserSupport.ie;"/>
-					</groupbox>
+					</groupbox></row></rows>
+					</grid>
 				</vbox>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">
