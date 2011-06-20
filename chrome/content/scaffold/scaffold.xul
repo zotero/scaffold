@@ -104,6 +104,13 @@
 						<checkbox id="checkbox-web" label="&scaffold.metadata.translatorType.web;" checked="true"/>
 						<checkbox id="checkbox-search" label="&scaffold.metadata.translatorType.search;"/>
 					</groupbox>
+					<groupbox>
+						<caption label="&scaffold.metadata.browserSupport.label;"/>
+						<checkbox id="checkbox-gecko" label="&scaffold.metadata.browserSupport.gecko;" checked="true"/>
+						<checkbox id="checkbox-chrome" label="&scaffold.metadata.browserSupport.chrome;"/>
+						<checkbox id="checkbox-safari" label="&scaffold.metadata.browserSupport.safari;"/>
+						<checkbox id="checkbox-ie" label="&scaffold.metadata.browserSupport.ie;"/>
+					</groupbox>
 				</vbox>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">

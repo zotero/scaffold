@@ -154,6 +154,16 @@ var Scaffold = new function() {
 			document.getElementById('checkbox-'+types.shift()).checked = !!mod;
 			if(mod) type -= mod;
 		}
+		
+		// get browser support
+		var browserSupport = translator.browserSupport;
+		if(!browserSupport) browserSupport = "g";
+		const browsers = ["gecko", "chrome", "safari", "ie"];
+		for each(var browser in browsers) {
+			if(browserSupport.indexOf(browser[0]) !== -1) {
+				document.getElementById('checkbox-'+browser).checked = true;
+			}
+		}
 
 		// Set up the tests pane too
 		populateTests();
@@ -206,6 +216,20 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-search').checked) {
 			metadata.translatorType += 8;
+		}
+		
+		metadata.browserSupport = "";
+		if(document.getElementById('checkbox-gecko').checked) {
+			metadata.browserSupport += "g";
+		}
+		if(document.getElementById('checkbox-chrome').checked) {
+			metadata.browserSupport += "c";
+		}
+		if(document.getElementById('checkbox-safari').checked) {
+			metadata.browserSupport += "s";
+		}
+		if(document.getElementById('checkbox-ie').checked) {
+			metadata.browserSupport += "I";
 		}
 
 		var date = new Date();
@@ -476,6 +500,20 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-search').checked) {
 			translator.translatorType += 8;
+		}
+		
+		translator.browserSupport = "";
+		if(document.getElementById('checkbox-gecko').checked) {
+			translator.browserSupport += "g";
+		}
+		if(document.getElementById('checkbox-chrome').checked) {
+			translator.browserSupport += "c";
+		}
+		if(document.getElementById('checkbox-safari').checked) {
+			translator.browserSupport += "s";
+		}
+		if(document.getElementById('checkbox-ie').checked) {
+			translator.browserSupport += "I";
 		}
 		
 		// make sure translator gets run in browser in Zotero >2.1
