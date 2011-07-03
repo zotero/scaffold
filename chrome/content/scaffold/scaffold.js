@@ -158,10 +158,14 @@ var Scaffold = new function() {
 		
 		document.getElementById('checkbox-framework').checked = usesFW;
 		
+		// Reset configOptions and displayOptions before loading
+		document.getElementById('textbox-configOptions').value = '';
+		document.getElementById('textbox-displayOptions').value = '';
+
 		var configOptions, displayOptions;
 		if(translator.configOptions) {
 		    configOptions = JSON.stringify(translator.configOptions);
-		}
+		} 
 		if(configOptions != '{}') {
 		    document.getElementById('textbox-configOptions').value = configOptions;
 		}
@@ -277,7 +281,7 @@ var Scaffold = new function() {
 			return;
 		}
 
-		document.getElementById('output').value = '';
+		_clearOutput();
 
 		save();
 		
@@ -402,7 +406,7 @@ var Scaffold = new function() {
 	 * called if an error occurs
 	 */
 	function _error(obj, error) {
-		/* We no longer have meaningful long numbers, so no line jumping!
+		/* We no longer have meaningful line numbers, so no line jumping!
 		if(error && error.lineNumber) {
 			_logOutput("Trying to go to line:\n"+error.lineNumber);
 			_editors["code"].gotoLine(error.lineNumber);
@@ -613,31 +617,66 @@ var Scaffold = new function() {
 	}
 	
 	/*
-	 * adds a new test from the current page/translator
-	 * web only for now
+	 * adds a new test from the current input/translator
+	 * web or import only for now
 	 */
-	function newTestFromCurrent() {
-		var doc = _getDocument();
+	function newTestFromCurrent(type) {
+		_clearOutput();
+		var input, label;
+		if (type == "web" && !document.getElementById('checkbox-web').checked) {
+			_logOutput("Current translator isn't a web translator");
+			return false;
+		} else if (type == "import" && !document.getElementById('checkbox-import').checked) {
+			_logOutput("Current translator isn't an import translator");
+			return false;
+		}
+
+		if (type == "web") {
+			input = _getDocument();
+			label = Zotero.Proxies.proxyToProper(input.location.href);
+		} else if (type == "import") {
+			input = _getImport();
+			label = input;
+		} else {
+			return false;
+		}
+
 		var listbox = document.getElementById("testing-listbox");
 		var listitem = document.createElement("listitem");
 		var listcell = document.createElement("listcell");
-		listcell.setAttribute("label", Zotero.Proxies.proxyToProper(doc.location.href));
+		listcell.setAttribute("label", label);
 		listitem.appendChild(listcell);
 		listcell = document.createElement("listcell");
 		listcell.setAttribute("label", "Creating...");
 		listitem.appendChild(listcell);
 		listbox.appendChild(listitem);
 
-		// Creates the test. The test isn't saved yet!
-		var tester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
-		tester.newTest(doc, function (obj, newTest) { // "done" handler for do
-			if(newTest) {
-				listcell.setAttribute("label", "New unsaved test");
-				listitem.setUserData("test-string", JSON.stringify(newTest), null);
-			} else {
-				listcell.setAttribute("label", "Creation failed");
-			}
-		});
+		if (type == "web") {
+			// Creates the test. The test isn't saved yet!
+			var tester = new Zotero_TranslatorTester(_getTranslator(), type, _debug);
+			tester.newTest(input, function (obj, newTest) { // "done" handler for do
+				if(newTest) {
+					listcell.setAttribute("label", "New unsaved test");
+					listitem.setUserData("test-string", JSON.stringify(newTest), null);
+				} else {
+					listcell.setAttribute("label", "Creation failed");
+				}
+			});
+		}
+
+		if (type == "import") {
+			var test = {"type" : "import", "input" : input, "items" : []};
+
+			// Creates the test. The test isn't saved yet!
+			// TranslatorTester doesn't handle these correctly, so we do it manually
+			_run("doImport", input, null, function(obj, item) {
+				if(item) {
+					test.items.push(_sanitizeItem(item));
+					listcell.setAttribute("label", "New unsaved test");
+					listitem.setUserData("test-string", JSON.stringify(test), null);
+				} 
+			}, null, function(){});
+		}
 	}
 
 	/*
@@ -678,8 +717,8 @@ var Scaffold = new function() {
 		var count = listbox.itemCount;
 		while(i < count){
 			item = listbox.getItemAtIndex(i);
-			if(item.label === "New unsaved test") {
-				item.label = "New test";
+			if(item.getElementsByTagName("listcell")[1].getAttribute("label") === "New unsaved test") {
+				item.getElementsByTagName("listcell")[1].setAttribute("label", "New test");
 			}
 			var test = item.getUserData("test-string");
 			if(test) tests.push(JSON.parse(test));
@@ -694,42 +733,54 @@ var Scaffold = new function() {
 	 */
 	function deleteSelectedTests() {
 		var listbox = document.getElementById("testing-listbox");
-		var items = listbox.selectedItems;
-		if(!items || items.length == 0) return false; // No action if nothing selected
-		var i;	
-		for (i in items) {
-			listbox.removeItemAt(listbox.getIndexOfItem(items[i]));
+		var count = listbox.selectedCount;
+		while (count--) {
+			var item = listbox.selectedItems[0];
+			listbox.removeItemAt(listbox.getIndexOfItem(item));
 		}
 	}
 	
 	/*
 	 * Run selected test(s)
-	 * TODO Make running in parallel work.
 	 */
 	function runSelectedTests() {
+		_clearOutput();
 		var listbox = document.getElementById("testing-listbox");
 		var items = listbox.selectedItems;
 		if(!items || items.length == 0) return false; // No action if nothing selected
 		var i;
-		var tests = [];
+		var webtests = [];
+		var importtests = [];
 		for (i in items) {
 			items[i].getElementsByTagName("listcell")[1].setAttribute("label", "Running");
 			var test = JSON.parse(items[i].getUserData("test-string"));
 			test["ui-item"] = items[i];
-			tests.push(test);
+			if (test.type == "web") webtests.push(test);
+			if (test.type == "import") importtests.push(test);
 		}
 		
-		var tester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
-		tester.setTests(tests);
-		tester.runTests(function(obj, test, status, message) {
-			test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", message);
-		});
+		if (webtests.length > 0) {
+			var webtester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
+			webtester.setTests(webtests);
+			webtester.runTests(function(obj, test, status, message) {
+				test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", message);
+			});
+		}
+		
+		if (importtests.length > 0 ) {
+			var importtester = new Zotero_TranslatorTester(_getTranslator(), "import", _debug);
+			importtester.setTests(importtests);
+			importtester.runTests(function(obj, test, status, message) {
+				test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", message);
+			});
+		}
 	}
 	
 	/*
 	 * Run selected test(s)
 	 */
 	function updateSelectedTests() {
+		_clearOutput();
 		var listbox = document.getElementById("testing-listbox");
 		var items = listbox.selectedItems.slice();
 		if(!items || items.length == 0) return false; // No action if nothing selected
@@ -796,6 +847,13 @@ var Scaffold = new function() {
 		return text.replace(/^[ \t]+/gm, function(str) {
 			return str.replace(/ {4}/g, "\t");
 		});
+	}
+
+	/*
+	 * Clear output pane
+	 */
+	function _clearOutput() {
+		document.getElementById('output').value = '';
 	}
 
 	/*
