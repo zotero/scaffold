@@ -95,6 +95,23 @@ var Scaffold = new function() {
 
 		// Set resize handler
 		_document.addEventListener("resize", this.onResize, false);
+		
+		// Boilerplate for framework translators
+		document.getElementById('checkbox-framework').addEventListener("command",
+			function() {
+				var usesFW = document.getElementById('checkbox-framework').checked;
+				/* Code to set compat for framework translators
+				if (!usesFW) {
+					for each(var browser in ["gecko", "chrome", "safari"]) {
+						document.getElementById('checkbox-'+browser).checked = true;
+					}
+				*/
+				
+				// If code hasn't been added, put the boilerplate in
+				// We could be fancy here and see if detectWeb / doWeb are set
+				if (usesFW && _editors["code"].getSession().getValue().trim() == "")
+					_editors["code"].getSession().setValue("function detectWeb(doc, url) { return FW.detectWeb(doc, url); }\nfunction doWeb(doc, url) { return FW.doWeb(doc, url); }");
+			}, true);
 
 		generateTranslatorID();
 	}
@@ -127,12 +144,16 @@ var Scaffold = new function() {
 		var lastUpdatedIndex = translator.code.indexOf('"lastUpdated"');
 		var header = translator.code.substr(0, lastUpdatedIndex + 50);
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
+		// Detect the minified framework and strip it
 		var usesFW = (translator.code.substr(m[0].length).indexOf("/* FW LINE ") !== -1);
 		if(usesFW) var fixedCode = translator.code
 						.substr(m[0].length)
 						.replace(/\/\* FW LINE [^\n]*\n/,'\n');
 		else var fixedCode = translator.code.substr(m[0].length);
-		_editors["code"].getSession().setValue(fixedCode);
+		// Convert whitespace to tabs
+		_editors["code"].getSession().setValue(normalizeWhitespace(fixedCode));
+		// Then go to line 1
+		_editors["code"].gotoLine(1);
 		
 		document.getElementById('checkbox-framework').checked = usesFW;
 		
@@ -701,6 +722,15 @@ var Scaffold = new function() {
 		tester.setTests(tests);
 		tester.runTests(function(obj, test, status, message) {
 			test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", message);
+		});
+	}
+
+	/*
+	 * Normalize whitespace to the Zotero norm of tabs
+	 */
+	function normalizeWhitespace(text) {
+		return text.replace(/^[ \t]+/gm, function(str) {
+			return str.replace(/ {4}/g, "\t");
 		});
 	}
 
