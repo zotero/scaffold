@@ -40,6 +40,7 @@ var Scaffold = new function() {
 	this.populateTests = populateTests;
 	this.saveTests = saveTests;
 	this.runSelectedTests = runSelectedTests;
+	this.updateSelectedTests = updateSelectedTests;
 	this.deleteSelectedTests = deleteSelectedTests;
 	this.newTestFromCurrent = newTestFromCurrent;
 
@@ -723,6 +724,69 @@ var Scaffold = new function() {
 		tester.runTests(function(obj, test, status, message) {
 			test["ui-item"].getElementsByTagName("listcell")[1].setAttribute("label", message);
 		});
+	}
+	
+	/*
+	 * Run selected test(s)
+	 */
+	function updateSelectedTests() {
+		var listbox = document.getElementById("testing-listbox");
+		var items = listbox.selectedItems.slice();
+		if(!items || items.length == 0) return false; // No action if nothing selected
+		var i;
+		var tests = [];
+		for (i in items) {
+			items[i].getElementsByTagName("listcell")[1].setAttribute("label", "Updating");
+			var test = JSON.parse(items[i].getUserData("test-string"));
+			tests.push(test);
+		}
+		
+		var updater = new TestUpdater(tests);
+		updater.updateTests(function(newTests) {
+			for(var i in newTests) {
+				var message;
+				if(newTests[i]) {
+					message = "Test updated";
+					Zotero.debug(newTests[i]);
+					items[i].setUserData("test-string", JSON.stringify(newTests[i]), null);
+				} else {
+					message = "Update failed"
+				}
+				items[i].getElementsByTagName("listcell")[1].setAttribute("label", message);
+			}
+		});
+	}
+	
+	var TestUpdater = function(tests) {
+		this.testsToUpdate = tests.slice();
+		this.newTests = [];
+		this.tester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
+	}
+	
+	TestUpdater.prototype.updateTests = function(callback) {
+		if(!this.testsToUpdate.length) {
+			callback(this.newTests);
+			return;
+		}
+		
+		var test = this.testsToUpdate.shift();
+		var me = this;
+		var hiddenBrowser = Zotero.HTTP.processDocuments(test.url,
+			function(doc) {
+				me.tester.newTest(doc, function(obj, test) {
+					Zotero.Browser.deleteHiddenBrowser(hiddenBrowser);
+					me.newTests.push(test);
+					me.updateTests(callback);
+				});
+			},
+			null,
+			function(e) {
+				Zotero.logError(e);
+				me.newTests.push(false);
+				me.updateTests(callback);
+			},
+			true
+		);
 	}
 
 	/*

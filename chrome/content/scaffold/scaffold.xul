@@ -147,6 +147,7 @@
 					<button label="&scaffold.testing.save;" tooltiptext="Save the above test definitions into the current translator, and save the translator"  oncommand="Scaffold.saveTests()"/>
 					<button label="&scaffold.testing.delete;" tooltiptext="Delete the selected tests"  oncommand="Scaffold.deleteSelectedTests()"/>
 					<button label="&scaffold.testing.run;" tooltiptext="Run the selected tests"  oncommand="Scaffold.runSelectedTests()"/>
+					<button label="&scaffold.testing.update;" tooltiptext="Update a test to match current item"  oncommand="Scaffold.updateSelectedTests()"/>
 					<button label="&scaffold.testing.new;" tooltiptext="Create a new test from the current page"  oncommand="Scaffold.newTestFromCurrent()"/>
 				</hbox></vbox>
 			</tabpanel>
