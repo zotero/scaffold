@@ -89,6 +89,7 @@ var Scaffold = new function() {
 
 		_editors["code"].getSession().setUseWorker(false);
 		_editors["code"].getSession().setMode(new _JavaScriptMode);
+		_editors["code"].getSession().setUseSoftTabs(false);
 		
 		_editors["import"].getSession().setMode(new _TextMode);
 
@@ -400,14 +401,8 @@ var Scaffold = new function() {
 	function _myItemDone(obj, item) {
 		Zotero.debug("Item returned");
 		
-		// Clear attachment document objects
-		if (item && item.attachments && item.attachments.length) {
-			for (var i=0; i<item.attachments.length; i++) {
-				item.attachments[i].document = "[object]";
-			}
-		}
+		item = _sanitizeItem(item);
 
-		// _logOutput("Returned item:\n"+Zotero.varDump(item._itemData));
 		_logOutput("Returned item:\n"+Zotero.varDump(item));
 	}
 
