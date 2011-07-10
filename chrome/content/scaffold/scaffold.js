@@ -385,7 +385,7 @@ var Scaffold = new function() {
 		try {
 			var targetRe = new RegExp(document.getElementById('textbox-target').value, "i");
 		} catch(e) {
-			_logOutput("Regex parse error:\n"+Zotero.varDump(e));
+			_logOutput("Regex parse error:\n"+JSON.stringify(e, null, "\t"));
 		}
 
 		_logOutput(targetRe.test(url));
@@ -429,7 +429,7 @@ var Scaffold = new function() {
 		
 		item = _sanitizeItem(item);
 
-		_logOutput("Returned item:\n"+Zotero.varDump(item));
+		_logOutput("Returned item:\n"+JSON.stringify(item, null, "\t"));
 	}
 
 	/*
@@ -462,9 +462,9 @@ var Scaffold = new function() {
 		var date = new Date();
 		var output = document.getElementById('output');
 
-		// use vardump on non-strings
+		// use JSON.stringify on non-strings
 		if(typeof string != "string") {
-			string = Zotero.varDump(string);
+			string = JSON.stringify(string, null, "\t");
 		}
 
 		if(output.value) output.value += "\n";
