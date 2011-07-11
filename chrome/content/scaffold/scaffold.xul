@@ -118,6 +118,7 @@
 						<checkbox id="checkbox-chrome" label="&scaffold.metadata.browserSupport.chrome;"/>
 						<checkbox id="checkbox-safari" label="&scaffold.metadata.browserSupport.safari;"/>
 						<checkbox id="checkbox-ie" label="&scaffold.metadata.browserSupport.ie;"/>
+						<checkbox id="checkbox-node" label="&scaffold.metadata.browserSupport.node;"/>
 					</groupbox></row></rows>
 					</grid>
 				</vbox>
