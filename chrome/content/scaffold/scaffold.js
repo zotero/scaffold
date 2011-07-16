@@ -188,7 +188,7 @@ var Scaffold = new function() {
 		// get browser support
 		var browserSupport = translator.browserSupport;
 		if(!browserSupport) browserSupport = "g";
-		const browsers = ["gecko", "chrome", "safari", "ie", "node"];
+		const browsers = ["gecko", "chrome", "safari", "ie"];
 		for each(var browser in browsers) {
 			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
 		}
@@ -258,9 +258,6 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-ie').checked) {
 			metadata.browserSupport += "i";
-		}
-		if(document.getElementById('checkbox-node').checked) {
-			metadata.browserSupport += "n";
 		}
 
 		var date = new Date();
@@ -539,9 +536,6 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-ie').checked) {
 			translator.browserSupport += "i";
-		}
-		if(document.getElementById('checkbox-node').checked) {
-			translator.browserSupport += "n";
 		}
 		
 		// make sure translator gets run in browser in Zotero >2.1

@@ -35,7 +35,6 @@
 <!ENTITY scaffold.metadata.browserSupport.chrome	"Chrome">
 <!ENTITY scaffold.metadata.browserSupport.safari	"Safari">
 <!ENTITY scaffold.metadata.browserSupport.ie		"Internet Explorer">
-<!ENTITY scaffold.metadata.browserSupport.node		"Node.js">
 
 <!ENTITY scaffold.metadata.label.default		"Untitled">
 <!ENTITY scaffold.metadata.priority.default		"100">
