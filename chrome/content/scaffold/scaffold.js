@@ -407,7 +407,6 @@ var Scaffold = new function() {
 	 */
 	function _error(obj, error) {
 		if(error && error.lineNumber) {
-			_logOutput("Trying to go to line:\n"+error.lineNumber);
 			_editors["code"].gotoLine(error.lineNumber);
 		}
 	}
