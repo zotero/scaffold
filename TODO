@@ -1,5 +1,5 @@
 Relatively important
- - Fix error selection in code
+ - Hide tests most of the time (ticket #1873)
  - Provide guidance on translator options
  - Links to documentation (why not?)
  - JS(H|L)int, comes nearly free with ACE

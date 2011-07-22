@@ -406,12 +406,10 @@ var Scaffold = new function() {
 	 * called if an error occurs
 	 */
 	function _error(obj, error) {
-		/* We no longer have meaningful line numbers, so no line jumping!
 		if(error && error.lineNumber) {
 			_logOutput("Trying to go to line:\n"+error.lineNumber);
 			_editors["code"].gotoLine(error.lineNumber);
 		}
-		*/
 	}
 
 	/*
