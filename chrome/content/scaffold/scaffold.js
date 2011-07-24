@@ -43,6 +43,7 @@ var Scaffold = new function() {
 	this.updateSelectedTests = updateSelectedTests;
 	this.deleteSelectedTests = deleteSelectedTests;
 	this.newTestFromCurrent = newTestFromCurrent;
+	this.editImportFromTest = editImportFromTest;
 
 	var _browser, _frames, _document;
 
@@ -693,7 +694,8 @@ var Scaffold = new function() {
 			if (test.type == "web")
 				listcell.setAttribute("label", test.url);
 			else if (test.type == "import")
-				listcell.setAttribute("label", test.input);
+				// trim label to improve performance
+				listcell.setAttribute("label", test.input.substr(0,80));
 			else continue; // unknown test type
 			listitem.appendChild(listcell);
 			listcell = document.createElement("listcell");
@@ -738,6 +740,20 @@ var Scaffold = new function() {
 			var item = listbox.selectedItems[0];
 			listbox.removeItemAt(listbox.getIndexOfItem(item));
 		}
+	}
+
+	/*
+	 * Load the import input for the first selected test in the import pane,
+	 * from the UI.
+	 */	
+	function editImportFromTest() {
+		var listbox = document.getElementById("testing-listbox");
+		var item = listbox.selectedItems[0];
+		var test = JSON.parse(item.getUserData("test-string"));
+		if (test.input === undefined) {
+			_logOutput("Can't edit import data for a non-import test.");
+		}
+		_editors["import"].getSession().setValue(test.input);
 	}
 	
 	/*
@@ -826,6 +842,8 @@ var Scaffold = new function() {
 		
 		if (test.type == "import") {
 			var input = _getImport();
+
+			test.items = [];
 
 			// Re-runs the test.
 			// TranslatorTester doesn't handle these correctly, so we do it manually

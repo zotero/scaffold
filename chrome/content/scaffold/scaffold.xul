@@ -156,6 +156,7 @@
 					<button label="&scaffold.testing.update;" tooltiptext="Update a test to match current item"  oncommand="Scaffold.updateSelectedTests()"/>
 					<button label="&scaffold.testing.new;" tooltiptext="Create a new test from the current page"  oncommand="Scaffold.newTestFromCurrent('web')" />
 					<button label="&scaffold.testing.new.import;" tooltiptext="Create a new test from the current import"  oncommand="Scaffold.newTestFromCurrent('import')" />
+					<button label="&scaffold.testing.edit.import;" tooltiptext="Edit the input data for the current test"  oncommand="Scaffold.editImportFromTest()" />
 				</hbox></vbox>
 			</tabpanel>
 		</tabpanels>

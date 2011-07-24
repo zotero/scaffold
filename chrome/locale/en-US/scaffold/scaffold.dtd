@@ -54,3 +54,4 @@
 <!ENTITY scaffold.testing.update			"Update">
 <!ENTITY scaffold.testing.new				"New Web">
 <!ENTITY scaffold.testing.new.import			"New Import">
+<!ENTITY scaffold.testing.edit.import			"Edit Import">
