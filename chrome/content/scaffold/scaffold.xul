@@ -57,6 +57,7 @@
 			<tab id="tab-metadata" label="&scaffold.tabs.metadata.label;"/>
 			<tab id="tab-code" label="&scaffold.tabs.code.label;"/>
 			<tab id="tab-import" label="&scaffold.tabs.import.label;"/>
+			<tab id="tab-tests" label="&scaffold.tabs.tests.label;"/>
 			<tab id="tab-testing" label="&scaffold.tabs.testing.label;"/>
 		</tabs>
 		<tabpanels flex="1">
@@ -128,6 +129,9 @@
 			<tabpanel flex="1" id="tabpanel-import">
 				<hbox id="editor-import" flex="1"/>
 			</tabpanel>
+			<tabpanel flex="1" id="tabpanel-tests">
+				<hbox id="editor-tests" flex="1"/>
+			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-testing">
 				<vbox flex="1"><hbox><description>&scaffold.testing.description;</description></hbox>
 					<hbox flex="1">
@@ -151,14 +155,7 @@
 				<hbox>
 					<button label="&scaffold.testing.update;" tooltiptext="Update a test to match current item"  oncommand="Scaffold.updateSelectedTests()"/>
 					<button label="&scaffold.testing.new;" tooltiptext="Create a new test from the current page"  oncommand="Scaffold.newTestFromCurrent('web')" />
-					<button label="New Import" tooltiptext="Create a new test from the current import"  oncommand="Scaffold.newTestFromCurrent('import')" />
-					<!--<button label="&scaffold.testing.new;" tooltiptext="Create a new test from the current page"  oncommand="Scaffold.newTestFromCurrent()" type="menu-button">
-						<menupopup>
-							<menuitem id="scaffold-testing-new-web" label="&scaffold.metadata.translatorType.web;" oncommand="Scaffold.newTestFromCurrent(); return false;" />
-							<menuitem id="scaffold-testing-new-import" label="&scaffold.metadata.translatorType.import;" oncommand="Scaffold.newImportTestFromCurrent(); return false;" />
-							<menuitem id="scaffold-testing-new-search" label="&scaffold.metadata.translatorType.search;" disabled="true" />
-						</menupopup> 
-					</button>-->
+					<button label="&scaffold.testing.new.import;" tooltiptext="Create a new test from the current import"  oncommand="Scaffold.newTestFromCurrent('import')" />
 				</hbox></vbox>
 			</tabpanel>
 		</tabpanels>

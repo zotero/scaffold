@@ -87,10 +87,15 @@ var Scaffold = new function() {
 
 		_editors["import"] = this.ace.edit('editor-import');
 		_editors["code"] = this.ace.edit('editor-code');
+		_editors["tests"] = this.ace.edit('editor-tests');
 
 		_editors["code"].getSession().setUseWorker(false);
 		_editors["code"].getSession().setMode(new _JavaScriptMode);
 		_editors["code"].getSession().setUseSoftTabs(false);
+
+		_editors["tests"].getSession().setUseWorker(false);
+		_editors["tests"].getSession().setMode(new _JavaScriptMode);
+		_editors["tests"].getSession().setUseSoftTabs(false);
 		
 		_editors["import"].getSession().setMode(new _TextMode);
 
@@ -121,6 +126,7 @@ var Scaffold = new function() {
 		// We try to let ACE resize itself
 		_editors["import"].resize();
 		_editors["code"].resize();
+		_editors["tests"].resize();
 
 		return true;
 	}
@@ -151,6 +157,17 @@ var Scaffold = new function() {
 						.substr(m[0].length)
 						.replace(/\/\* FW LINE [^\n]*\n/,'\n');
 		else var fixedCode = translator.code.substr(m[0].length);
+		// load tests into test editing pane, but clear it first
+		_editors["tests"].getSession().setValue('');
+		_loadTests(fixedCode);
+		// and remove them from the translator code
+		var testStart = fixedCode.indexOf("/** BEGIN TEST CASES **/");
+		var testEnd   = fixedCode.indexOf("/** END TEST CASES **/");
+		fixedCode = fixedCode.substr(0,testStart) + fixedCode.substr(testEnd+23);
+		
+		// Set up the test running pane
+		populateTests();
+
 		// Convert whitespace to tabs
 		_editors["code"].getSession().setValue(normalizeWhitespace(fixedCode));
 		// Then go to line 1
@@ -193,8 +210,6 @@ var Scaffold = new function() {
 			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
 		}
 
-		// Set up the tests pane too
-		populateTests();
 	}
 
 	/*
@@ -203,6 +218,8 @@ var Scaffold = new function() {
 	function save() {
 		//seems like duplicating some effort from _getTranslator
 		var code = _editors["code"].getSession().getValue();
+		var tests = _editors["tests"].getSession().getValue();
+		code += tests;
 
 		var metadata = {
 			translatorID: document.getElementById('textbox-translatorID').value,
@@ -544,10 +561,9 @@ var Scaffold = new function() {
 	}
 
 	/*
-	 * loads the translator's tests from its code
+	 * loads the translator's tests from the pane
 	 */
-	function _loadTests() {
-		var code = _editors["code"].getSession().getValue();
+	function _loadTests(code) {
 		var testStart = code.indexOf("/** BEGIN TEST CASES **/");
 		var testEnd   = code.indexOf("/** END TEST CASES **/"); 
 		if (testStart !== -1 && testEnd !== -1) {
@@ -558,6 +574,7 @@ var Scaffold = new function() {
 				test = test.slice(0,-1);
 			try {
 				var testObject = JSON.parse(test);
+				_writeTests(testObject);
 				return testObject;
 			} catch (e) {
 				_logOutput("Exception parsing JSON");
@@ -572,24 +589,10 @@ var Scaffold = new function() {
 	 * writes tests back into the translator
 	 */
 	function _writeTests(tests) {
-		var code = _editors["code"].getSession().getValue();
-		var testStart = code.indexOf("/** BEGIN TEST CASES **/");
-		var testEnd   = code.indexOf("/** END TEST CASES **/"); 
-		if (testStart !== -1 && testEnd !== -1) {
-			code = code.substring(0,testStart) 
-				+ "/** BEGIN TEST CASES **/\nvar testCases = "
+		var code = "/** BEGIN TEST CASES **/\nvar testCases = "
 				+ JSON.stringify(tests, null, "\t") // pretty-print
-				+ "\n/** END TEST CASES **/"
-				+ code.slice(testEnd + 22);
-			_logOutput("Tests updated, replacing existing test section.");
-		} else { // We don't have a well-formed test section, so we'll append
-			code = code
-				+ "\n\n/** BEGIN TEST CASES **/\nvar testCases = "
-				+ JSON.stringify(tests, null, "\t") // pretty-print
-				+ "\n/** END TEST CASES **/"
-			_logOutput("New test section added to code.");
-		}
-		_editors["code"].getSession().setValue(code);
+				+ "\n/** END TEST CASES **/";
+		_editors["tests"].getSession().setValue(code);
 	}
 	
 	/* clear tests pane */
@@ -681,7 +684,7 @@ var Scaffold = new function() {
 	 */
 	function populateTests() {
 		_clearTests();
-		var tests = _loadTests();
+		var tests = _loadTests(_editors["tests"].getSession().getValue());
 		// We've got tests, let's display them
 		var listbox = document.getElementById("testing-listbox");
 		for each (var test in tests) {
@@ -817,8 +820,27 @@ var Scaffold = new function() {
 			return;
 		}
 		
+		
 		var test = this.testsToUpdate.shift();
 		var me = this;
+		
+		if (test.type == "import") {
+			var input = _getImport();
+
+			// Re-runs the test.
+			// TranslatorTester doesn't handle these correctly, so we do it manually
+			_run("doImport", input, null, function(obj, item) {
+				if(item) {
+					test.items.push(_sanitizeItem(item));
+				} 
+			}, null, function() {
+				me.newTests.push(test);
+				me.updateTests(callback);
+			});
+			// Don't want to run the web portion
+			return true;
+		}
+		
 		var hiddenBrowser = Zotero.HTTP.processDocuments(test.url,
 			function(doc) {
 				me.tester.newTest(doc, function(obj, test) {

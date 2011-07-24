@@ -9,6 +9,7 @@
 <!ENTITY scaffold.tabs.metadata.label			"Metadata">
 <!ENTITY scaffold.tabs.code.label			"Code">
 <!ENTITY scaffold.tabs.import.label			"Import">
+<!ENTITY scaffold.tabs.tests.label			"Tests">
 <!ENTITY scaffold.tabs.testing.label			"Testing">
 
 <!ENTITY scaffold.testFrame.label			"Test Frame:">
@@ -50,5 +51,6 @@
 <!ENTITY scaffold.testing.save				"Save">
 <!ENTITY scaffold.testing.delete			"Delete">
 <!ENTITY scaffold.testing.run				"Run">
-<!ENTITY scaffold.testing.update				"Update">
+<!ENTITY scaffold.testing.update			"Update">
 <!ENTITY scaffold.testing.new				"New Web">
+<!ENTITY scaffold.testing.new.import			"New Import">
