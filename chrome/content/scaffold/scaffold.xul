@@ -124,7 +124,13 @@
 				</vbox>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">
+				<vbox flex="1">
 				<hbox id="editor-code" flex="1"/>
+				<hbox>
+					<checkbox id="checkbox-editor-external"/>
+					<label class="label-metadata" value="&scaffold.editor.external.label;" control="checkbox-editor-external"/>
+				</hbox>
+				</vbox>
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-import">
 				<hbox id="editor-import" flex="1"/>

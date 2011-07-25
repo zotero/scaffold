@@ -119,6 +119,14 @@ var Scaffold = new function() {
 				if (usesFW && _editors["code"].getSession().getValue().trim() == "")
 					_editors["code"].getSession().setValue("function detectWeb(doc, url) { return FW.detectWeb(doc, url); }\nfunction doWeb(doc, url) { return FW.doWeb(doc, url); }");
 			}, true);
+		
+		// Disable editing if external editor is enabled, enable when it is disabled
+		document.getElementById('checkbox-editor-external').addEventListener("command",
+			function() {
+				var external = document.getElementById('checkbox-editor-external').checked;
+				_editors["code"].setReadOnly(external);
+				_editors["tests"].setReadOnly(external);
+			}, true);
 
 		generateTranslatorID();
 	}
@@ -135,11 +143,16 @@ var Scaffold = new function() {
 	/*
 	 * load translator from database
 	 */
-	function load() {
-		var io = new Object();
-		window.openDialog("chrome://scaffold/content/load.xul",
-			"_blank","chrome,modal", io);
-		var translator = io.dataOut;
+	function load(translatorID) {
+		var translator = false;
+		if (translatorID === undefined) {
+			var io = new Object();
+			window.openDialog("chrome://scaffold/content/load.xul",
+				"_blank","chrome,modal", io);
+			translator = io.dataOut;
+		} else {
+			translator = Zotero.Translators.get(translatorID);
+		}
 
 		// No translator was selected in the dialog.
 		if (!translator) return false;
@@ -164,7 +177,8 @@ var Scaffold = new function() {
 		// and remove them from the translator code
 		var testStart = fixedCode.indexOf("/** BEGIN TEST CASES **/");
 		var testEnd   = fixedCode.indexOf("/** END TEST CASES **/");
-		fixedCode = fixedCode.substr(0,testStart) + fixedCode.substr(testEnd+23);
+		if (testStart !== -1 && testEnd !== -1)
+			fixedCode = fixedCode.substr(0,testStart) + fixedCode.substr(testEnd+23);
 		
 		// Set up the test running pane
 		populateTests();
@@ -301,7 +315,13 @@ var Scaffold = new function() {
 
 		_clearOutput();
 
-		save();
+		if(document.getElementById('checkbox-editor-external').checked) {
+			// We don't save the translator-- we reload it instead
+			var translatorID = document.getElementById('textbox-translatorID').value;
+			load(translatorID);
+		} else {
+			save();
+		}
 		
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
 			_run(functionToRun, _getDocument(), _selectItems, _myItemDone, _translators, function(){});
@@ -761,6 +781,7 @@ var Scaffold = new function() {
 	 */
 	function runSelectedTests() {
 		_clearOutput();
+		
 		var listbox = document.getElementById("testing-listbox");
 		var items = listbox.selectedItems;
 		if(!items || items.length == 0) return false; // No action if nothing selected

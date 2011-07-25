@@ -44,6 +44,8 @@
 <!ENTITY scaffold.load.label.label			"Label">
 <!ENTITY scaffold.load.creator.label			"Creator">
 
+<!ENTITY scaffold.editor.external.label			"Use external editor">
+
 <!ENTITY scaffold.testing.description			"Select a test to run">
 <!ENTITY scaffold.testing.input.label			"Input">
 <!ENTITY scaffold.testing.status.label			"Status">
