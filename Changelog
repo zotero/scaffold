@@ -1,6 +1,9 @@
 Version 2.?.?
  * Add support for creating and running web and import translator test fixtures
  * Add support for specifying connector compatibility (Gecko/IE/Chrome/Safari)
+ * Re-enable error line selection
+ * Edit test fixtures in a separate pane
+ * Add support for writing translators in an external editor
  * Relicensed under the Affero General Public License, like the Zotero main code
  * Uses the Zotero standard of hard tabs for translators, replaces spaces with tabs
  * Compatible only with Zotero trunk and Zotero Multilingual!
