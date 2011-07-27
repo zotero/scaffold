@@ -1,14 +1,6 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
-codeeditor {
-	-moz-binding: url("chrome://scaffold/content/code-editor.xml#codeeditor") ;
-}
-
-importeditor {
-	-moz-binding: url("chrome://scaffold/content/import.xml#importeditor") ;
-}
-
 #tb toolbarbutton .toolbarbutton-text {
 	margin:0 2px;
 }
@@ -73,9 +65,4 @@ importeditor {
 
 listbox {
 	min-width:200px;
-}
-
-#editor-code textbox, #editor-import textbox {
-	font-family: monospace;
-	font-size: 80%;
 }
