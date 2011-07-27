@@ -1,10 +1,9 @@
 Relatively important
- - Hide tests most of the time (ticket #1873)
  - Provide guidance on translator options
  - Links to documentation (why not?)
  - JS(H|L)int, comes nearly free with ACE
  - search within translator code
- - show matching translators for given page (import)
+ - show matching translators for given import text
  - tools for writing export and search translators
 
 Not very important

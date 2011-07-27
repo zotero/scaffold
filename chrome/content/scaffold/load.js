@@ -28,52 +28,40 @@ var Scaffold_Load = new function() {
 	this.accept = accept;
 	
 	function onLoad() {
+		var listitem, translator, listcell, set;
 		var listbox = document.getElementById("listbox");
-		
-		// Get the web translators
-		var translators = Zotero.Translators.getAllForType("web").sort(function(a, b) { return a.label.localeCompare(b.label) });
-		for each(var translator in translators) {
-			var listitem = document.createElement("listitem");
-			// Since type-to-find is based on the value, we need to put the label there
-			// But we still can't get type-to-find to work
-			listitem.setAttribute("value", translator.label);
-			// And the ID goes in DOM user data
-			listitem.setUserData("zotero-id", translator.translatorID, null);
-			
-			var listcell = document.createElement("listcell");
-			listcell.setAttribute("label", translator.label);
-			listitem.appendChild(listcell);
-			var listcell = document.createElement("listcell");
-			listcell.setAttribute("label", translator.creator);
-			listitem.appendChild(listcell);
-			
-			listbox.appendChild(listitem);
-		}
-		
-		// Make a separator
-		var listitem = document.createElement("listitem");
-		listitem.setAttribute("disabled", true);
-		listitem.setAttribute("label", "Import Translators");
-		listbox.appendChild(listitem);
+		var translators = {};		
 
-		// Get the import translators
-		var translators = Zotero.Translators.getAllForType("import").sort(function(a, b) { return a.label.localeCompare(b.label) });
-		for each(var translator in translators) {
-			var listitem = document.createElement("listitem");
-			// Since type-to-find is based on the value, we need to put the label there
-			// But we still can't get type-to-find to work
-			listitem.setAttribute("value", translator.label);
-			// And the ID goes in DOM user data
-			listitem.setUserData("zotero-id", translator.translatorID, null);
-			
-			var listcell = document.createElement("listcell");
-			listcell.setAttribute("label", translator.label);
-			listitem.appendChild(listcell);
-			var listcell = document.createElement("listcell");
-			listcell.setAttribute("label", translator.creator);
-			listitem.appendChild(listcell);
-			
+		// Get the matching translators		
+		var url = window.arguments[0].dataIn;
+		url = Zotero.Proxies.proxyToProper(url);
+		translators["Matching Translators"] = Zotero.Translators.getWebTranslatorsForLocation(url);
+		translators["Web Translators"] = Zotero.Translators.getAllForType("web").sort(function(a, b) { return a.label.localeCompare(b.label) });
+		translators["Import Translators"] = Zotero.Translators.getAllForType("import").sort(function(a, b) { return a.label.localeCompare(b.label) });
+
+		for (set in translators) {
+			// Make a separator
+			listitem = document.createElement("listitem");
+			listitem.setAttribute("disabled", true);
+			listitem.setAttribute("label", set);
 			listbox.appendChild(listitem);
+			for each(translator in translators[set]) {
+				listitem = document.createElement("listitem");
+				// Since type-to-find is based on the value, we need to put the label there
+				// But we still can't get type-to-find to work
+				listitem.setAttribute("value", translator.label);
+				// And the ID goes in DOM user data
+				listitem.setUserData("zotero-id", translator.translatorID, null);
+
+				listcell = document.createElement("listcell");
+				listcell.setAttribute("label", translator.label);
+				listitem.appendChild(listcell);
+				listcell = document.createElement("listcell");
+				listcell.setAttribute("label", translator.creator);
+				listitem.appendChild(listcell);
+
+				listbox.appendChild(listitem);
+			}
 		}
 	}
 	

@@ -147,6 +147,7 @@ var Scaffold = new function() {
 		var translator = false;
 		if (translatorID === undefined) {
 			var io = new Object();
+			io.dataIn = _getDocument().location.href;
 			window.openDialog("chrome://scaffold/content/load.xul",
 				"_blank","chrome,modal", io);
 			translator = io.dataOut;
