@@ -221,7 +221,7 @@ var Scaffold = new function() {
 		// get browser support
 		var browserSupport = translator.browserSupport;
 		if(!browserSupport) browserSupport = "g";
-		const browsers = ["gecko", "chrome", "safari", "ie"];
+		const browsers = ["gecko", "chrome", "safari", "ie", "bookmarklet"];
 		for each(var browser in browsers) {
 			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
 		}
@@ -292,6 +292,9 @@ var Scaffold = new function() {
 		if(document.getElementById('checkbox-ie').checked) {
 			metadata.browserSupport += "i";
 		}
+		if(document.getElementById('checkbox-bookmarklet').checked) {
+			metadata.browserSupport += "b";
+		}
 
 		var date = new Date();
 		metadata.lastUpdated = date.getFullYear()
@@ -344,7 +347,7 @@ var Scaffold = new function() {
 						var doc = utilities.retrieveDocument(input);
 					} catch (e) {
 						// Time's up!
-						_logMessage("retrieveDocument timed out");
+						_logOutput("retrieveDocument timed out");
 						return false;
 					}
 				translate.setDocument(doc);
@@ -401,7 +404,11 @@ var Scaffold = new function() {
 			translator.detectCode = null;
 			translate.setTranslator(translator);
 			translate.clearHandlers("itemDone");
+			translate.clearHandlers("collectionDone");
 			translate.setHandler("itemDone", itemDone);
+			translate.setHandler("collectionDone", function(obj, collection) {
+				_logOutput("Collection: "+ collection.name + ", "+collection.children.length+" items");
+			});
 			// disable output to database
 			translate.translate(false);
 		}
@@ -572,6 +579,9 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-ie').checked) {
 			translator.browserSupport += "i";
+		}
+		if(document.getElementById('checkbox-bookmarklet').checked) {
+			translator.browserSupport += "b";
 		}
 		
 		// make sure translator gets run in browser in Zotero >2.1
