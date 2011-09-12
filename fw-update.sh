@@ -10,7 +10,7 @@ FRAMEWORK=/home/ajlyon/development/zotero/zotero-transfw/framework.min.js
 echo Previous version:
 grep -m1 -o -E "FW LINE [0-9]+:[a-f0-9]{12}" $SCAFFOLD
 
-sed -i -e "/\/\* FW LINE [0-9]\+:[0-9a-f]\{12\}.*\"Leaving FW\.doWeb\")};/ { r $FRAMEWORK" -e 'd; }' $SCAFFOLD;
+sed -i -e "/\/\* FW LINE [0-9]\+:[0-9a-f]\{12\}.*/ { r $FRAMEWORK" -e 'd; }' $SCAFFOLD;
 sed -i -e "s|^/\* FW LINE [0-9]\+:[0-9a-f]\{12\}.*|	var _FW = '\0';\n|" $SCAFFOLD;
 
 echo Current version:
