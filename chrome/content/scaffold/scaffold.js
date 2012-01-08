@@ -75,6 +75,7 @@ var Scaffold = new function() {
 
 
 
+
 	function onLoad() {
 		_document = document;
 
