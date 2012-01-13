@@ -215,7 +215,7 @@ var Scaffold = new function() {
 		// get translator type; might as well have some fun here
 		var type = translator.translatorType;
 		var types = ["import", "export", "web", "search"];
-		for(var i=2; i<=8; i*=2) {
+		for(var i=2; i<=16; i*=2) {
 			var mod = type % i;
 			document.getElementById('checkbox-'+types.shift()).checked = !!mod;
 			if(mod) type -= mod;
