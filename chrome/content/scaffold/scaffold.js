@@ -46,19 +46,7 @@ var Scaffold = new function() {
 	this.editImportFromTest = editImportFromTest;
 
 	var _browser, _frames, _document;
-
-	Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(Components.interfaces.mozIJSSubScriptLoader)
-		.loadSubScript("chrome://scaffold/content/ace/ace.js");
-
-	Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(Components.interfaces.mozIJSSubScriptLoader)
-		.loadSubScript("chrome://scaffold/content/ace/mode-javascript.js");
-
-        this.ace = ace;
-        var _JavaScriptMode = require("ace/mode/javascript").Mode;
-        var _TextMode = require("ace/mode/text").Mode;
-        var _EditSession = require("ace/edit_session").EditSession;
+	
 	var _editors = {};
 
 	var _propertyMap = {
@@ -77,7 +65,8 @@ var Scaffold = new function() {
 
 
 
-	function onLoad() {
+	function onLoad(e) {
+		if(e.target !== document) return;
 		_document = document;
 
 		_browser = Components.classes["@mozilla.org/appshell/window-mediator;1"]
@@ -89,20 +78,24 @@ var Scaffold = new function() {
 		_browser.document.getElementById("appcontent").addEventListener("pageshow",
 			_updateFrames, true);
 		_updateFrames();
-
-		_editors["import"] = this.ace.edit('editor-import');
-		_editors["code"] = this.ace.edit('editor-code');
-		_editors["tests"] = this.ace.edit('editor-tests');
+		
+		var importWin = document.getElementById("editor-import").contentWindow;
+		var codeWin = document.getElementById("editor-code").contentWindow;
+		var testsWin = document.getElementById("editor-tests").contentWindow;
+		
+		_editors["import"] = importWin.editor;
+		_editors["code"] = codeWin.editor;
+		_editors["tests"] = testsWin.editor;
 
 		_editors["code"].getSession().setUseWorker(false);
-		_editors["code"].getSession().setMode(new _JavaScriptMode);
+		_editors["code"].getSession().setMode(new codeWin.JavaScriptMode);
 		_editors["code"].getSession().setUseSoftTabs(false);
 
 		_editors["tests"].getSession().setUseWorker(false);
-		_editors["tests"].getSession().setMode(new _JavaScriptMode);
+		_editors["tests"].getSession().setMode(new testsWin.JavaScriptMode);
 		_editors["tests"].getSession().setUseSoftTabs(false);
 		
-		_editors["import"].getSession().setMode(new _TextMode);
+		_editors["import"].getSession().setMode(new importWin.TextMode);
 
 		// Set resize handler
 		_document.addEventListener("resize", this.onResize, false);
