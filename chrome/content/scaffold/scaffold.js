@@ -226,15 +226,7 @@ var Scaffold = new function() {
 
 	}
 
-	/*
-	 * save translator to database
-	 */
-	function save() {
-		//seems like duplicating some effort from _getTranslator
-		var code = _editors["code"].getSession().getValue();
-		var tests = _editors["tests"].getSession().getValue();
-		code += tests;
-
+	function _getMetadataObject() {
 		var metadata = {
 			translatorID: document.getElementById('textbox-translatorID').value,
 			label: document.getElementById('textbox-label').value,
@@ -244,11 +236,6 @@ var Scaffold = new function() {
 			maxVersion: document.getElementById('textbox-maxVersion').value,
 			priority: parseInt(document.getElementById('textbox-priority').value)
 		};
-		
-		if (metadata.label === "Untitled") {
-			_logOutput("Can't save an untitled translator.");
-			return;
-		}
 
 		if(document.getElementById('textbox-configOptions').value != '') {
 		    metadata.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
@@ -256,11 +243,8 @@ var Scaffold = new function() {
 		if(document.getElementById('textbox-displayOptions').value != '') {
 		    metadata.displayOptions = JSON.parse(document.getElementById('textbox-displayOptions').value);
 		}
-		
-		if(document.getElementById('checkbox-framework').checked) {
-			code = _FW + '\n' + code;
-		}
 
+		// no option for this
 		metadata.inRepository = true;
 
 		metadata.translatorType = 0;
@@ -301,6 +285,27 @@ var Scaffold = new function() {
 			+" "+Zotero.Utilities.lpad(date.getHours(), '0', 2)
 			+":"+Zotero.Utilities.lpad(date.getMinutes(), '0', 2)
 			+":"+Zotero.Utilities.lpad(date.getSeconds(), '0', 2);
+
+		return metadata;
+	}
+
+	/*
+	 * save translator to database
+	 */
+	function save() {
+		var code = _editors["code"].getSession().getValue();
+		var tests = _editors["tests"].getSession().getValue();
+		code += tests;
+
+		if(document.getElementById('checkbox-framework').checked) {
+			code = _FW + '\n' + code;
+		}
+
+		var metadata = _getMetadataObject();
+		if (metadata.label === "Untitled") {
+			_logOutput("Can't save an untitled translator.");
+			return;
+		}
 
 		Zotero.Translators.save(metadata,code);
 		Zotero.Translators.init();
@@ -526,62 +531,37 @@ var Scaffold = new function() {
 	}
 
 	/*
+	 * transfers metadata to the translator object
+	 * Replicated from translator.js
+	 */
+	function _metaToTranslator(translator, metadata) {
+		for each(var p in ["translatorID", "translatorType", "label", "creator", "target",
+			"minVersion", "maxVersion", "priority", "lastUpdated", "inRepository", "configOptions",
+			"displayOptions", "browserSupport"]) {
+			translator[p] = metadata[p];
+		}
+
+		if(!translator.configOptions) translator.configOptions = {};
+		if(!translator.displayOptions) translator.displayOptions = {};
+		if(!translator.browserSupport) translator.browserSupport = "g";
+	}
+
+	/*
 	 * gets translator data from the metadata pane
 	 */
 	function _getTranslator() {
-		// use _propertyMap for text boxes
+		//create a barebones translator
 		var translator = new Object();
-		for(var id in _propertyMap) {
-			translator[_propertyMap[id]] = document.getElementById(id).value;
-		}
-		// load options
-		if(document.getElementById('textbox-configOptions').value != '') {
-		    translator.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
-		} else {
-		    translator.configOptions = {};
-		}
-		if(document.getElementById('textbox-displayOptions').value != '') {
-		    translator.displayOptions = JSON.parse(document.getElementById('textbox-displayOptions').value);
-		} else {
-		    translator.displayOptions = {};
-		}
-		//RZ: prefix for translator.code is hack to force correct parsing in translate.js
-		//after completion of Zotero.Translate.prototype._parseCode, the code will start with "var translatorInfo = 1;", and detectWeb will be detected
-		var locFW = document.getElementById('checkbox-framework').checked ? _FW : '';
-		translator.code = "1;" + locFW + _editors["code"].getSession().getValue();
+		var metadata = _getMetadataObject();
 
-		// load translator type
-		translator.translatorType = 0;
-		if(document.getElementById('checkbox-import').checked) {
-			translator.translatorType += 1;
-		}
-		if(document.getElementById('checkbox-export').checked) {
-			translator.translatorType += 2;
-		}
-		if(document.getElementById('checkbox-web').checked) {
-			translator.translatorType += 4;
-		}
-		if(document.getElementById('checkbox-search').checked) {
-			translator.translatorType += 8;
-		}
-		
-		translator.browserSupport = "";
-		if(document.getElementById('checkbox-gecko').checked) {
-			translator.browserSupport += "g";
-		}
-		if(document.getElementById('checkbox-chrome').checked) {
-			translator.browserSupport += "c";
-		}
-		if(document.getElementById('checkbox-safari').checked) {
-			translator.browserSupport += "s";
-		}
-		if(document.getElementById('checkbox-ie').checked) {
-			translator.browserSupport += "i";
-		}
-		if(document.getElementById('checkbox-bookmarklet').checked) {
-			translator.browserSupport += "b";
-		}
-		
+		//copy metadata into the translator object
+		_metaToTranslator(translator, metadata);
+
+		var locFW = document.getElementById('checkbox-framework').checked ? _FW + "\n" : "\n";
+		metadata = JSON.stringify(metadata) + ";\n";
+
+		translator.code = metadata + locFW + _editors["code"].getSession().getValue();
+
 		// make sure translator gets run in browser in Zotero >2.1
 		if(Zotero.Translator.RUN_MODE_IN_BROWSER) {
 			translator.runMode = Zotero.Translator.RUN_MODE_IN_BROWSER;
