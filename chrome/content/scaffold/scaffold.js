@@ -456,7 +456,7 @@ var Scaffold = new function() {
 	 */
 	function _error(obj, error) {
 		if(error && error.lineNumber) {
-			_editors["code"].gotoLine(error.lineNumber);
+			_editors["code"].gotoLine(error.lineNumber-2);	// subtract two lines for metadata and FW
 		}
 	}
 
