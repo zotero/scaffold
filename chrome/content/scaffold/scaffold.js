@@ -168,7 +168,7 @@ var Scaffold = new function() {
 		var usesFW = (translator.code.substr(m[0].length).indexOf("/* FW LINE ") !== -1);
 		if(usesFW) var fixedCode = translator.code
 						.substr(m[0].length)
-						.replace(/\/\* FW LINE [^\n]*\n/,'\n');
+						.replace(/\/\* FW LINE [^\n]*\n/,'');
 		else var fixedCode = translator.code.substr(m[0].length);
 		// load tests into test editing pane, but clear it first
 		_editors["tests"].getSession().setValue('');
