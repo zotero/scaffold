@@ -47,8 +47,7 @@ var Scaffold_Load = new function() {
 			listbox.appendChild(listitem);
 			for each(translator in translators[set]) {
 				listitem = document.createElement("listitem");
-				// Since type-to-find is based on the value, we need to put the label there
-				// But we still can't get type-to-find to work
+				// set label for type-to-find functionality. This is not displayed.
 				listitem.setAttribute("label", translator.label);
 				// And the ID goes in DOM user data
 				listitem.setUserData("zotero-id", translator.translatorID, null);
