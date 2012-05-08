@@ -219,7 +219,7 @@ var Scaffold = new function() {
 		// get browser support
 		var browserSupport = translator.browserSupport;
 		if(!browserSupport) browserSupport = "g";
-		const browsers = ["gecko", "chrome", "safari", "ie", "bookmarklet"];
+		const browsers = ["gecko", "chrome", "safari", "ie", "bookmarklet", "server"];
 		for each(var browser in browsers) {
 			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
 		}
@@ -276,6 +276,9 @@ var Scaffold = new function() {
 		}
 		if(document.getElementById('checkbox-bookmarklet').checked) {
 			metadata.browserSupport += "b";
+		}
+		if(document.getElementById('checkbox-server').checked) {
+			metadata.browserSupport += "v";
 		}
 
 		var date = new Date();
