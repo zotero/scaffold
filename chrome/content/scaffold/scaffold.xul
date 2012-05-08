@@ -120,6 +120,7 @@
 						<checkbox id="checkbox-safari" label="&scaffold.metadata.browserSupport.safari;"/>
 						<checkbox id="checkbox-ie" label="&scaffold.metadata.browserSupport.ie;"/>
 						<checkbox id="checkbox-bookmarklet" label="&scaffold.metadata.browserSupport.bookmarklet;"/>
+						<checkbox id="checkbox-server" label="&scaffold.metadata.browserSupport.server;"/>
 					</groupbox></row></rows>
 					</grid>
 				</vbox>
