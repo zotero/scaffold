@@ -854,13 +854,11 @@ var Scaffold = new function() {
 		var me = this;
 		
 		if (test.type == "import") {
-			var input = _getImport();
-
 			test.items = [];
 
 			// Re-runs the test.
 			// TranslatorTester doesn't handle these correctly, so we do it manually
-			_run("doImport", input, null, function(obj, item) {
+			_run("doImport", test.input, null, function(obj, item) {
 				if(item) {
 					test.items.push(_sanitizeItem(item));
 				} 
