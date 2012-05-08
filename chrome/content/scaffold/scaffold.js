@@ -219,9 +219,9 @@ var Scaffold = new function() {
 		// get browser support
 		var browserSupport = translator.browserSupport;
 		if(!browserSupport) browserSupport = "g";
-		const browsers = ["gecko", "chrome", "safari", "ie", "bookmarklet", "server"];
-		for each(var browser in browsers) {
-			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browser[0]) !== -1;
+		const browsers = {gecko:"g", chrome:"c", safari:"s", ie:"i", bookmarklet:"b", server:"v"};
+		for (var browser in browsers) {
+			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browsers[browser]) !== -1;
 		}
 
 	}
