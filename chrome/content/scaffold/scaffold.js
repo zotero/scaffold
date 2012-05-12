@@ -458,7 +458,8 @@ var Scaffold = new function() {
 	 * called if an error occurs
 	 */
 	function _error(obj, error) {
-		if(error && error.lineNumber) {
+		if(error && error.lineNumber &&
+				error.fileName == obj.translator[0].label ) {
 			_editors["code"].gotoLine(error.lineNumber-2);	// subtract two lines for metadata and FW
 		}
 	}
