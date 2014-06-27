@@ -282,12 +282,12 @@ var Scaffold = new function() {
 		}
 
 		var date = new Date();
-		metadata.lastUpdated = date.getFullYear()
-			+"-"+Zotero.Utilities.lpad(date.getMonth()+1, '0', 2)
-			+"-"+Zotero.Utilities.lpad(date.getDate(), '0', 2)
-			+" "+Zotero.Utilities.lpad(date.getHours(), '0', 2)
-			+":"+Zotero.Utilities.lpad(date.getMinutes(), '0', 2)
-			+":"+Zotero.Utilities.lpad(date.getSeconds(), '0', 2);
+		metadata.lastUpdated = date.getUTCFullYear()
+			+"-"+Zotero.Utilities.lpad(date.getUTCMonth()+1, '0', 2)
+			+"-"+Zotero.Utilities.lpad(date.getUTCDate(), '0', 2)
+			+" "+Zotero.Utilities.lpad(date.getUTCHours(), '0', 2)
+			+":"+Zotero.Utilities.lpad(date.getUTCMinutes(), '0', 2)
+			+":"+Zotero.Utilities.lpad(date.getUTCSeconds(), '0', 2);
 
 		return metadata;
 	}
