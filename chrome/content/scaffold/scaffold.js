@@ -596,10 +596,11 @@ var Scaffold = new function() {
 
 	/*
 	 * writes tests back into the translator
+	 * deterministically sorts fields in each test
 	 */
 	function _writeTests(tests) {
 		var code = "/** BEGIN TEST CASES **/\nvar testCases = "
-				+ JSON.stringify(tests, null, "\t") // pretty-print
+				+ _stringifyTests(tests)
 				+ "\n/** END TEST CASES **/";
 		_editors["tests"].getSession().setValue(code);
 	}
@@ -636,6 +637,85 @@ var Scaffold = new function() {
 			}
 		}
 		return test;
+	}
+	
+	/* stringifies an array of tests
+	 * Output is the same as JSON.stringify (with pretty print), except that
+	 * Zotero.Item objects are stringified in a deterministic manner (mostly):
+	 *   * Certain important fields are placed at the top of the object
+	 *   * Certain less-frequently used fields are placed at the bottom
+	 *   * Remaining fields are sorted alphabetically
+	 *   * tags are always sorted alphabetically
+	 *   * Some fields, like those inside creator objects, notes, etc. are not sorted
+	 */
+	function _stringifyTests(value, level) {
+		if(!level) level = 0;
+		
+		if(typeof(value) == 'function' || typeof(value) == 'undefined' || value === null) {
+			return level ? undefined : '';
+		}
+		
+		if(typeof(value) !== 'object') return JSON.stringify(value, null, "\t");
+		
+		if(value instanceof Array) {
+			let str = '[';
+			for(let i=0; i<value.length; i++) {
+				let val = _stringifyTests(value[i], level+1);
+				
+				if(val === undefined) val = 'undefined';
+				else val = val.replace(/\n/g, "\n\t"); // Indent
+				
+				str += (i?',':'') + "\n\t" + val;
+			}
+			return str + (str.length > 1 ? "\n]" : ']');
+		}
+		
+		if(!value.itemType) {
+			// Not a Zotero.Item object
+			var str = '{';
+			for(let i in value) {
+				let val = _stringifyTests(value[i], level+1);
+				if(val === undefined) continue;
+				
+				val = val.replace(/\n/g, "\n\t");
+				str += (str.length > 1 ? ',':'') + "\n\t" + JSON.stringify(''+i) + ': ' + val;
+			}
+			return str + (str.length > 1 ? "\n}" : '}');
+		}
+		
+		// Zotero.Item object
+		const topFields = ['itemType', 'title', 'caseName', 'nameOfAct', 'subject',
+			'creators', 'date', 'dateDecided', 'issueDate', 'dateEnacted'];
+		const bottomFields = ['attachments', 'tags', 'notes', 'seeAlso'];
+		let otherFields = Object.keys(value);
+		let presetFields = topFields.concat(bottomFields);
+		for(let i=0; i<presetFields.length; i++) {
+			let j = otherFields.indexOf(presetFields[i]);
+			if(j == -1) continue;
+			
+			otherFields.splice(j, 1);
+		}
+		let fields = topFields.concat(otherFields.sort()).concat(bottomFields);
+		
+		let str = '{';
+		for(let i=0; i<fields.length; i++) {
+			let rawVal = value[fields[i]];
+			if(!rawVal) continue;
+			
+			let val;
+			if(fields[i] == 'tags') {
+				val = _stringifyTests(rawVal.sort(), level+1);
+			} else {
+				val = _stringifyTests(rawVal, level+1);
+			}
+			
+			if(val === undefined) continue;
+			
+			val = val.replace(/\n/g, "\n\t");
+			str += (str.length > 1 ? ',':'') + "\n\t" + JSON.stringify(fields[i]) + ': ' + val;
+		}
+		
+		return str + "\n}";
 	}
 	
 	/*
