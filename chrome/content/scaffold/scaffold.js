@@ -631,7 +631,7 @@ var Scaffold = new function() {
 	/* sanitizes all items in a test
 	 */
 	function _sanitizeItemsInTest(test) {
-		if(test.items && test.items.length) {
+		if(test.items && typeof test.items != 'string' && test.items.length) {
 			for(var i=0, n=test.items.length; i<n; i++) {
 				test.items[i] = Zotero_TranslatorTester._sanitizeItem(test.items[i]);
 			}
