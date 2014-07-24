@@ -583,7 +583,7 @@ var Scaffold = new function() {
 				test = test.slice(0,-1);
 			try {
 				var testObject = JSON.parse(test);
-				_writeTests(testObject);
+				_writeTests(JSON.stringify(testObject, null, "\t")); // Don't modify current tests
 				return testObject;
 			} catch (e) {
 				_logOutput("Exception parsing JSON");
@@ -596,12 +596,10 @@ var Scaffold = new function() {
 
 	/*
 	 * writes tests back into the translator
-	 * deterministically sorts fields in each test
 	 */
-	function _writeTests(tests) {
+	function _writeTests(testString) {
 		var code = "/** BEGIN TEST CASES **/\nvar testCases = "
-				+ _stringifyTests(tests)
-				+ "\n/** END TEST CASES **/";
+				+ testString + "\n/** END TEST CASES **/";
 		_editors["tests"].getSession().setValue(code);
 	}
 	
@@ -828,7 +826,7 @@ var Scaffold = new function() {
 			if(test) tests.push(JSON.parse(test));
 			i++;
 		}
-		_writeTests(tests);
+		_writeTests(_stringifyTests(tests));
 		save();
 	}
 
