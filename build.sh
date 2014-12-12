@@ -1,10 +1,7 @@
 #!/bin/bash
 
-find . -name '.hg' -prune -o \
-       -name '.hgtags' -prune -o \
-       -name '.svn' -prune -o \
-       -name '.git' -prune -o \
-       -name '.hgignore' -prune -o \
+find . -name '.git' -prune -o \
+       -name '.gitignore' -prune -o \
        -name '.xpi' -prune -o \
        -name 'fw-update.sh' -prune -o \
        -name 'build.sh' -prune -o \
