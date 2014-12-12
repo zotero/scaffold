@@ -1,6 +1,16 @@
-Version 2.?.?
+Version 3.1.0
+ * Enable find-as-you-type in translator list
+ * Fix accumulation of newlines when saving FW translators
+ * On error during _run*, focus the appropriate line
+ * Add "Server" option for translator compatibility
+ * Updating Import translators uses input from stored data, not from Import tab
+ * Use UTC date for lastUpdated timestamp
+ * When saving tests, sanitize them (to exclude irrelevant fields and map fields to item type-specific fields) and sort the fields in a static order.
+ * When running translator, display what fields would be removed/added
+
+Version 3.0.0
  * Add support for creating and running web and import translator test fixtures
- * Add support for specifying connector compatibility (Gecko/IE/Chrome/Safari)
+ * Add support for specifying connector compatibility (Gecko/IE/Chrome/Safari/bookmarklet)
  * Re-enable error line selection
  * Edit test fixtures in a separate pane
  * Show translators that match the current page first in the load pane
@@ -8,7 +18,8 @@ Version 2.?.?
  * Relicensed under the Affero General Public License, like the Zotero main code
  * Uses the Zotero standard of hard tabs for translators, replaces spaces with tabs
  * Compatible only with Zotero trunk and Zotero Multilingual!
- * Updated to Framework 49:9c8b4db52e08
+ * Updated to Framework 57:6869c32952b1
+ * Update Ace to 0.2.0
 
 Version 2.1.3 (June 13, 2011)
  * Include Ajax.org Cloud9 Editor (ACE)
