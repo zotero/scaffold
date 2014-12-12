@@ -1,3 +1,6 @@
+Version 3.1.1
+ * Switch updateUrl to GitHub Pages
+
 Version 3.1.0
  * Enable find-as-you-type in translator list
  * Fix accumulation of newlines when saving FW translators
