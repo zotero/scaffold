@@ -29,6 +29,19 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"]
 				.getService(Components.interfaces.nsISupports)
 				.wrappedJSObject;
 
+// Fix JSON stringify 2028/2029 "bug"
+// Borrowed from http://stackoverflow.com/questions/16686687/json-stringify-and-u2028-u2029-check
+if (JSON.stringify(["\u2028\u2029"]) !== '["\\u2028\\u2029"]') {
+	JSON.stringify = function (stringify) {
+		return function () {
+			var str = stringify.apply(this, arguments);
+			if (str.indexOf('\u2028') != -1) str = str.replace(/\u2028/g, '\\u2028');
+			if (str.indexOf('\u2029') != -1) str = str.replace(/\u2029/g, '\\u2029');
+			return str;
+		};
+	}(JSON.stringify);
+}
+
 var Scaffold = new function() {
 	this.onLoad = onLoad;
 	this.load = load;
