@@ -42,6 +42,13 @@ if (JSON.stringify(["\u2028\u2029"]) !== '["\\u2028\\u2029"]') {
 	}(JSON.stringify);
 }
 
+// To be used elsewhere (e.g. varDump)
+function fix2028(str) {
+	if (str.indexOf('\u2028') != -1) str = str.replace(/\u2028/g, '\\u2028');
+	if (str.indexOf('\u2029') != -1) str = str.replace(/\u2029/g, '\\u2029');
+	return str;
+}
+
 var Scaffold = new function() {
 	this.onLoad = onLoad;
 	this.load = load;
@@ -520,9 +527,8 @@ var Scaffold = new function() {
 		var date = new Date();
 		var output = document.getElementById('output');
 
-		// use JSON.stringify on non-strings
 		if(typeof string != "string") {
-			string = JSON.stringify(string, null, "\t");
+			string = fix2028(Zotero.Utilities.varDump(string));
 		}
 
 		if(output.value) output.value += "\n";
