@@ -960,11 +960,30 @@ var Scaffold = new function() {
 		
 		var hiddenBrowser = Zotero.HTTP.processDocuments(test.url,
 			function(doc) {
-				me.tester.newTest(doc, function(obj, test) {
-					Zotero.Browser.deleteHiddenBrowser(hiddenBrowser);
-					me.newTests.push(_sanitizeItemsInTest(test));
-					me.updateTests(callback);
-				});
+				if (test.defer) {
+					_logOutput("Waiting " + (Zotero_TranslatorTester.DEFER_DELAY/1000)
+						+ " second(s) for page content to settle"
+					);
+				}
+				Zotero.setTimeout(
+					function() {
+						doc = hiddenBrowser.contentDocument;
+						if (doc.location.href != test.url) {
+							_logOutput("Page URL differs from test. Will be updated. "+ doc.location.href);
+						}
+						me.tester.newTest(doc, function(obj, newTest) {
+							Zotero.Browser.deleteHiddenBrowser(hiddenBrowser);
+							if (test.defer) {
+								newTest.defer = true;
+							}
+							newTest = _sanitizeItemsInTest(newTest);
+							me.newTests.push(newTest);
+							me.updateTests(callback);
+						});
+					},
+					test.defer ? Zotero_TranslatorTester.DEFER_DELAY : 0,
+					true
+				)
 			},
 			null,
 			function(e) {
@@ -974,6 +993,8 @@ var Scaffold = new function() {
 			},
 			true
 		);
+		
+		hiddenBrowser.docShell.allowMetaRedirects = true;
 	}
 
 	/*
