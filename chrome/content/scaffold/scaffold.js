@@ -671,13 +671,31 @@ var Scaffold = new function() {
 		if(!value.itemType) {
 			// Not a Zotero.Item object
 			var str = '{';
-			for(let i in value) {
-				let val = _stringifyTests(value[i], level+1);
-				if(val === undefined) continue;
+			
+			function processRow(key, value) {
+				let val = _stringifyTests(value, level+1);
+				if(val === undefined) return;
 				
 				val = val.replace(/\n/g, "\n\t");
-				str += (str.length > 1 ? ',':'') + "\n\t" + JSON.stringify(''+i) + ': ' + val;
+				return JSON.stringify(''+key) + ': ' + val;
 			}
+			
+			if (level < 2 && value.items) {
+				// Test object. Arrange properties in set order
+				let order = ['type', 'url', 'input', 'defer', 'items'];
+				for (let i=0; i<order.length; i++) {
+					let val = processRow(order[i], value[order[i]]);
+					if (val === undefined) continue;
+					str += (str.length > 1 ? ',' : '') + '\n\t' + val;
+				}
+			} else {
+				for (let i in value) {
+					let val = processRow(i, value[i]);
+					if (val === undefined) continue;
+					str += (str.length > 1 ? ',' : '') + '\n\t' + val;
+				}
+			}
+			
 			return str + (str.length > 1 ? "\n}" : '}');
 		}
 		
