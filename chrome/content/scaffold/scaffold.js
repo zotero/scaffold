@@ -944,6 +944,9 @@ var Scaffold = new function() {
 			},
 			function() {
 				_logOutput("Tests updated.");
+				// Save tests
+				_logOutput("Saving tests and translator.");
+				saveTests();
 			}
 		);
 	}
