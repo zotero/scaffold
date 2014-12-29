@@ -928,35 +928,49 @@ var Scaffold = new function() {
 		}
 		
 		var updater = new TestUpdater(tests);
-		updater.updateTests(function(newTests) {
-			for(var i in newTests) {
-				var message;
-				if(newTests[i]) {
+		var testsDone = 0;
+		updater.updateTests(
+			function(newTest) {
+				// Assume sequential. TODO: handle this properly via test ID of some sort
+				if(newTest) {
 					message = "Test updated";
-					Zotero.debug(newTests[i]);
-					items[i].setUserData("test-string", JSON.stringify(newTests[i]), null);
+					//Zotero.debug(newTest[testsDone]);
+					items[testsDone].setUserData("test-string", JSON.stringify(newTest), null);
 				} else {
 					message = "Update failed"
 				}
-				items[i].getElementsByTagName("listcell")[1].setAttribute("label", message);
+				items[testsDone].getElementsByTagName("listcell")[1].setAttribute("label", message);
+				testsDone++;
+			},
+			function() {
+				_logOutput("Tests updated.");
 			}
-		});
+		);
 	}
 	
 	var TestUpdater = function(tests) {
 		this.testsToUpdate = tests.slice();
+		this.numTestsTotal = this.testsToUpdate.length;
 		this.newTests = [];
 		this.tester = new Zotero_TranslatorTester(_getTranslator(), "web", _debug);
 	}
 	
-	TestUpdater.prototype.updateTests = function(callback) {
+	TestUpdater.prototype.updateTests = function(testDoneCallback, doneCallback) {
+		this.testDoneCallback = testDoneCallback || function() { /* no-op */};
+		this.doneCallback = doneCallback || function() { /* no-op */};
+		
+		this._updateTests();
+	}
+	
+	TestUpdater.prototype._updateTests = function() {
 		if(!this.testsToUpdate.length) {
-			callback(this.newTests);
+			this.doneCallback(this.newTests);
 			return;
 		}
 		
-		
 		var test = this.testsToUpdate.shift();
+		_logOutput("Updating test " + (this.numTestsTotal - this.testsToUpdate.length));
+		
 		var me = this;
 		
 		if (test.type == "import") {
@@ -969,15 +983,19 @@ var Scaffold = new function() {
 					test.items.push(Zotero_TranslatorTester._sanitizeItem(item));
 				} 
 			}, null, function() {
+				if (!test.items.length) test = false;
 				me.newTests.push(test);
-				me.updateTests(callback);
+				me.testDoneCallback(test);
+				me._updateTests();
 			});
 			// Don't want to run the web portion
 			return true;
 		}
 		
+		_logOutput("Loading web page from " + test.url);
 		var hiddenBrowser = Zotero.HTTP.processDocuments(test.url,
 			function(doc) {
+				_logOutput("Page loaded");
 				if (test.defer) {
 					_logOutput("Waiting " + (Zotero_TranslatorTester.DEFER_DELAY/1000)
 						+ " second(s) for page content to settle"
@@ -996,7 +1014,8 @@ var Scaffold = new function() {
 							}
 							newTest = _sanitizeItemsInTest(newTest);
 							me.newTests.push(newTest);
-							me.updateTests(callback);
+							me.testDoneCallback(newTest);
+							me._updateTests();
 						});
 					},
 					test.defer ? Zotero_TranslatorTester.DEFER_DELAY : 0,
@@ -1007,7 +1026,8 @@ var Scaffold = new function() {
 			function(e) {
 				Zotero.logError(e);
 				me.newTests.push(false);
-				me.updateTests(callback);
+				me.testDoneCallback(false);
+				me._updateTests();
 			},
 			true
 		);
