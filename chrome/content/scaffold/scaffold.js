@@ -35,8 +35,8 @@ if (JSON.stringify(["\u2028\u2029"]) !== '["\\u2028\\u2029"]') {
 	JSON.stringify = function (stringify) {
 		return function () {
 			var str = stringify.apply(this, arguments);
-			if (str.indexOf('\u2028') != -1) str = str.replace(/\u2028/g, '\\u2028');
-			if (str.indexOf('\u2029') != -1) str = str.replace(/\u2029/g, '\\u2029');
+			if (str && str.indexOf('\u2028') != -1) str = str.replace(/\u2028/g, '\\u2028');
+			if (str && str.indexOf('\u2029') != -1) str = str.replace(/\u2029/g, '\\u2029');
 			return str;
 		};
 	}(JSON.stringify);
