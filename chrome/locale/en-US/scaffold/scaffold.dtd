@@ -12,6 +12,7 @@
 <!ENTITY scaffold.tabs.tests.label			"Tests">
 <!ENTITY scaffold.tabs.testing.label			"Testing">
 
+<!ENTITY scaffold.tabUrl.label			"Active Tab:">
 <!ENTITY scaffold.testFrame.label			"Test Frame:">
 
 <!ENTITY scaffold.metadata.translatorID.label		"Translator ID:">
