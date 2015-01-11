@@ -1096,10 +1096,14 @@ var Scaffold = new function() {
 	}
 
 	/*
-	 * updates list of available frames
+	 * updates list of available frames and show URL of active tab 
 	 */
 	function _updateFrames() {
 		var doc = _browser.document.getElementById("content").contentDocument;
+		
+		//Show URL of active tab
+		document.getElementById("textbox-tabUrl").value = doc.location.href;
+		
 		// No need to run if Scaffold isn't open
 		var menulist = _document.getElementById("menulist-testFrame");
 		if (!_document || !menulist) return true;
