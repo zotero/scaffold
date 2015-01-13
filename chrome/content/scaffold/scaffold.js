@@ -689,7 +689,7 @@ var Scaffold = new function() {
 		
 		if(!value.itemType) {
 			// Not a Zotero.Item object
-			var str = '{';
+			let str = '{';
 			
 			function processRow(key, value) {
 				let val = _stringifyTests(value, level+1);
