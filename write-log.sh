@@ -1,13 +1,13 @@
 #!/bin/bash
 
-CHANGELOG="Changelog"
-TEMPFILE="`mktemp`"
-LASTTAG="`git tag -l v[0-9]* | tail -n 1`"
+changeLog="Changelog"
+tempFile="`mktemp`"
+lastTag="`git tag -l v[0-9]* | tail -n 1`"
 
-echo "Version $1" > "$TEMPFILE"
-git log "$LASTTAG".. --reverse --no-merges --format="* %s" >> "$TEMPFILE"
-echo "" >> "$TEMPFILE"
+echo "Version $1" > "$tempFile"
+git log --reverse --no-merges --format="* %s" "$lastTag".. src >> "$tempFile"
+echo "" >> "$tempFile"
 
-cat "$CHANGELOG" >> "$TEMPFILE"
+cat "$changeLog" >> "$tempFile"
 
-mv "$TEMPFILE" "$CHANGELOG"
+mv "$tempFile" "$changeLog"
