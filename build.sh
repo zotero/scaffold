@@ -1,8 +1,9 @@
 #!/bin/bash
+buildDir="build"
+rm -rf "$buildDir"
+mkdir "$buildDir"
 
-find . -name '.git' -prune -o \
-       -name '.gitignore' -prune -o \
-       -name '*.xpi' -prune -o \
-       -name '*.sh' -prune -o \
-       -name '*~' -prune -o \
-       -print | xargs zip scaffold.xpi
+buildPath="$buildDir/scaffold.xpi"
+
+(cd src && zip -r "../$buildPath" *)
+zip "$buildPath" Changelog
