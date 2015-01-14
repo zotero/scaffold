@@ -1,4 +1,4 @@
-Version 3.2
+Version 3.2.1
 * Display URL of currently active tab
 * Enable test updates for deferred tests and improve verbosity for all updates
 * Automatically save tests after updating
