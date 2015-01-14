@@ -1,3 +1,11 @@
+Version 3.2
+* Display URL of currently active tab
+* Enable test updates for deferred tests and improve verbosity for all updates
+* Automatically save tests after updating
+* Fix JSON.stringify "bug" with strings containing \u2028 or \u2029
+* Improved logging of various objects (e.g. Error)
+* Fix incompatibility with Firefox 35
+
 Version 3.1.1
  * Switch updateUrl to GitHub Pages
 
