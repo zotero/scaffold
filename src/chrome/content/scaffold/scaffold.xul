@@ -91,7 +91,7 @@
 					</hbox>
 					<hbox>
 						<label class="label-metadata" value="&scaffold.metadata.minVersion.label;" control="textbox-minVersion"/>
-						<textbox id="textbox-minVersion" flex="1" value="1.0"/>
+						<textbox id="textbox-minVersion" flex="1" value="3.0"/>
 						<label class="label-metadata" value="&scaffold.metadata.maxVersion.label;" control="textbox-maxVersion"/>
 						<textbox id="textbox-maxVersion" flex="1"/>
 						<label class="label-metadata" value="&scaffold.metadata.priority.label;" control="textbox-priority"/>
