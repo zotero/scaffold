@@ -644,7 +644,7 @@ var Scaffold = new function() {
 		}
 		
 		if (item && item.tags) {
-			item.tags.sort()
+			item.tags = Zotero.Utilities.arrayUnique(item.tags).sort();
 		}
 		return item;
 	}
