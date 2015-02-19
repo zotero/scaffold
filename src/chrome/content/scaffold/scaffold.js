@@ -642,6 +642,10 @@ var Scaffold = new function() {
 					item.attachments[i].document = "[object]";
 			}
 		}
+		
+		if (item && item.tags) {
+			item.tags.sort()
+		}
 		return item;
 	}
 	
