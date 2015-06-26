@@ -3,9 +3,11 @@ import argparse, json, shlex, subprocess, os.path, sys
 
 DEFAULT_MINIFIER = 'uglifyjs -m -c --'
 
-# Additional modules should be added here
+# Modules should be added here
 # shortName: [list of files]
-MODULES = {}
+MODULES = {
+	'FW': ['external/zotero-transfw/framework.js']
+}
 
 
 argParser = argparse.ArgumentParser(description='list/update modules')
