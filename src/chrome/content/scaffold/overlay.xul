@@ -29,8 +29,6 @@
 <overlay id="scaffold-overlay"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
-	<script src="overlay.js"/>
-	
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="scaffold-strings"
 			src="chrome://scaffold/locale/scaffold.properties"/>
