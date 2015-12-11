@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 import argparse, json, shlex, subprocess, os.path, sys
 
-DEFAULT_MINIFIER = 'uglifyjs -m -c --'
+MINIFIER_VERSION_CMD = 'uglifyjs --version'
+MINIFIER_PROCESS_CMD = 'uglifyjs -m -c --'
 
 # Modules should be added here
 # shortName: [list of files]
 MODULES = {
-	'FW': ['external/zotero-transfw/framework.js']
+	'FW': {
+	    'files': ['external/zotero-transfw/framework.js'],
+	    'url': 'https://github.com/egh/zotero-transfw/blob/master/framework.js'
+	}
 }
 
 
 argParser = argparse.ArgumentParser(description='list/update modules')
 argParser.add_argument('-u', '--update', help='update modules', dest='update', action='store_true')
-argParser.add_argument('-m', '--minifier',
-	help='minifier command to use (must take list of files as terminal arguments). Default: ' + DEFAULT_MINIFIER,
-	dest='minifier', default=DEFAULT_MINIFIER)
 args = argParser.parse_args()
 
 
@@ -43,11 +44,13 @@ if not(args.update):
 	
 	sys.exit()
 
+p = subprocess.Popen(MINIFIER_VERSION_CMD, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+minifierVersion = p.stdout.readline()[:-1]
 
 # Let's update modules if they are not at the current commit
 changed = False
-for shortName, files in MODULES.items():
-	p = subprocess.Popen(shlex.split('git rev-parse --short HEAD'), cwd=os.path.dirname(files[0]), stdout=subprocess.PIPE, universal_newlines=True)
+for shortName, data in MODULES.items():
+	p = subprocess.Popen(shlex.split('git rev-parse --short HEAD'), cwd=os.path.dirname(data['files'][0]), stdout=subprocess.PIPE, universal_newlines=True)
 	commit = p.stdout.readline()[:-1]
 	
 	if shortName in compiledModules and commit == compiledModules[shortName]['commit']:
@@ -56,21 +59,27 @@ for shortName, files in MODULES.items():
 	
 	changed = True
 	
+	generator = "Generated with '{}' using {}".format(MINIFIER_PROCESS_CMD, minifierVersion)
+	
 	if not(shortName in compiledModules):
 		print('Creating new module {} v1 at commit {}. Remember to specify a friendly name!'.format(shortName, commit))
 		compiledModules[shortName] = {
 			'name': shortName,
 			'version': 1,
-			'commit': commit
+			'url': data['url'],
+			'commit': commit,
+			'generator': generator
 		}
 	else:
 		module = compiledModules[shortName]
 		print('{} v{} was at {}, changing to {}'.format(shortName, module['version'], module['commit'], commit))
 		module['version'] += 1
+		module['url'] = data['url']
 		module['commit'] = commit
+		module['generator'] = generator
 	
 	# Minify code
-	p = subprocess.Popen(shlex.split(args.minifier) + files, stdout=subprocess.PIPE, universal_newlines=True)
+	p = subprocess.Popen(shlex.split(MINIFIER_PROCESS_CMD) + data['files'], stdout=subprocess.PIPE, universal_newlines=True)
 	compiledModules[shortName]['code'] = p.stdout.readline()[:-1]
 
 # Write JSON to file
