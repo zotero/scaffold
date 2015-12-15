@@ -6,7 +6,7 @@
   
     <em:id>scaffold@zotero.org</em:id>
     <em:name>Scaffold</em:name>
-    <em:version>3.2.1</em:version>
+    <em:version>3.2.2</em:version>
     <em:description>An IDE for creation of Zotero translators</em:description>
     <em:creator>Center for History and New Media<br/>George Mason University</em:creator>
     <em:updateURL>https://zotero.github.io/scaffold/scaffold.rdf</em:updateURL>
