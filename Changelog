@@ -1,3 +1,11 @@
+Version 3.2.2
+* Extension signing for Firefox 43 and higher
+* When running doWeb/Import, don't diff tag sort order
+* Discard redundant tags
+* Update to ACE 29.10.15
+* Reminify translator framework with latest uglifyjs
+* Internal structure changes
+
 Version 3.2.1
 * Display URL of currently active tab
 * Enable test updates for deferred tests and improve verbosity for all updates
