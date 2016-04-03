@@ -955,7 +955,7 @@ var Scaffold = new function() {
 	function updateSelectedTests() {
 		_clearOutput();
 		var listbox = document.getElementById("testing-listbox");
-		var items = listbox.selectedItems.slice();
+		var items = [...listbox.selectedItems];
 		if(!items || items.length == 0) return false; // No action if nothing selected
 		var tests = [];
 		for (var i=0; i<items.length; i++) {
