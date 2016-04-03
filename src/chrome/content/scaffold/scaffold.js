@@ -568,10 +568,11 @@ var Scaffold = new function() {
 	 * Replicated from translator.js
 	 */
 	function _metaToTranslator(translator, metadata) {
-		for each(var p in ["translatorID", "translatorType", "label", "creator", "target",
+		var props = ["translatorID", "translatorType", "label", "creator", "target",
 			"minVersion", "maxVersion", "priority", "lastUpdated", "inRepository", "configOptions",
-			"displayOptions", "browserSupport"]) {
-			translator[p] = metadata[p];
+			"displayOptions", "browserSupport"];
+		for (var i=0; i<props.length; i++) {
+			translator[props[i]] = metadata[props[i]];
 		}
 
 		if(!translator.configOptions) translator.configOptions = {};
@@ -921,10 +922,9 @@ var Scaffold = new function() {
 		var listbox = document.getElementById("testing-listbox");
 		var items = listbox.selectedItems;
 		if(!items || items.length == 0) return false; // No action if nothing selected
-		var i;
 		var webtests = [];
 		var importtests = [];
-		for (i in items) {
+		for (var i=0; i<items.length; i++) {
 			items[i].getElementsByTagName("listcell")[1].setAttribute("label", "Running");
 			var test = JSON.parse(items[i].getUserData("test-string"));
 			test["ui-item"] = items[i];
@@ -957,9 +957,8 @@ var Scaffold = new function() {
 		var listbox = document.getElementById("testing-listbox");
 		var items = listbox.selectedItems.slice();
 		if(!items || items.length == 0) return false; // No action if nothing selected
-		var i;
 		var tests = [];
-		for (i in items) {
+		for (var i=0; i<items.length; i++) {
 			items[i].getElementsByTagName("listcell")[1].setAttribute("label", "Updating");
 			var test = JSON.parse(items[i].getUserData("test-string"));
 			tests.push(test);
