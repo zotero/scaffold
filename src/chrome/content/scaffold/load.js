@@ -45,7 +45,8 @@ var Scaffold_Load = new function() {
 			listitem.setAttribute("disabled", true);
 			listitem.setAttribute("label", set);
 			listbox.appendChild(listitem);
-			for each(translator in translators[set]) {
+			for (var j=0; j<translators[set].length; j++) {
+				var translator = translators[set][j];
 				listitem = document.createElement("listitem");
 				// set label for type-to-find functionality. This is not displayed.
 				listitem.setAttribute("label", translator.label);

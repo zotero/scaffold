@@ -845,7 +845,8 @@ var Scaffold = new function() {
 		var tests = _loadTests(_editors["tests"].getSession().getValue());
 		// We've got tests, let's display them
 		var listbox = document.getElementById("testing-listbox");
-		for each (var test in tests) {
+		for (var i=0; i<tests.length; i++) {
+			var test = tests[i];
 			var listitem = document.createElement("listitem");
 			var listcell = document.createElement("listcell");
 			if (test.type == "web")
@@ -1150,7 +1151,8 @@ var Scaffold = new function() {
 	 * recursively searches for frames
 	 */
 	function _getFrames(frames, popup) {
-		for each(var frame in frames) {
+		for (var i=0; i<frames.length; i++) {
+			var frame = frames[i];
 			if(frame.contentDocument) {
 				// get a good name
 				var frameName;
