@@ -1,3 +1,7 @@
+Version 3.2.3
+* Fix tests in Firefox 45
+* Update deprecated code patterns
+
 Version 3.2.2
 * Extension signing for Firefox 43 and higher
 * When running doWeb/Import, don't diff tag sort order
