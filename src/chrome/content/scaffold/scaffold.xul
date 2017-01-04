@@ -116,11 +116,11 @@
 					<groupbox>
 						<caption label="&scaffold.metadata.browserSupport.label;"/>
 						<checkbox id="checkbox-gecko" label="&scaffold.metadata.browserSupport.gecko;" checked="true"/>
-						<checkbox id="checkbox-chrome" label="&scaffold.metadata.browserSupport.chrome;"/>
-						<checkbox id="checkbox-safari" label="&scaffold.metadata.browserSupport.safari;"/>
-						<checkbox id="checkbox-ie" label="&scaffold.metadata.browserSupport.ie;"/>
-						<checkbox id="checkbox-bookmarklet" label="&scaffold.metadata.browserSupport.bookmarklet;"/>
-						<checkbox id="checkbox-server" label="&scaffold.metadata.browserSupport.server;"/>
+						<checkbox id="checkbox-chrome" label="&scaffold.metadata.browserSupport.chrome;" checked="true"/>
+						<checkbox id="checkbox-safari" label="&scaffold.metadata.browserSupport.safari;" checked="true"/>
+						<checkbox id="checkbox-ie" label="&scaffold.metadata.browserSupport.ie;" checked="true"/>
+						<checkbox id="checkbox-bookmarklet" label="&scaffold.metadata.browserSupport.bookmarklet;" checked="true"/>
+						<checkbox id="checkbox-server" label="&scaffold.metadata.browserSupport.server;" checked="true"/>
 					</groupbox></row></rows>
 					</grid>
 				</vbox>
