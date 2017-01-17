@@ -24,10 +24,7 @@
 */
 
 var Scaffold_Load = new function() {
-	this.onLoad = onLoad;
-	this.accept = accept;
-	
-	function onLoad() {
+	this.onLoad = Zotero.Promise.coroutine(function* () {
 		var listitem, translator, listcell, set;
 		var listbox = document.getElementById("listbox");
 		var translators = {};		
@@ -35,9 +32,11 @@ var Scaffold_Load = new function() {
 		// Get the matching translators		
 		var url = window.arguments[0].dataIn;
 		url = Zotero.Proxies.proxyToProper(url);
-		translators["Matching Translators"] = Zotero.Translators.getWebTranslatorsForLocation(url);
-		translators["Web Translators"] = Zotero.Translators.getAllForType("web").sort(function(a, b) { return a.label.localeCompare(b.label) });
-		translators["Import Translators"] = Zotero.Translators.getAllForType("import").sort(function(a, b) { return a.label.localeCompare(b.label) });
+		translators["Matching Translators"] = (yield Zotero.Translators.getWebTranslatorsForLocation(url))[0];
+		translators["Web Translators"] = (yield Zotero.Translators.getAllForType("web"))
+			.sort((a, b) => a.label.localeCompare(b.label));
+		translators["Import Translators"] = (yield Zotero.Translators.getAllForType("import"))
+			.sort((a, b) => a.label.localeCompare(b.label));
 
 		for (set in translators) {
 			// Make a separator
@@ -63,9 +62,9 @@ var Scaffold_Load = new function() {
 				listbox.appendChild(listitem);
 			}
 		}
-	}
+	});
 	
-	function accept() {
+	this.accept = function () {
 		var translatorID = document.getElementById("listbox").selectedItem.getUserData("zotero-id");
 		var translator = Zotero.Translators.get(translatorID);
 		

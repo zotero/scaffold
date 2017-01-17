@@ -51,14 +51,10 @@ function fix2028(str) {
 
 var Scaffold = new function() {
 	this.onLoad = onLoad;
-	this.load = load;
-	this.save = save;
-	this.run = run;
 	this.generateTranslatorID = generateTranslatorID;
 	this.testTargetRegex = testTargetRegex;
 	this.onResize = onResize;
 	this.populateTests = populateTests;
-	this.saveTests = saveTests;
 	this.runSelectedTests = runSelectedTests;
 	this.updateSelectedTests = updateSelectedTests;
 	this.deleteSelectedTests = deleteSelectedTests;
@@ -171,7 +167,7 @@ var Scaffold = new function() {
 	/*
 	 * load translator from database
 	 */
-	function load(translatorID) {
+	this.load = Zotero.Promise.coroutine(function* (translatorID) {
 		var translator = false;
 		if (translatorID === undefined) {
 			var io = new Object();
@@ -191,15 +187,20 @@ var Scaffold = new function() {
 		}
 
 		//Strip JSON metadata
-		var lastUpdatedIndex = translator.code.indexOf('"lastUpdated"');
-		var header = translator.code.substr(0, lastUpdatedIndex + 50);
+		var code = yield translator.getCode();
+		var lastUpdatedIndex = code.indexOf('"lastUpdated"');
+		var header = code.substr(0, lastUpdatedIndex + 50);
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
 		// Detect the minified framework and strip it
-		var usesFW = (translator.code.substr(m[0].length).indexOf("/* FW LINE ") !== -1);
-		if(usesFW) var fixedCode = translator.code
-						.substr(m[0].length)
-						.replace(/\/\* FW LINE [^\n]*\n/,'');
-		else var fixedCode = translator.code.substr(m[0].length);
+		var usesFW = (code.substr(m[0].length).indexOf("/* FW LINE ") !== -1);
+		if (usesFW) {
+			var fixedCode = code
+				.substr(m[0].length)
+				.replace(/\/\* FW LINE [^\n]*\n/,'');
+		}
+		else {
+			var fixedCode = code.substr(m[0].length);
+		}
 		// load tests into test editing pane, but clear it first
 		_editors["tests"].getSession().setValue('');
 		_loadTests(fixedCode);
@@ -223,18 +224,17 @@ var Scaffold = new function() {
 		document.getElementById('textbox-configOptions').value = '';
 		document.getElementById('textbox-displayOptions').value = '';
 
-		var configOptions, displayOptions;
-		if(translator.configOptions) {
-		    configOptions = JSON.stringify(translator.configOptions);
+		if (translator.configOptions) {
+		    let configOptions = JSON.stringify(translator.configOptions);
+			if (configOptions != '{}') {
+				document.getElementById('textbox-configOptions').value = configOptions;
+			}
 		} 
-		if(configOptions != '{}') {
-		    document.getElementById('textbox-configOptions').value = configOptions;
-		}
-		if(translator.displayOptions) {
-		    displayOptions = JSON.stringify(translator.displayOptions);
-		}
-		if(displayOptions != '{}') {
-		    document.getElementById('textbox-displayOptions').value = displayOptions;
+		if (translator.displayOptions) {
+		    let displayOptions = JSON.stringify(translator.displayOptions);
+		    if (displayOptions != '{}') {
+				document.getElementById('textbox-displayOptions').value = displayOptions;
+			}
 		}
 
 		// get translator type; might as well have some fun here
@@ -254,7 +254,7 @@ var Scaffold = new function() {
 			document.getElementById('checkbox-'+browser).checked = browserSupport.indexOf(browsers[browser]) !== -1;
 		}
 
-	}
+	});
 
 	function _getMetadataObject() {
 		var metadata = {
@@ -267,10 +267,10 @@ var Scaffold = new function() {
 			priority: parseInt(document.getElementById('textbox-priority').value)
 		};
 
-		if(document.getElementById('textbox-configOptions').value != '') {
+		if (document.getElementById('textbox-configOptions').value) {
 		    metadata.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
 		}
-		if(document.getElementById('textbox-displayOptions').value != '') {
+		if (document.getElementById('textbox-displayOptions').value) {
 		    metadata.displayOptions = JSON.parse(document.getElementById('textbox-displayOptions').value);
 		}
 
@@ -325,7 +325,7 @@ var Scaffold = new function() {
 	/*
 	 * save translator to database
 	 */
-	function save() {
+	this.save = Zotero.Promise.coroutine(function* () {
 		var code = _editors["code"].getSession().getValue();
 		var tests = _editors["tests"].getSession().getValue();
 		code += tests;
@@ -340,14 +340,14 @@ var Scaffold = new function() {
 			return;
 		}
 
-		Zotero.Translators.save(metadata,code);
-		Zotero.Translators.init();
-	}
+		yield Zotero.Translators.save(metadata,code);
+		yield Zotero.Translators.reinit();
+	});
 
 	/*
 	 * run translator
 	 */
-	function run(functionToRun) {
+	this.run = Zotero.Promise.coroutine(function* (functionToRun) {
 		if (document.getElementById('textbox-label').value == 'Untitled') {
 			alert("Translator title not set");
 			return;
@@ -358,9 +358,9 @@ var Scaffold = new function() {
 		if(document.getElementById('checkbox-editor-external').checked) {
 			// We don't save the translator-- we reload it instead
 			var translatorID = document.getElementById('textbox-translatorID').value;
-			load(translatorID);
+			yield this.load(translatorID);
 		} else {
-			save();
+			yield this.save();
 		}
 		
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
@@ -368,7 +368,7 @@ var Scaffold = new function() {
 		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
 			_run(functionToRun, _getImport(), _selectItems, _myItemDone, _translatorsImport, function(){});
 		}
-	}
+	});
 
 	/*
 	 * run translator in given mode with given input
@@ -419,8 +419,10 @@ var Scaffold = new function() {
 			translate.setHandler("select", selectItems);
 			translate.clearHandlers("itemDone");
 			translate.setHandler("itemDone", itemDone);
-			// disable output to database
-			translate.translate(false);
+			translate.translate({
+				// disable saving to database
+				libraryID: false
+			});
 		} else if (functionToRun == "detectImport") {
 			// get translator
 			var translator = _getTranslator();
@@ -445,8 +447,10 @@ var Scaffold = new function() {
 			translate.setHandler("collectionDone", function(obj, collection) {
 				_logOutput("Collection: "+ collection.name + ", "+collection.children.length+" items");
 			});
-			// disable output to database
-			translate.translate(false);
+			translate.translate({
+				// disable saving to database
+				libraryID: false
+			});
 		}
 	}
 
@@ -574,6 +578,10 @@ var Scaffold = new function() {
 		for (var i=0; i<props.length; i++) {
 			translator[props[i]] = metadata[props[i]];
 		}
+		
+		translator.getCode = function () {
+			return Zotero.Promise.resolve(this.code);
+		};
 
 		if(!translator.configOptions) translator.configOptions = {};
 		if(!translator.displayOptions) translator.displayOptions = {};
@@ -869,7 +877,7 @@ var Scaffold = new function() {
 	/*
 	 * Save tests back to translator, and save the translator
 	 */
-	function saveTests() {
+	this.saveTests = Zotero.Promise.method(function () {
 		var tests = [];
 		var item;
 		var i = 0;
@@ -885,8 +893,8 @@ var Scaffold = new function() {
 			i++;
 		}
 		_writeTests(_stringifyTests(tests));
-		save();
-	}
+		return this.save();
+	});
 
 	/*
 	 * Delete selected test(s), from UI
