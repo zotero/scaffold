@@ -66,3 +66,11 @@
 listbox {
 	min-width:200px;
 }
+
+#editor-external-box {
+	margin-top: 5px;
+}
+
+#editor-external-box label {
+	margin-left: 1px;
+}
