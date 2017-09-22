@@ -25,6 +25,7 @@
 -->
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://scaffold/skin/scaffold.css" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/overlay.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://scaffold/locale/scaffold.dtd">
 
@@ -51,6 +52,13 @@
 		<toolbarbutton id="tb-detectImport" tooltiptext="&scaffold.toolbar.detectImport.label;" oncommand="Scaffold.run('detectImport')" />
 		<toolbarbutton id="tb-doImport" tooltiptext="&scaffold.toolbar.doImport.label;" oncommand="Scaffold.run('doImport')" />
 	</toolbar>
+	<tabbox id="scaffold-browser-tabbox" flex="1">
+        <tabs id="scaffold-browser-tabs">
+			<tab id="tab-scaffold" label="Scaffold"/>
+			<tab id="tab-browser" label="Browser"/>
+		</tabs>
+        <tabpanels flex="1">
+            <tabpanel flex="1" id="tabpanel-scaffold">
 <hbox flex="1">
 	<tabbox id="left-tabbox" flex="1" width="300">
 		<tabs id="tabs">
@@ -175,7 +183,7 @@
 	
 	<hbox align="center">
 		<label control="textbox-tabUrl" id="label-tabUrl" value="&scaffold.tabUrl.label;"/>
-		<textbox id="textbox-tabUrl" flex="1"/>
+		<textbox id="textbox-tabUrl" class="browser-url" flex="1"/>
 	</hbox>
 	<hbox id="hbox-testFrame" width="300">
 		<label control="menulist-testFrame" id="label-testFrame" value="&scaffold.testFrame.label;"/>
@@ -185,5 +193,19 @@
 	<textbox flex="1" id="output" multiline="true" readonly="true"/>
 </vbox>
 </hbox>
+</tabpanel>
+<tabpanel>
+	<vbox flex="1">
+		<hbox align="center">
+			<label control="textbox-tabUrl2" value="&scaffold.tabUrl.label;"/>
+			<textbox id="textbox-tabUrl2" class="browser-url" flex="1"/>
+		</hbox>
+		
+        <browser src="about:blank" flex="1"></browser>
+	</vbox>
+</tabpanel>
+</tabpanels>
+</tabbox>
+
 </vbox>
 </window>
