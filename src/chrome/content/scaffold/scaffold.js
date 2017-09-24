@@ -96,15 +96,20 @@ var Scaffold = new function() {
 		if(e.target !== document) return;
 		_document = document;
 
-		_browser = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-						   .getService(Components.interfaces.nsIWindowMediator)
-						   .getMostRecentWindow("navigator:browser");
+		_browser = document.getElementsByTagName('browser')[0];
 
-		_browser.document.getElementById("content").tabContainer.addEventListener("TabSelect",
-			_updateFrames, true);
-		_browser.document.getElementById("appcontent").addEventListener("pageshow",
+		_browser.addEventListener("pageshow",
 			_updateFrames, true);
 		_updateFrames();
+		
+		let urlTextboxes = document.querySelectorAll('.browser-url');
+		for (let textbox of urlTextboxes) {
+			textbox.addEventListener('keypress', function(e) {
+				if (e.keyCode == e.DOM_VK_RETURN) {
+					_browser.loadURI(textbox.value);
+				}
+			});
+		}
 		
 		var importWin = document.getElementById("editor-import").contentWindow;
 		var codeWin = document.getElementById("editor-code").contentWindow;
@@ -364,28 +369,22 @@ var Scaffold = new function() {
 		}
 		
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
-			_run(functionToRun, _getDocument(), _selectItems, _myItemDone, _translators, function(){});
+			_run(functionToRun, _getDocument(), _selectItems, _myItemDone, _translators);
 		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
-			_run(functionToRun, _getImport(), _selectItems, _myItemDone, _translatorsImport, function(){});
+			_run(functionToRun, _getImport(), _selectItems, _myItemDone, _translatorsImport);
 		}
 	});
 
 	/*
 	 * run translator in given mode with given input
 	 */
-	function _run(functionToRun, input, selectItems, itemDone, detectHandler, done) {
+	async function _run(functionToRun, input, selectItems, itemDone, detectHandler, done) {
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
 			var translate = new Zotero.Translate.Web();
 			var utilities = new Zotero.Utilities.Translate(translate);
 			// If this is a string, assume it's a URL
 			if (typeof input == 'string') {
-					try {
-						var doc = utilities.retrieveDocument(input);
-					} catch (e) {
-						// Time's up!
-						_logOutput("retrieveDocument timed out");
-						return false;
-					}
+				var doc = await new Promise(r => utilities.processDocuments(input, (doc) => r(doc)));
 				translate.setDocument(doc);
 			} else { 
 				translate.setDocument(input);
@@ -1126,10 +1125,10 @@ var Scaffold = new function() {
 	 * updates list of available frames and show URL of active tab 
 	 */
 	function _updateFrames() {
-		var doc = _browser.document.getElementById("content").contentDocument;
+		var doc = _browser.contentDocument;
 		
 		//Show URL of active tab
-		document.getElementById("textbox-tabUrl").value = doc.location.href;
+		document.querySelectorAll("textbox.browser-url").forEach(elem => elem.value = doc.location.href);
 		
 		// No need to run if Scaffold isn't open
 		var menulist = _document.getElementById("menulist-testFrame");
