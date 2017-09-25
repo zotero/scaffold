@@ -30,9 +30,10 @@ var Scaffold_Load = new function() {
 		var translators = {};		
 
 		// Get the matching translators		
-		var url = window.arguments[0].dataIn;
+		var url = window.arguments[0].url;
+		var rootUrl = window.arguments[0].rootUrl
 		url = Zotero.Proxies.proxyToProper(url);
-		translators["Matching Translators"] = (yield Zotero.Translators.getWebTranslatorsForLocation(url))[0];
+		translators["Matching Translators"] = (yield Zotero.Translators.getWebTranslatorsForLocation(url, rootUrl))[0];
 		translators["Web Translators"] = (yield Zotero.Translators.getAllForType("web"))
 			.sort((a, b) => a.label.localeCompare(b.label));
 		translators["Import Translators"] = (yield Zotero.Translators.getAllForType("import"))
