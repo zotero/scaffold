@@ -27,7 +27,6 @@
 <!ENTITY scaffold.metadata.maxVersion.label		"Max. Version:">
 <!ENTITY scaffold.metadata.priority.label		"Priority:">
 <!ENTITY scaffold.metadata.translatorType.label		"Translator Type:">
-<!ENTITY scaffold.metadata.framework.label		"Uses translator framework">
 <!ENTITY scaffold.metadata.translatorType.import	"Import">
 <!ENTITY scaffold.metadata.translatorType.export	"Export">
 <!ENTITY scaffold.metadata.translatorType.web		"Web">
