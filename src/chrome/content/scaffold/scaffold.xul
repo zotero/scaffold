@@ -45,6 +45,27 @@
 	<toolbar id="tb" align="center">
 		<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
 		<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save()" />
+		<toolbarbutton id="tb-template" tooltiptext="&scaffold.toolbar.template.label;" type="menu">
+			<menupopup id="tb-template-popup">
+				<menuitem id="tb-template-new-web-add" label="&scaffold.toolbar.template.newWeb.label;" oncommand="Scaffold.addTemplate('templateNewWeb')"/>
+				<menu id="tb-template-scrape-add" label="&scaffold.toolbar.template.scrape.label;">
+					<menupopup id="tb-template-scrape-popup">
+						<menuitem id="tb-template-scrape-em" label="Embedded Metadata" oncommand="Scaffold.addTemplate('templateScrape', 'em')"/>
+						<menuitem id="tb-template-scrape-ris" label="RIS" oncommand="Scaffold.addTemplate('templateScrape', 'ris')"/>
+						<menuitem id="tb-template-scrape-bibtex" label="BibTeX" oncommand="Scaffold.addTemplate('templateScrape', 'bibtex')"/>
+						<menuitem id="tb-template-scrape-marc" label="MARC" oncommand="Scaffold.addTemplate('templateScrape', 'marc')"/>
+					</menupopup>
+				</menu>
+				<menuitem id="tb-template-all-itemTypes-add" label="&scaffold.toolbar.template.itemTypes.label;" oncommand="Scaffold.addTemplate('templateAllTypes')"/>
+				<menu id="tb-template-new-item-add" label="&scaffold.toolbar.template.newItem.label;">
+					<menupopup id="tb-template-new-item-popup">
+						<menuitem id="tb-template-new-item-add-2" label="book" oncommand="Scaffold.addTemplate('templateNewItem', 2)"/>
+						<menuitem id="tb-template-new-item-add-3" label="bookitem" oncommand="Scaffold.addTemplate('templateNewItem', 3)"/>
+						<menuitem id="tb-template-new-item-add-4" label="article" oncommand="Scaffold.addTemplate('templateNewItem', 4)"/>
+					</menupopup>
+				</menu>
+			</menupopup>
+		</toolbarbutton>
 		<toolbarseparator/>
 		<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run('detectWeb')" />
 		<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run('doWeb')" />
