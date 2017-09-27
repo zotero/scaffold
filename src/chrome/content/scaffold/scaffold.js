@@ -74,24 +74,8 @@ var Scaffold = new function() {
 		'textbox-maxVersion':'maxVersion',
 		'textbox-priority':'priority'
 	};
-	
-	var modules;
 
 	function onLoad(e) {
-		// Load modules
-		try {
-			modules = JSON.parse(Zotero.File.getContentsFromURL('resource://scaffold/modules.json'));
-		} catch(e) {
-			Zotero.debug(e);
-			modules = {};
-		}
-		
-		// Add module name and comment
-		for (let name in modules) {
-			let module = modules[name];
-			module.wrappedCode = '/* ' + name + ' LINE '
-				+ module.version + ':' + module.commit + ' */ ' + module.code;
-		}
 		
 		if(e.target !== document) return;
 		_document = document;
@@ -131,23 +115,6 @@ var Scaffold = new function() {
 
 		// Set resize handler
 		_document.addEventListener("resize", this.onResize, false);
-		
-		// Boilerplate for framework translators
-		document.getElementById('checkbox-framework').addEventListener("command",
-			function() {
-				var usesFW = document.getElementById('checkbox-framework').checked;
-				/* Code to set compat for framework translators
-				if (!usesFW) {
-					for each(var browser in ["gecko", "chrome", "safari"]) {
-						document.getElementById('checkbox-'+browser).checked = true;
-					}
-				*/
-				
-				// If code hasn't been added, put the boilerplate in
-				// We could be fancy here and see if detectWeb / doWeb are set
-				if (usesFW && _editors["code"].getSession().getValue().trim() == "")
-					_editors["code"].getSession().setValue("function detectWeb(doc, url) { return FW.detectWeb(doc, url); }\nfunction doWeb(doc, url) { return FW.doWeb(doc, url); }");
-			}, true);
 		
 		// Disable editing if external editor is enabled, enable when it is disabled
 		document.getElementById('checkbox-editor-external').addEventListener("command",
@@ -197,16 +164,7 @@ var Scaffold = new function() {
 		var lastUpdatedIndex = code.indexOf('"lastUpdated"');
 		var header = code.substr(0, lastUpdatedIndex + 50);
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
-		// Detect the minified framework and strip it
-		var usesFW = (code.substr(m[0].length).indexOf("/* FW LINE ") !== -1);
-		if (usesFW) {
-			var fixedCode = code
-				.substr(m[0].length)
-				.replace(/\/\* FW LINE [^\n]*\n/,'');
-		}
-		else {
-			var fixedCode = code.substr(m[0].length);
-		}
+		var fixedCode = code.substr(m[0].length);
 		// load tests into test editing pane, but clear it first
 		_editors["tests"].getSession().setValue('');
 		_loadTests(fixedCode);
@@ -223,8 +181,6 @@ var Scaffold = new function() {
 		_editors["code"].getSession().setValue(normalizeWhitespace(fixedCode));
 		// Then go to line 1
 		_editors["code"].gotoLine(1);
-		
-		document.getElementById('checkbox-framework').checked = usesFW;
 		
 		// Reset configOptions and displayOptions before loading
 		document.getElementById('textbox-configOptions').value = '';
@@ -335,10 +291,6 @@ var Scaffold = new function() {
 		var code = _editors["code"].getSession().getValue();
 		var tests = _editors["tests"].getSession().getValue();
 		code += tests;
-
-		if(document.getElementById('checkbox-framework').checked) {
-			code = modules.FW.wrappedCode + '\n' + code;
-		}
 
 		var metadata = _getMetadataObject();
 		if (metadata.label === "Untitled") {
@@ -599,10 +551,9 @@ var Scaffold = new function() {
 		//copy metadata into the translator object
 		_metaToTranslator(translator, metadata);
 
-		var locFW = document.getElementById('checkbox-framework').checked ? modules.FW.wrappedCode + "\n" : "\n";
 		metadata = JSON.stringify(metadata) + ";\n";
 
-		translator.code = metadata + locFW + _editors["code"].getSession().getValue();
+		translator.code = metadata + "\n" + _editors["code"].getSession().getValue();
 
 		// make sure translator gets run in browser in Zotero >2.1
 		if(Zotero.Translator.RUN_MODE_IN_BROWSER) {

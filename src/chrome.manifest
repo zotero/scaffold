@@ -1,5 +1,4 @@
 content	scaffold				chrome/content/scaffold/
-resource	scaffold				resource/
 locale	scaffold	en-US		chrome/locale/en-US/scaffold/
 skin	scaffold	default		chrome/skin/default/scaffold/
 

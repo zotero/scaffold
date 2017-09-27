@@ -105,10 +105,6 @@
 						<label class="label-metadata" value="&scaffold.metadata.priority.label;" control="textbox-priority"/>
 						<textbox id="textbox-priority" flex="1" value="&scaffold.metadata.priority.default;"/>
 					</hbox>
-					<hbox>
-						<checkbox id="checkbox-framework"/>
-						<label class="label-metadata" value="&scaffold.metadata.framework.label;" control="checkbox-framework"/>
-					</hbox>
 					<grid flex="1">
 						<columns>
 							<column flex="2"/>
