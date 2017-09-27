@@ -4,34 +4,31 @@ Scaffold is an integrated development environment for creating
 
 ## Build and release
 
-To build the XPI installer, enter this directory and run build.sh:
+To build the extension, enter this directory and run build.sh:
 
     ./build.sh [VERSION]
 
-This will create a file scaffold.xpi, which you can add as an addon
-in Zotero. Basically it just adds all files in `src` to zip file which
-is names specially.
+This will create a scaffold.xpi file, which you can add as an add-on in Zotero. (This is basically just a ZIP of the `src` directory.)
 
-For releasing a new version you can use the command:
+For releasing a new version, use this command:
 
     ./release VERSION
 
-
 ## Development
 
-Create a text file containing simply the path to the `src` folder,
-name this file `scaffold@zotero.org` and place it in the extenstion
-folder of Zotero, and restart it.
- 
+Create a text file containing the full path to the `src` directory,
+name the file `scaffold@zotero.org`, and place it in the `extensions`
+directory of the [Zotero profile directory](https://www.zotero.org/support/kb/profile_directory).
+Restart Zotero to try the latest code changes.
+
 
 ## LICENSE
 
-Scaffold uses:
-* the Ajax.org Cloud9 Editor [ACE](https://ace.c9.io/),
-licensed under the Mozilla Tri-License (MPL, GPL, LGPL).
-* some icons from the [FamFamFam Silk icon set](http://www.famfamfam.com/lab/icons/silk/), licensed under Creative
-Commons Attribution 2.5.
-
-Scaffold itself is part of the larger Zotero project, produced by the Center
+Scaffold is part of the [Zotero](https://www.zotero.org), produced by the Roy Rosenzweig Center
 for History and New Media at George Mason University, and is licensed under
-the Affero GPL 3.0.
+the [GNU Affero General Public License version 3](https://www.gnu.org/licenses/agpl-3.0.en.html).
+
+Additional Tools:
+* the Ajax.org Cloud9 Editor [ACE](https://ace.c9.io/),
+licensed under the Mozilla Tri-License (MPL, GPL, LGPL)
+* icons from the [FamFamFam Silk icon set](http://www.famfamfam.com/lab/icons/silk/), licensed under Creative Commons Attribution 2.5
