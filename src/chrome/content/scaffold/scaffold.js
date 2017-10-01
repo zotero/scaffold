@@ -310,177 +310,21 @@ var Scaffold = new function() {
 		var value = "";
 		switch(template) {
 			case "templateNewWeb":
-				value = `/*
-	***** BEGIN LICENSE BLOCK *****
-
-	Copyright © 2017 YOUR_NAME
-	
-	This file is part of Zotero.
-
-	Zotero is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Zotero is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	GNU Affero General Public License for more details.
-
-	You should have received a copy of the GNU Affero General Public License
-	along with Zotero. If not, see <http://www.gnu.org/licenses/>.
-
-	***** END LICENSE BLOCK *****
-*/
-
-
-// attr()/text() v2
-function attr(docOrElem,selector,attr,index){var elem=index?docOrElem.querySelectorAll(selector).item(index):docOrElem.querySelector(selector);return elem?elem.getAttribute(attr):null}function text(docOrElem,selector,index){var elem=index?docOrElem.querySelectorAll(selector).item(index):docOrElem.querySelector(selector);return elem?elem.textContent:null}
-
-
-function detectWeb(doc, url) {
-	//TODO: adjust the logic here
-	if (url.indexOf('/article/')>-1) {
-		return "newspaperArticle";
-	} else if (getSearchResults(doc, true)) {
-		return "multiple";
-	}
-}
-
-
-function getSearchResults(doc, checkOnly) {
-	var items = {};
-	var found = false;
-	//TODO: adjust the xpath
-	var rows = doc.querySelectorAll('h2>a.title[href*="/article/"]');
-	for (var i=0; i<rows.length; i++) {
-		//TODO: check and maybe adjust
-		var href = rows[i].href;
-		//TODO: check and maybe adjust
-		var title = ZU.trimInternal(rows[i].textContent);
-		if (!href || !title) continue;
-		if (checkOnly) return true;
-		found = true;
-		items[href] = title;
-	}
-	return found ? items : false;
-}
-
-
-function doWeb(doc, url) {
-	if (detectWeb(doc, url) == "multiple") {
-		Zotero.selectItems(getSearchResults(doc, false), function (items) {
-			if (!items) {
-				return true;
-			}
-			var articles = [];
-			for (var i in items) {
-				articles.push(i);
-			}
-			ZU.processDocuments(articles, scrape);
-		});
-	} else {
-		scrape(doc, url);
-	}
-}
-
-
-`;
+				value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/newWeb.js');
 				break;
 			case "templateScrape":
 				switch(second) {
 					case "em":
-						value = `function scrape(doc, url) {
-	var translator = Zotero.loadTranslator('web');
-	// Embedded Metadata
-	translator.setTranslator('951c027d-74ac-47d4-a107-9c3069ab7b48');
-	//translator.setDocument(doc);
-	
-	translator.setHandler('itemDone', function (obj, item) {
-		//TODO adjust if needed:
-		item.section = "News";
-		item.complete();
-	});
-
-	translator.getTranslatorObject(function(trans) {
-		trans.itemType = "newspaperArticle";
-		//TODO adjust if needed:
-		trans.addCustomFields({
-			'twitter:description': 'abstractNote'
-		});
-		trans.doWeb(doc, url);
-	});
-}`;
+						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeEM.js');
 						break;
 					case "ris":
-						value = `function scrape(doc, url) {
-	var DOI = url.match(/\/(10\.[^#?]+)/)[1];
-	//TODO adjust the url here
-	var risURL = "http://citation-needed.services.springer.com/v2/references/" + DOI + "?format=refman&flavour=citation";
-	//Z.debug(risURL)
-
-	//TODO adjust the url here
-	var pdfURL = doc.getElementById("articlePdf");
-	//Z.debug("pdfURL: " + pdfURL);
-	ZU.doGet(risURL, function(text) {
-		var translator = Zotero.loadTranslator("import");
-		translator.setTranslator("32d59d2d-b65a-4da4-b0a3-bdd3cfb979e7");
-		translator.setString(text);
-		translator.setHandler("itemDone", function(obj, item) {
-			//TODO tweak some of the output here
-			if (pdfURL) {
-				item.attachments.push({
-					url: pdfURL.href,
-					title: "Full Text PDF",
-					mimeType: "application/pdf"
-				});
-			}
-			item.attachments.push({
-				title: "Snapshot",
-				document: doc
-			});
-			item.complete();
-		})
-		translator.translate();
-	})
-}`;
+						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeRIS.js');
 						break;
 					case "bibtex":
-						value = `function scrape(doc, url) {
-	//TODO adjust the url building
-	var m = url.match(/FId=([\w\d]+)&/);
-	if (m) {
-		//e.g. http://www.fachportal-paedagogik.de/fis_bildung/suche/fis_ausg.html?FId=A18196&lart=BibTeX&Speichern=Speichern&senden_an=+E-Mail-Adresse
-		var bibUrl = "/fis_bildung/suche/fis_ausg.html?FId=" + m[1] + "&lart=BibTeX";
-		ZU.doGet(bibUrl, function(text){
-			var translator = Zotero.loadTranslator("import");
-			translator.setTranslator("9cb70025-a888-4a29-a210-93ec52da40d4");
-			translator.setString(text);
-			translator.setHandler("itemDone", function(obj, item) {
-				item.attachments.push({
-	                		title: "Snapshot",
-	                		document: doc
-				});
-				item.complete();
-	        	});
-			translator.translate();			
-		});
-	}
-}`;
+						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeBIBTEX.js');
 						break;
 					case "marc":
-						value = `function scrape(doc, url) {
-	//TODO adjust url here
-	var urlMarc = ZU.xpathText(doc, '//a[contains(@title, "Scarico Marc21 del record") or contains(@title, "Download Marc21 record")]/@href');
-	//Z.debug(urlMarc);
-	ZU.doGet(urlMarc, function(text) {
-		//call MARC translator
-		var translator = Zotero.loadTranslator("import");
-		translator.setTranslator("a6ee60df-1ddc-4aae-bb25-45e0537be973");
-		translator.setString(text);
-		translator.translate();
-	});
-}`;
+						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeMARC.js');
 						break;
 				}
 				break;
