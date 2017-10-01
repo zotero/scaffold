@@ -333,7 +333,7 @@ var Scaffold = new function() {
 				for (var i=0; i<fieldList.length; i++) {
 					fieldList[i] = Zotero.ItemFields.getName(fieldList[i]);
 				}
-				value = JSON.stringify(fieldList, null, '\t');
+				document.getElementById('output').value = JSON.stringify(fieldList, null, '\t');
 				break;
 			case "templateAllTypes":
 				var types = Zotero.ItemTypes.getTypes();
@@ -341,8 +341,7 @@ var Scaffold = new function() {
 				for (var i=0; i<types.length; i++) {
 					typesSimple.push(types[i].name);
 				}
-				value = JSON.stringify(typesSimple, null, '\t');
-				//value = JSON.stringify(types, null, '\t');
+				document.getElementById('output').value = JSON.stringify(typesSimple, null, '\t');
 				break;
 		}
 		_editors["code"].getSession().insert(cursorPos, value);
