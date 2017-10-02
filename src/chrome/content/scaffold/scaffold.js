@@ -309,31 +309,26 @@ var Scaffold = new function() {
 		var cursorPos = _editors["code"].getSession().selection.getCursor();
 		var value = "";
 		switch(template) {
-			case "templateNewWeb":
-				value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/newWeb.js');
-				break;
-			case "templateScrape":
-				switch(second) {
-					case "em":
-						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeEM.js');
-						break;
-					case "ris":
-						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeRIS.js');
-						break;
-					case "bibtex":
-						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeBIBTEX.js');
-						break;
-					case "marc":
-						value = Zotero.File.getContentsFromURL('chrome://scaffold/content/templates/scrapeMARC.js');
-						break;
-				}
-				break;
 			case "templateNewItem":
-				var fieldList = Zotero.ItemFields.getItemTypeFields(second)//new Zotero.Item("journalArticle");
+				var outputObject = {};
+				outputObject["itemType"] = Zotero.ItemTypes.getName(second);
+				var typeID = Zotero.ItemTypes.getID(second);
+				var fieldList = Zotero.ItemFields.getItemTypeFields(typeID);
 				for (var i=0; i<fieldList.length; i++) {
-					fieldList[i] = Zotero.ItemFields.getName(fieldList[i]);
+					var key = Zotero.ItemFields.getName(fieldList[i]);
+					outputObject[key] = "";
 				}
-				document.getElementById('output').value = JSON.stringify(fieldList, null, '\t');
+				var creatorList = Zotero.CreatorTypes.getTypesForItemType(typeID);
+				var creators = [];
+				for (var i=0; i<creatorList.length; i++) {
+					creators.push({"firstName": "", "lastName": "", "creatorType": creatorList[i].name});
+				}
+				outputObject["creators"] = creators;
+				outputObject["attachments"] = [{"url": "", "title": "", "mimeType": ""}];
+				outputObject["tags"] = [{"tag": ""}];
+				outputObject["notes"] = [{"note": ""}];
+				outputObject["seeAlso"] = [];
+				document.getElementById('output').value = JSON.stringify(outputObject, null, '\t');
 				break;
 			case "templateAllTypes":
 				var types = Zotero.ItemTypes.getTypes();
@@ -343,6 +338,11 @@ var Scaffold = new function() {
 				}
 				document.getElementById('output').value = JSON.stringify(typesSimple, null, '\t');
 				break;
+			default:
+				//newWeb, scrapeEM, scrapeRIS, scrapeBIBTEX, scrapeMARC
+				//These names in the XUL file have to match the file names in template folder.
+				value = Zotero.File.getContentsFromURL(`chrome://scaffold/content/templates/${template}.js`);
+				break
 		}
 		_editors["code"].getSession().insert(cursorPos, value);
 	});
