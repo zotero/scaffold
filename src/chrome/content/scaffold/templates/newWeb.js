@@ -1,7 +1,7 @@
 /*
 	***** BEGIN LICENSE BLOCK *****
 
-	Copyright © 2017 YOUR_NAME
+	Copyright © 2017 YOUR_NAME <- TODO
 	
 	This file is part of Zotero.
 
@@ -23,12 +23,12 @@
 
 
 // attr()/text() v2
-function attr(docOrElem,selector,attr,index){var elem=index?docOrElem.querySelectorAll(selector).item(index):docOrElem.querySelector(selector);return elem?elem.getAttribute(attr):null}function text(docOrElem,selector,index){var elem=index?docOrElem.querySelectorAll(selector).item(index):docOrElem.querySelector(selector);return elem?elem.textContent:null}
+function attr(docOrElem,selector,attr,index){var elem=index?docOrElem.querySelectorAll(selector).item(index):docOrElem.querySelector(selector);return elem?elem.getAttribute(attr):null;}function text(docOrElem,selector,index){var elem=index?docOrElem.querySelectorAll(selector).item(index):docOrElem.querySelector(selector);return elem?elem.textContent:null;}
 
 
 function detectWeb(doc, url) {
 	//TODO: adjust the logic here
-	if (url.indexOf('/article/')>-1) {
+	if (url.includes('/article/')) {
 		return "newspaperArticle";
 	} else if (getSearchResults(doc, true)) {
 		return "multiple";
