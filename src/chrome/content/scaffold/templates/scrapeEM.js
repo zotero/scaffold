@@ -12,7 +12,7 @@ function scrape(doc, url) {
 
 	translator.getTranslatorObject(function(trans) {
 		trans.itemType = "newspaperArticle";
-		//You can map additional meta tags here
+		//TODO map additional meta tags here, or delete completely
 		trans.addCustomFields({
 			'twitter:description': 'abstractNote'
 		});
