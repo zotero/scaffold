@@ -42,10 +42,8 @@
 		<key id="test" key="w" modifiers="accel" oncommand="Scaffold.close();" />
 	</keyset>
 	
-	<toolbar id="tb" align="center">
-		<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
-		<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save()" />
-		<toolbarbutton id="tb-template" tooltiptext="&scaffold.toolbar.template.label;" type="menu">
+	<menubar id="sample-menubar">
+		<menu id="file-menu" label="Templates">
 			<menupopup id="tb-template-popup">
 				<menuitem id="tb-template-new-web-add" label="&scaffold.toolbar.template.newWeb.label;" oncommand="Scaffold.addTemplate('newWeb')"/>
 				<menu id="tb-template-scrape-add" label="&scaffold.toolbar.template.scrape.label;">
@@ -66,7 +64,34 @@
 					</menupopup>
 				</menu>
 			</menupopup>
-		</toolbarbutton>
+		</menu>
+	</menubar>
+	
+	<toolbar id="tb" align="center">
+		<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
+		<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save()" />
+		<!-- <toolbarbutton id="tb-template" tooltiptext="&scaffold.toolbar.template.label;" type="menu">
+			<menupopup id="tb-template-popup">
+				<menuitem id="tb-template-new-web-add" label="&scaffold.toolbar.template.newWeb.label;" oncommand="Scaffold.addTemplate('newWeb')"/>
+				<menu id="tb-template-scrape-add" label="&scaffold.toolbar.template.scrape.label;">
+					<menupopup id="tb-template-scrape-popup">
+						<menuitem id="tb-template-scrape-em" label="Embedded Metadata" oncommand="Scaffold.addTemplate('scrapeEM')"/>
+						<menuitem id="tb-template-scrape-ris" label="RIS" oncommand="Scaffold.addTemplate('scrapeRIS')"/>
+						<menuitem id="tb-template-scrape-bibtex" label="BibTeX" oncommand="Scaffold.addTemplate('scrapeBIBTEX')"/>
+						<menuitem id="tb-template-scrape-marc" label="MARC" oncommand="Scaffold.addTemplate('scrapeMARC')"/>
+					</menupopup>
+				</menu>
+				<menuitem id="tb-template-all-itemTypes-add" label="&scaffold.toolbar.template.itemTypes.label;" oncommand="Scaffold.addTemplate('templateAllTypes')"/>
+				<menu id="tb-template-new-item-add" label="&scaffold.toolbar.template.newItem.label;">
+					<menupopup id="tb-template-new-item-popup">
+						<menuitem id="tb-template-new-item-add-book" label="book" oncommand="Scaffold.addTemplate('templateNewItem', 'book')"/>
+						<menuitem id="tb-template-new-item-add-booksection" label="bookSection" oncommand="Scaffold.addTemplate('templateNewItem', 'bookSection')"/>
+						<menuitem id="tb-template-new-item-add-journalarticle" label="journalArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'journalArticle')"/>
+						<menuitem id="tb-template-new-item-add-newspaperarticle" label="newspaperArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'newspaperArticle')"/>
+					</menupopup>
+				</menu>
+			</menupopup>
+		</toolbarbutton> -->
 		<toolbarseparator/>
 		<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run('detectWeb')" />
 		<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run('doWeb')" />
