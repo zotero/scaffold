@@ -56,7 +56,6 @@ var Scaffold = new function() {
 	this.onResize = onResize;
 	this.populateTests = populateTests;
 	this.runSelectedTests = runSelectedTests;
-	this.updateSelectedTests = updateSelectedTests;
 	this.deleteSelectedTests = deleteSelectedTests;
 	this.newTestFromCurrent = newTestFromCurrent;
 	this.editImportFromTest = editImportFromTest;
@@ -912,7 +911,7 @@ var Scaffold = new function() {
 	/*
 	 * Update selected test(s)
 	 */
-	function updateSelectedTests() {
+	this.updateSelectedTests = function () {
 		_clearOutput();
 		var listbox = document.getElementById("testing-listbox");
 		var items = [...listbox.selectedItems];
@@ -927,7 +926,7 @@ var Scaffold = new function() {
 		var updater = new TestUpdater(tests);
 		var testsDone = 0;
 		updater.updateTests(
-			function(newTest) {
+			(newTest) => {
 				// Assume sequential. TODO: handle this properly via test ID of some sort
 				if(newTest) {
 					message = "Test updated";
@@ -939,11 +938,11 @@ var Scaffold = new function() {
 				items[testsDone].getElementsByTagName("listcell")[1].setAttribute("label", message);
 				testsDone++;
 			},
-			function() {
+			() => {
 				_logOutput("Tests updated.");
 				// Save tests
 				_logOutput("Saving tests and translator.");
-				saveTests();
+				this.saveTests();
 			}
 		);
 	}
@@ -993,8 +992,9 @@ var Scaffold = new function() {
 		}
 		
 		_logOutput("Loading web page from " + test.url);
-		var hiddenBrowser = Zotero.HTTP.processDocuments(test.url,
-			function(doc) {
+		var hiddenBrowser = Zotero.HTTP.loadDocuments(
+			test.url,
+			function (doc) {
 				_logOutput("Page loaded");
 				if (test.defer) {
 					_logOutput("Waiting " + (Zotero_TranslatorTester.DEFER_DELAY/1000)
