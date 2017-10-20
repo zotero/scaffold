@@ -347,7 +347,9 @@ var Scaffold = new function() {
 		}
 		translate.setHandler("error", _error);
 		translate.setHandler("debug", _debug);
-		translate.setHandler("done", done);
+		if (done) {
+			translate.setHandler("done", done);
+		}
 		
 		if (functionToRun == "detectWeb") {
 			// get translator
