@@ -27,7 +27,7 @@ function attr(docOrElem,selector,attr,index){var elem=index?docOrElem.querySelec
 
 
 function detectWeb(doc, url) {
-	//TODO: adjust the logic here
+	// TODO: adjust the logic here
 	if (url.includes('/article/')) {
 		return "newspaperArticle";
 	} else if (getSearchResults(doc, true)) {
@@ -39,13 +39,13 @@ function detectWeb(doc, url) {
 function getSearchResults(doc, checkOnly) {
 	var items = {};
 	var found = false;
-	//TODO: adjust the xpath
+	// TODO: adjust the xpath
 	var rows = doc.querySelectorAll('h2>a.title[href*="/article/"]');
-	for (var i=0; i<rows.length; i++) {
-		//TODO: check and maybe adjust
-		var href = rows[i].href;
-		//TODO: check and maybe adjust
-		var title = ZU.trimInternal(rows[i].textContent);
+	for (let i=0; i<rows.length; i++) {
+		// TODO: check and maybe adjust
+		let href = rows[i].href;
+		// TODO: check and maybe adjust
+		let title = ZU.trimInternal(rows[i].textContent);
 		if (!href || !title) continue;
 		if (checkOnly) return true;
 		found = true;

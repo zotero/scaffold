@@ -1,18 +1,18 @@
 function scrape(doc, url) {
 	var DOI = url.match(/\/(10\.[^#?]+)/)[1];
-	//TODO adjust the url here
+	// TODO adjust the url here
 	var risURL = "http://citation-needed.services.springer.com/v2/references/" + DOI + "?format=refman&flavour=citation";
-	//Z.debug(risURL)
+	// Z.debug(risURL)
 
-	//TODO adjust the url here
+	// TODO adjust the url here
 	var pdfURL = doc.getElementById("articlePdf");
-	//Z.debug("pdfURL: " + pdfURL);
+	// Z.debug("pdfURL: " + pdfURL);
 	ZU.doGet(risURL, function(text) {
 		var translator = Zotero.loadTranslator("import");
 		translator.setTranslator("32d59d2d-b65a-4da4-b0a3-bdd3cfb979e7");
 		translator.setString(text);
 		translator.setHandler("itemDone", function(obj, item) {
-			//TODO tweak some of the output here
+			// TODO tweak some of the output here
 			if (pdfURL) {
 				item.attachments.push({
 					url: pdfURL.href,
