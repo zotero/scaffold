@@ -311,7 +311,7 @@ var Scaffold = new function() {
 		switch(template) {
 			case "templateNewItem":
 				var outputObject = {};
-				outputObject["itemType"] = Zotero.ItemTypes.getName(second);
+				outputObject.itemType = Zotero.ItemTypes.getName(second);
 				var typeID = Zotero.ItemTypes.getID(second);
 				var fieldList = Zotero.ItemFields.getItemTypeFields(typeID);
 				for (var i=0; i<fieldList.length; i++) {
@@ -323,23 +323,19 @@ var Scaffold = new function() {
 				for (var i=0; i<creatorList.length; i++) {
 					creators.push({"firstName": "", "lastName": "", "creatorType": creatorList[i].name});
 				}
-				outputObject["creators"] = creators;
-				outputObject["attachments"] = [{"url": "", "title": "", "mimeType": ""}];
-				outputObject["tags"] = [{"tag": ""}];
-				outputObject["notes"] = [{"note": ""}];
-				outputObject["seeAlso"] = [];
+				outputObject.creators = creators;
+				outputObject.attachments = [{"url": "", "title": "", "mimeType": ""}];
+				outputObject.tags = [{"tag": ""}];
+				outputObject.notes = [{"note": ""}];
+				outputObject.seeAlso = [];
 				document.getElementById('output').value = JSON.stringify(outputObject, null, '\t');
 				break;
 			case "templateAllTypes":
-				var types = Zotero.ItemTypes.getTypes();
-				var typesSimple = [];
-				for (var i=0; i<types.length; i++) {
-					typesSimple.push(types[i].name);
-				}
-				document.getElementById('output').value = JSON.stringify(typesSimple, null, '\t');
+				var typeNames = Zotero.ItemTypes.getTypes().map(t => t.name);
+				document.getElementById('output').value = JSON.stringify(typeNames, null, '\t');
 				break;
 			default:
-				//newWeb, scrapeEM, scrapeRIS, scrapeBIBTEX, scrapeMARC
+				//newWeb, scrapeEM, scrapeRIS, scrapeBibTeX, scrapeMARC
 				//These names in the XUL file have to match the file names in template folder.
 				value = Zotero.File.getContentsFromURL(`chrome://scaffold/content/templates/${template}.js`);
 				break

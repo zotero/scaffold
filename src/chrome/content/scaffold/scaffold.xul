@@ -155,7 +155,7 @@
 								<menupopup id="tb-template-scrape-popup">
 									<menuitem id="tb-template-scrape-em" label="Embedded Metadata" oncommand="Scaffold.addTemplate('scrapeEM')"/>
 									<menuitem id="tb-template-scrape-ris" label="RIS" oncommand="Scaffold.addTemplate('scrapeRIS')"/>
-									<menuitem id="tb-template-scrape-bibtex" label="BibTeX" oncommand="Scaffold.addTemplate('scrapeBIBTEX')"/>
+									<menuitem id="tb-template-scrape-bibtex" label="BibTeX" oncommand="Scaffold.addTemplate('scrapeBibTeX')"/>
 									<menuitem id="tb-template-scrape-marc" label="MARC" oncommand="Scaffold.addTemplate('scrapeMARC')"/>
 								</menupopup>
 							</menu>
