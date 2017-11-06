@@ -20,6 +20,9 @@
 #tb-save {
 	list-style-image: url('chrome://scaffold/skin/save.png');
 }
+#tb-template {
+	list-style-image: url('chrome://scaffold/skin/add.png');
+}
 #tb-import {
 	list-style-image: url('chrome://scaffold/skin/import.png');
 }

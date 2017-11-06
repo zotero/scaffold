@@ -42,6 +42,22 @@
 		<key id="test" key="w" modifiers="accel" oncommand="Scaffold.close();" />
 	</keyset>
 	
+	<menubar id="mb">
+		<menu id="mb-help" label="&scaffold.menu.help;">
+			<menupopup id="mb-help-popup">
+				<menuitem id="mb-help-types" label="&scaffold.toolbar.template.itemTypes.label;" oncommand="Scaffold.addTemplate('templateAllTypes')"/>
+				<menu id="mb-help-fields" label="&scaffold.toolbar.template.newItem.label;">
+					<menupopup id="mb-help-fields-popup">
+						<menuitem id="mb-help-fields-book" label="book" oncommand="Scaffold.addTemplate('templateNewItem', 'book')"/>
+						<menuitem id="mb-help-fields-booksection" label="bookSection" oncommand="Scaffold.addTemplate('templateNewItem', 'bookSection')"/>
+						<menuitem id="mb-help-fields-journalarticle" label="journalArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'journalArticle')"/>
+						<menuitem id="mb-help-fields-newspaperarticle" label="newspaperArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'newspaperArticle')"/>
+					</menupopup>
+				</menu>
+			</menupopup>
+		</menu>
+	</menubar>
+	
 	<toolbar id="tb" align="center">
 		<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
 		<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save()" />
@@ -131,6 +147,21 @@
 			</tabpanel>
 			<tabpanel flex="1" id="tabpanel-code">
 				<vbox flex="1">
+				<hbox id="editor-toolbar" align="center">
+					<toolbarbutton id="tb-template" tooltiptext="&scaffold.toolbar.template.label;" type="menu">
+						<menupopup id="tb-template-popup">
+							<menuitem id="tb-template-new-web-add" label="&scaffold.toolbar.template.newWeb.label;" oncommand="Scaffold.addTemplate('newWeb')"/>
+							<menu id="tb-template-scrape-add" label="&scaffold.toolbar.template.scrape.label;">
+								<menupopup id="tb-template-scrape-popup">
+									<menuitem id="tb-template-scrape-em" label="Embedded Metadata" oncommand="Scaffold.addTemplate('scrapeEM')"/>
+									<menuitem id="tb-template-scrape-ris" label="RIS" oncommand="Scaffold.addTemplate('scrapeRIS')"/>
+									<menuitem id="tb-template-scrape-bibtex" label="BibTeX" oncommand="Scaffold.addTemplate('scrapeBibTeX')"/>
+									<menuitem id="tb-template-scrape-marc" label="MARC" oncommand="Scaffold.addTemplate('scrapeMARC')"/>
+								</menupopup>
+							</menu>
+						</menupopup>
+					</toolbarbutton>
+				</hbox>
 				<iframe src="data:text/html,%3C!DOCTYPE%20html%20PUBLIC%20%22-//W3C//DTD%20XHTML%201.1//EN%22%20%22http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd%22%3E%3Chtml%20xmlns=%22http://www.w3.org/1999/xhtml%22%3E%3Chead%3E%3Cscript%20type=%22text/javascript%22%20src=%22chrome://scaffold/content/ace/ace.js%22%3E%3C/script%3E%3Cscript%20type=%22text/javascript%22%20src=%22chrome://scaffold/content/ace/mode-javascript.js%22%3E%3C/script%3E%3Cscript%20type=%22text/javascript%22%20src=%22chrome://scaffold/content/aceWrapper.js%22%3E%3C/script%3E%3C/head%3E%3Cbody%20id=%22body%22%3E%3C/body%3E%3C/html%3E" id="editor-code" flex="1"/>
 				<hbox id="editor-external-box" align="center">
 					<checkbox id="checkbox-editor-external"/>
