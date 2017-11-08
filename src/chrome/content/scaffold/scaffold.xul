@@ -199,8 +199,8 @@
 					<tabpanel>
 						<vbox flex="1">
 							<hbox align="center">
-								<label control="textbox-tabUrl2" value="&scaffold.tabUrl.label;"/>
-								<textbox id="textbox-tabUrl2" class="browser-url" flex="1"/>
+								<label control="textbox-tabUrl" value="&scaffold.tabUrl.label;"/>
+								<textbox id="textbox-tabUrl" class="browser-url" flex="1"/>
 							</hbox>
 							
 							<browser src="about:blank" flex="1"></browser>
@@ -212,10 +212,6 @@
 
 			<vbox id="right-pane" flex="1">
 				
-				<hbox align="center">
-					<label control="textbox-tabUrl" id="label-tabUrl" value="&scaffold.tabUrl.label;"/>
-					<textbox id="textbox-tabUrl" class="browser-url" flex="1"/>
-				</hbox>
 				<hbox id="hbox-testFrame" width="300">
 					<label control="menulist-testFrame" id="label-testFrame" value="&scaffold.testFrame.label;"/>
 					<menulist id="menulist-testFrame"/>
