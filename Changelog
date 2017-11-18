@@ -1,3 +1,10 @@
+Version 3.3.0
+* Zotero 5.0 compatibility
+* Make scaffold work with Zotero Standalone, adding browser pane
+* Remove Framework 
+* New functionality: Add a template
+* ACE editor: add search and replace + update to 02.07.17
+
 Version 3.2.3
 * Fix tests in Firefox 45
 * Update deprecated code patterns
