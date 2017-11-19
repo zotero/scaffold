@@ -39,7 +39,7 @@ function detectWeb(doc, url) {
 function getSearchResults(doc, checkOnly) {
 	var items = {};
 	var found = false;
-	// TODO: adjust the xpath
+	// TODO: adjust the CSS selector
 	var rows = doc.querySelectorAll('h2>a.title[href*="/article/"]');
 	for (let i=0; i<rows.length; i++) {
 		// TODO: check and maybe adjust
