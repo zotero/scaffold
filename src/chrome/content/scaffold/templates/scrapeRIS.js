@@ -25,7 +25,7 @@ function scrape(doc, url) {
 				document: doc
 			});
 			item.complete();
-		})
+		});
 		translator.translate();
 	})
 }
