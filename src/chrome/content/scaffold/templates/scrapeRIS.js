@@ -27,5 +27,5 @@ function scrape(doc, url) {
 			item.complete();
 		});
 		translator.translate();
-	})
+	});
 }
