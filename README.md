@@ -5,8 +5,8 @@ Scaffold is an integrated development environment for creating
 ## Installation
 
 To install the extension:
-* Download the `xpi` file of the [latest release](https://github.com/zotero/scaffold/releases)
-* In Zotero, click `Tools → Add-Ons`, then drag the `.xpi` for the plugin onto the Add-Ons window that opens. 
+* Download the XPI file of the [latest release](https://github.com/zotero/scaffold/releases).
+* In Zotero, go to Tools → Add-ons and drag the .xpi onto the Add-ons window.
 
 ![scaffold-screenshot](scaffold.jpg)
 
