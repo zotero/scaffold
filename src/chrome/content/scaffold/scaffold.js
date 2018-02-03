@@ -102,7 +102,6 @@ var Scaffold = new function() {
 		_editors["code"] = codeWin.editor;
 		_editors["tests"] = testsWin.editor;
 
-		_editors["code"].getSession().setUseWorker(false);
 		_editors["code"].getSession().setMode(new codeWin.JavaScriptMode);
 		_editors["code"].getSession().setUseSoftTabs(false);
 
