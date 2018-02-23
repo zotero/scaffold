@@ -1,7 +1,6 @@
 Relatively important
  - Provide guidance on translator options
  - Links to documentation (why not?)
- - JS(H|L)int, comes nearly free with ACE
  - show matching translators for given import text
  - tools for writing export and search translators
 
