@@ -3,8 +3,6 @@
 <!ENTITY scaffold.toolbar.template.label			"Add a template">
 <!ENTITY scaffold.toolbar.template.newWeb.label			"Add web translator template">
 <!ENTITY scaffold.toolbar.template.scrape.label			"Add scrape function using…">
-<!ENTITY scaffold.toolbar.template.itemTypes.label			"List all item types">
-<!ENTITY scaffold.toolbar.template.newItem.label			"List all fields for item type">
 <!ENTITY scaffold.toolbar.export.label			"Export">
 <!ENTITY scaffold.toolbar.detectWeb.label		"Run detectWeb">
 <!ENTITY scaffold.toolbar.doWeb.label			"Run doWeb">
@@ -18,6 +16,9 @@
 <!ENTITY scaffold.tabs.testing.label			"Testing">
 
 <!ENTITY scaffold.menu.help			"Help">
+<!ENTITY scaffold.toolbar.template.itemTypes.label			"List all item types">
+<!ENTITY scaffold.toolbar.template.newItem.label			"List all fields for item type">
+<!ENTITY scaffold.toolbar.template.more.label			"More">
 
 <!ENTITY scaffold.tabUrl.label			"Current URL:">
 <!ENTITY scaffold.testFrame.label			"Test Frame:">

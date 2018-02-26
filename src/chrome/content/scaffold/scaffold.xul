@@ -50,8 +50,15 @@
 						<menupopup id="mb-help-fields-popup">
 							<menuitem id="mb-help-fields-book" label="book" oncommand="Scaffold.addTemplate('templateNewItem', 'book')"/>
 							<menuitem id="mb-help-fields-booksection" label="bookSection" oncommand="Scaffold.addTemplate('templateNewItem', 'bookSection')"/>
+							<menuitem id="mb-help-fields-conferencepaper" label="conferencePaper" oncommand="Scaffold.addTemplate('templateNewItem', 'conferencePaper')"/>
 							<menuitem id="mb-help-fields-journalarticle" label="journalArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'journalArticle')"/>
+							<menuitem id="mb-help-fields-magazinearticle" label="magazineArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'magazineArticle')"/>
 							<menuitem id="mb-help-fields-newspaperarticle" label="newspaperArticle" oncommand="Scaffold.addTemplate('templateNewItem', 'newspaperArticle')"/>
+							<menu id="mb-help-fields-more" label="&scaffold.toolbar.template.more.label;">
+								<menupopup id="mb-help-fields-more-popup">
+								<!-- This will be filled on load with all other item types -->
+								</menupopup>
+							</menu>
 						</menupopup>
 					</menu>
 				</menupopup>

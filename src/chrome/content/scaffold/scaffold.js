@@ -123,6 +123,18 @@ var Scaffold = new function() {
 			}, true);
 
 		generateTranslatorID();
+		
+		// Add List fields help menu entries for all other item types
+		var types = Zotero.ItemTypes.getAll().map(t => t.name).sort();
+		var morePopup = document.getElementById('mb-help-fields-more-popup');
+		var primaryTypes = ['book', 'bookSection', 'conferencePaper', 'journalArticle', 'magazineArticle', 'newspaperArticle'];
+		for (let type of types) {
+			if (primaryTypes.includes(type)) continue;
+			var menuitem = document.createElement('menuitem');
+			menuitem.setAttribute('label', type);
+			menuitem.addEventListener('command', () => { Scaffold.addTemplate('templateNewItem', type) });
+			morePopup.appendChild(menuitem);
+		}
 	}
 
 	function onResize() {
