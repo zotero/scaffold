@@ -1,4 +1,5 @@
 #!/bin/bash
+
 buildDir="build"
 rm -rf "$buildDir"
 mkdir "$buildDir"

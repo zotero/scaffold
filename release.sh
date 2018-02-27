@@ -31,18 +31,18 @@ cat "$changeLog" >> "$tempFile2"
 rm "$tempFile"
 mv "$tempFile2" "$changeLog"
 
-git commit -m "Update change log" "$changeLog" 1>&2
+git add "$changeLog"
 
 ##############
 ## Update install.rdf
 ##############
 installRDF="$srcPath/install.rdf"
 
-minVersion="`grep -o -P -e '(?<=<em:minVersion>)[^<]+' $installRDF`"
+minVersion=`perl -ne 'print m/<em:minVersion>([^<]+)/;' $installRDF`
 newMinVersion=""
 read -p "Update minVersion? [$minVersion] " newMinVersion
 
-maxVersion="`grep -o -P -e '(?<=<em:maxVersion>)[^<]+' $installRDF`"
+maxVersion=`perl -ne 'print m/<em:maxVersion>([^<]+)/;' $installRDF`
 newMaxVersion=""
 read -p "Update maxVersion? [$maxVersion] " newMaxVersion
 
@@ -53,14 +53,13 @@ if [ -z "$newMaxVersion"]; then
 	newMaxVersion="$maxVersion"
 fi
 
-sed -i.bak "s/<em:version>[^<]*/<em:version>$version/; \
-            s/<em:minVersion>[^<]*/<em:minVersion>$newMinVersion/; \
-            s/<em:maxVersion>[^<]*/<em:maxVersion>$newMaxVersion/" \
-    "$installRDF"
-# Some SED versions require an extension, but we don't need a backup
+perl -pi -e "s/<em:version>[^<]*/<em:version>$version/;" \
+          -e "s/<em:minVersion>[^<]*/<em:minVersion>$newMinVersion/;" \
+          -e "s/<em:maxVersion>[^<]*/<em:maxVersion>$newMaxVersion/;" \
+    $installRDF
 rm "$installRDF.bak"
 
-git commit -m "Update versions in install.rdf" "$installRDF" 1>&2
+git add "$installRDF"
 
 ##############
 ## Create tag
@@ -71,3 +70,29 @@ git tag "v$version"
 ## Build XPI file
 ##############
 ./build.sh "$version"
+
+# Cygwin has sha1sum, macOS has shasum, Linux has both
+if [[ -n "`which sha1sum 2> /dev/null`" ]]; then
+    SHACMD="sha1sum"
+else
+    SHACMD="shasum"
+fi
+SHA1=`$SHACMD build/scaffold-$version.xpi | cut -d' ' -f1`
+
+
+##############
+## Update docs/ for Github Pages
+##############
+
+perl -pi -e "s/<em:version>[^<]*/<em:version>$version/;" \
+          -e "s/<em:updateLink>[^<]*/<em:updateLink>https:\/\/github.com\/zotero\/scaffold\/releases\/download\/v$version\/scaffold-$version.xpi/;" \
+          -e "s/sha1:/sha1:$SHA1/g;" \
+          -e "s/<em:updateInfoURL>[^<]*/<em:updateInfoURL>https:\/\/github.com\/zotero\/scaffold\/releases\/tag\/v$version/;" \
+    docs/scaffold.rdf
+git add "docs/scaffold.rdf"
+
+##############
+## Commit everything
+##############
+
+git commit -m "Release $version" 1>&2
