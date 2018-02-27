@@ -1,3 +1,7 @@
+Version 3.3.1
+* Activate live syntax checker in ACE for code window
+* List fields also for all other item types (#68)
+
 Version 3.3.0
 * Zotero 5.0 compatibility
 * Make scaffold work with Zotero Standalone, adding browser pane
