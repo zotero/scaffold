@@ -35,12 +35,14 @@
 	<script src="chrome://zotero/content/include.js"/>
 	<script src="chrome://zotero/content/tools/testTranslators/translatorTester.js"/>
 	<script src="scaffold.js"/>
+	
+	<keyset>
+		<key id="run-do-web" modifiers="accel" key="R" oncommand="Scaffold.run('do')"/>
+		<key id="detect-web" modifiers="accel" key="T" oncommand="Scaffold.run('detect')"/>
+		<key id="save" modifiers="accel" key="S" oncommand="Scaffold.save()"/>
+	</keyset>
 
 	<vbox flex="1">
-		
-		<keyset>
-			<key id="test" key="w" modifiers="accel" oncommand="Scaffold.close();" />
-		</keyset>
 		
 		<menubar id="mb">
 			<menu id="mb-help" label="&scaffold.menu.help;">

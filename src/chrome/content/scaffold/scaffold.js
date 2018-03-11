@@ -372,6 +372,12 @@ var Scaffold = new function() {
 			yield this.save();
 		}
 		
+		// Handle generic call run('detect'), run('do')
+		if (functionToRun == "detect" || functionToRun == "do") {
+			var isWeb = document.getElementById('checkbox-web').checked;
+			functionToRun += isWeb ? "Web" : "Import";
+		}
+		
 		if (functionToRun == "detectWeb" || functionToRun == "doWeb") {
 			_run(functionToRun, _getDocument(), _selectItems, _myItemDone, _translators);
 		} else if (functionToRun == "detectImport" || functionToRun == "doImport") {
