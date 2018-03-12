@@ -860,7 +860,7 @@ var Scaffold = new function() {
 		_clearTests();
 		// Clear entries (but not value) in the url dropdown in the browser tab 
 		var browserURL = document.getElementById("browser-url");
-		var currentURL = browserURL.label;
+		var currentURL = browserURL.value;
 		browserURL.removeAllItems();
 		browserURL.value = currentURL;
 		
