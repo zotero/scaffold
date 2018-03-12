@@ -85,14 +85,12 @@ var Scaffold = new function() {
 			_updateFrames, true);
 		_updateFrames();
 		
-		let urlTextboxes = document.querySelectorAll('.browser-url');
-		for (let textbox of urlTextboxes) {
-			textbox.addEventListener('keypress', function(e) {
-				if (e.keyCode == e.DOM_VK_RETURN) {
-					_browser.loadURI(textbox.value);
-				}
-			});
-		}
+		let browserUrl = document.getElementById("browser-url");
+		browserUrl.addEventListener('keypress', function(e) {
+			if (e.keyCode == e.DOM_VK_RETURN) {
+				_browser.loadURI(browserUrl.value);
+			}
+		});
 		
 		var importWin = document.getElementById("editor-import").contentWindow;
 		var codeWin = document.getElementById("editor-code").contentWindow;
@@ -856,10 +854,16 @@ var Scaffold = new function() {
 	}
 
 	/*
-	 * populate tests pane
+	 * populate tests pane and url options in browser pane
 	 */
 	function populateTests() {
 		_clearTests();
+		// Clear entries (but not value) in the url dropdown in the browser tab 
+		var browserUrl = document.getElementById("browser-url");
+		var currentUrl = browserUrl.label;
+		browserUrl.removeAllItems();
+		browserUrl.value = currentUrl;
+
 		var tests = _loadTests(_editors["tests"].getSession().getValue());
 		// We've got tests, let's display them
 		var listbox = document.getElementById("testing-listbox");
@@ -867,9 +871,10 @@ var Scaffold = new function() {
 			var test = tests[i];
 			var listitem = document.createElement("listitem");
 			var listcell = document.createElement("listcell");
-			if (test.type == "web")
+			if (test.type == "web") {
 				listcell.setAttribute("label", test.url);
-			else if (test.type == "import")
+				browserUrl.appendItem(test.url);
+			} else if (test.type == "import")
 				// trim label to improve performance
 				listcell.setAttribute("label", test.input.substr(0,80));
 			else continue; // unknown test type
@@ -1139,8 +1144,8 @@ var Scaffold = new function() {
 	function _updateFrames() {
 		var doc = _browser.contentDocument;
 		
-		//Show URL of active tab
-		document.querySelectorAll("textbox.browser-url").forEach(elem => elem.value = doc.location.href);
+		// Show URL of active tab
+		document.getElementById("browser-url").value = doc.location.href;
 		
 		// No need to run if Scaffold isn't open
 		var menulist = _document.getElementById("menulist-testFrame");

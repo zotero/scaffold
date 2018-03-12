@@ -209,7 +209,10 @@
 						<vbox flex="1">
 							<hbox align="center">
 								<label control="textbox-tabUrl" value="&scaffold.tabUrl.label;"/>
-								<textbox id="textbox-tabUrl" class="browser-url" flex="1"/>
+								<!--<textbox id="textbox-tabUrl" class="browser-url" flex="1"/>-->
+								<menulist id="browser-url" class="browser-url" editable="true" flex="1">
+									<menupopup></menupopup>
+								</menulist>
 							</hbox>
 							
 							<browser src="about:blank" flex="1"></browser>
