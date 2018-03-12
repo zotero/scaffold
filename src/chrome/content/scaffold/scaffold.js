@@ -888,7 +888,7 @@ var Scaffold = new function() {
 		}
 		
 		// Re-position URL drop-down
-		browserUrl.firstChild.position = 'after_start';
+		browserURL.firstChild.position = 'after_start';
 	}
 
 	
