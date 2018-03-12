@@ -859,11 +859,11 @@ var Scaffold = new function() {
 	function populateTests() {
 		_clearTests();
 		// Clear entries (but not value) in the url dropdown in the browser tab 
-		var browserUrl = document.getElementById("browser-url");
-		var currentUrl = browserUrl.label;
-		browserUrl.removeAllItems();
-		browserUrl.value = currentUrl;
-
+		var browserURL = document.getElementById("browser-url");
+		var currentURL = browserURL.label;
+		browserURL.removeAllItems();
+		browserURL.value = currentURL;
+		
 		var tests = _loadTests(_editors["tests"].getSession().getValue());
 		// We've got tests, let's display them
 		var listbox = document.getElementById("testing-listbox");
@@ -873,7 +873,7 @@ var Scaffold = new function() {
 			var listcell = document.createElement("listcell");
 			if (test.type == "web") {
 				listcell.setAttribute("label", test.url);
-				browserUrl.appendItem(test.url);
+				browserURL.appendItem(test.url);
 			} else if (test.type == "import")
 				// trim label to improve performance
 				listcell.setAttribute("label", test.input.substr(0,80));
