@@ -20,7 +20,7 @@
 <!ENTITY scaffold.toolbar.template.newItem.label			"List all fields for item type">
 <!ENTITY scaffold.toolbar.template.more.label			"More">
 
-<!ENTITY scaffold.tabUrl.label			"Current URL:">
+<!ENTITY scaffold.tabUrl.label			"URL:">
 <!ENTITY scaffold.testFrame.label			"Test Frame:">
 
 <!ENTITY scaffold.metadata.translatorID.label		"Translator ID:">
