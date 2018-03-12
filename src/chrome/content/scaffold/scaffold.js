@@ -886,6 +886,9 @@ var Scaffold = new function() {
 			listitem.setUserData("test-string", JSON.stringify(test), null);
 			listbox.appendChild(listitem);
 		}
+		
+		// Re-position URL drop-down
+		browserUrl.firstChild.position = 'after_start';
 	}
 
 	
