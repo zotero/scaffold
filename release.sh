@@ -62,11 +62,6 @@ rm "$installRDF.bak"
 git add "$installRDF"
 
 ##############
-## Create tag
-##############
-git tag "v$version"
-
-##############
 ## Build XPI file
 ##############
 ./build.sh "$version"
@@ -96,3 +91,8 @@ git add "docs/scaffold.rdf"
 ##############
 
 git commit -m "Release $version" 1>&2
+
+##############
+## Create tag
+##############
+git tag "v$version"
