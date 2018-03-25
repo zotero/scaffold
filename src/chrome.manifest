@@ -4,3 +4,4 @@ skin	scaffold	default		chrome/skin/default/scaffold/
 
 overlay	chrome://browser/content/browser.xul	chrome://scaffold/content/overlay.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
 overlay	chrome://zotero/content/standalone/standalone.xul chrome://scaffold/content/overlay.xul application=zotero@chnm.gmu.edu
+overlay	chrome://zotero/content/standalone/standalone.xul chrome://scaffold/content/overlay.xul application=juris-m@juris-m.github.io

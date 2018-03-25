@@ -22,6 +22,16 @@
       </Description>
     </em:targetApplication>
 
+    <!-- Jurism -->
+    
+    <em:targetApplication>
+      <Description>
+        <em:id>juris-m@juris-m.github.io</em:id>
+        <em:minVersion>4.0</em:minVersion>
+        <em:maxVersion>5.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    
   </Description>
 
 </RDF>
