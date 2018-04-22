@@ -888,7 +888,9 @@ var Scaffold = new function() {
 		}
 		
 		// Re-position URL drop-down
-		browserURL.firstChild.position = 'after_start';
+		if (browserURL.firstChild) {
+			browserURL.firstChild.position = 'after_start';
+		}
 	}
 
 	
