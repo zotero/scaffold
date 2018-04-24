@@ -50,15 +50,6 @@ function fix2028(str) {
 }
 
 var Scaffold = new function() {
-	this.onLoad = onLoad;
-	this.generateTranslatorID = generateTranslatorID;
-	this.testTargetRegex = testTargetRegex;
-	this.onResize = onResize;
-	this.populateTests = populateTests;
-	this.runSelectedTests = runSelectedTests;
-	this.deleteSelectedTests = deleteSelectedTests;
-	this.newTestFromCurrent = newTestFromCurrent;
-	this.editImportFromTest = editImportFromTest;
 
 	var _browser, _frames, _document;
 	
@@ -76,7 +67,7 @@ var Scaffold = new function() {
 		'textbox-hidden-prefs':'hiddenPrefs'
 	};
 
-	function onLoad(e) {
+	this.onLoad = function(e) {
 		
 		if(e.target !== document) return;
 		_document = document;
@@ -101,21 +92,21 @@ var Scaffold = new function() {
 		var codeWin = document.getElementById("editor-code").contentWindow;
 		var testsWin = document.getElementById("editor-tests").contentWindow;
 		
-		_editors["import"] = importWin.editor;
-		_editors["code"] = codeWin.editor;
-		_editors["tests"] = testsWin.editor;
+		_editors.import = importWin.editor;
+		_editors.code = codeWin.editor;
+		_editors.tests = testsWin.editor;
 
-		_editors["code"].getSession().setMode(new codeWin.JavaScriptMode);
-		_editors["code"].getSession().setUseSoftTabs(false);
+		_editors.code.getSession().setMode(new codeWin.JavaScriptMode);
+		_editors.code.getSession().setUseSoftTabs(false);
 		// The first code line is preceeded by some metadata lines, such that
 		// the code lines start (usually) at line 15.
 		_editors.code.getSession().setOption("firstLineNumber", 15);
 
-		_editors["tests"].getSession().setUseWorker(false);
-		_editors["tests"].getSession().setMode(new testsWin.JavaScriptMode);
-		_editors["tests"].getSession().setUseSoftTabs(false);
+		_editors.tests.getSession().setUseWorker(false);
+		_editors.tests.getSession().setMode(new testsWin.JavaScriptMode);
+		_editors.tests.getSession().setUseSoftTabs(false);
 		
-		_editors["import"].getSession().setMode(new importWin.TextMode);
+		_editors.import.getSession().setMode(new importWin.TextMode);
 		
 		// Set font size from previous session
 		var size = Zotero.Prefs.get("scaffold.fontSize");
@@ -130,11 +121,11 @@ var Scaffold = new function() {
 		document.getElementById('checkbox-editor-external').addEventListener("command",
 			function() {
 				var external = document.getElementById('checkbox-editor-external').checked;
-				_editors["code"].setReadOnly(external);
-				_editors["tests"].setReadOnly(external);
+				_editors.code.setReadOnly(external);
+				_editors.tests.setReadOnly(external);
 			}, true);
 
-		generateTranslatorID();
+		this.generateTranslatorID();
 		
 		// Add List fields help menu entries for all other item types
 		var types = Zotero.ItemTypes.getAll().map(t => t.name).sort();
@@ -149,11 +140,11 @@ var Scaffold = new function() {
 		}
 	}
 
-	function onResize() {
+	this.onResize = function() {
 		// We try to let ACE resize itself
-		_editors["import"].resize();
-		_editors["code"].resize();
-		_editors["tests"].resize();
+		_editors.import.resize();
+		_editors.code.resize();
+		_editors.tests.resize();
 
 		return true;
 	}
@@ -223,26 +214,26 @@ var Scaffold = new function() {
 			fixedCode = fixedCode.substr(0,testStart) + fixedCode.substr(testEnd+23);
 		
 		// Set up the test running pane
-		populateTests();
+		this.populateTests();
 
 		// Convert whitespace to tabs
-		_editors["code"].getSession().setValue(normalizeWhitespace(fixedCode));
+		_editors.code.getSession().setValue(normalizeWhitespace(fixedCode));
 		// Then go to line 1
-		_editors["code"].gotoLine(1);
+		_editors.code.gotoLine(1);
 		
 		// Reset configOptions and displayOptions before loading
 		document.getElementById('textbox-configOptions').value = '';
 		document.getElementById('textbox-displayOptions').value = '';
 
 		if (translator.configOptions) {
-		    let configOptions = JSON.stringify(translator.configOptions);
+			let configOptions = JSON.stringify(translator.configOptions);
 			if (configOptions != '{}') {
 				document.getElementById('textbox-configOptions').value = configOptions;
 			}
 		} 
 		if (translator.displayOptions) {
-		    let displayOptions = JSON.stringify(translator.displayOptions);
-		    if (displayOptions != '{}') {
+			let displayOptions = JSON.stringify(translator.displayOptions);
+			if (displayOptions != '{}') {
 				document.getElementById('textbox-displayOptions').value = displayOptions;
 			}
 		}
@@ -344,8 +335,8 @@ var Scaffold = new function() {
 	 * save translator to database
 	 */
 	this.save = Zotero.Promise.coroutine(function* () {
-		var code = _editors["code"].getSession().getValue();
-		var tests = _editors["tests"].getSession().getValue();
+		var code = _editors.code.getSession().getValue();
+		var tests = _editors.tests.getSession().getValue();
 		code += tests;
 
 		var metadata = _getMetadataObject();
@@ -362,7 +353,7 @@ var Scaffold = new function() {
 	 * add template code
 	 */
 	this.addTemplate = Zotero.Promise.coroutine(function* (template, second) {
-		var cursorPos = _editors["code"].getSession().selection.getCursor();
+		var cursorPos = _editors.code.getSession().selection.getCursor();
 		var value = "";
 		switch(template) {
 			case "templateNewItem":
@@ -396,7 +387,7 @@ var Scaffold = new function() {
 				value = Zotero.File.getContentsFromURL(`chrome://scaffold/content/templates/${template}.js`);
 				break
 		}
-		_editors["code"].getSession().insert(cursorPos, value);
+		_editors.code.getSession().insert(cursorPos, value);
 	});
 
 	/*
@@ -514,14 +505,14 @@ var Scaffold = new function() {
 	/*
 	 * generate translator GUID
 	 */
-	function generateTranslatorID() {
+	this.generateTranslatorID = function() {
 		document.getElementById("textbox-translatorID").value = _generateGUID();
 	}
 
 	/*
 	 * test target regular expression against document URL
 	 */
-	function testTargetRegex() {
+	this.testTargetRegex = function() {
 		var testDoc = _getDocument();
 		var url = Zotero.Proxies.proxyToProper(testDoc.location.href);
 
@@ -621,7 +612,7 @@ var Scaffold = new function() {
 	 * gets import text for import translator
 	 */
 	function _getImport() {
-		var text = _editors["import"].getSession().getValue();
+		var text = _editors.import.getSession().getValue();
 		return text;
 	}
 
@@ -659,7 +650,7 @@ var Scaffold = new function() {
 
 		metadata = JSON.stringify(metadata, null, "\t") + ";\n";
 
-		translator.code = metadata + "\n" + _editors["code"].getSession().getValue();
+		translator.code = metadata + "\n" + _editors.code.getSession().getValue();
 
 		// make sure translator gets run in browser in Zotero >2.1
 		if(Zotero.Translator.RUN_MODE_IN_BROWSER) {
@@ -842,7 +833,7 @@ var Scaffold = new function() {
 	 * adds a new test from the current input/translator
 	 * web or import only for now
 	 */
-	function newTestFromCurrent(type) {
+	this.newTestFromCurrent = function(type) {
 		_clearOutput();
 		var input, label;
 		if (type == "web" && !document.getElementById('checkbox-web').checked) {
@@ -905,7 +896,7 @@ var Scaffold = new function() {
 	/*
 	 * populate tests pane and url options in browser pane
 	 */
-	function populateTests() {
+	this.populateTests = function() {
 		_clearTests();
 		// Clear entries (but not value) in the url dropdown in the browser tab 
 		var browserURL = document.getElementById("browser-url");
@@ -968,7 +959,7 @@ var Scaffold = new function() {
 	/*
 	 * Delete selected test(s), from UI
 	 */
-	function deleteSelectedTests() {
+	this.deleteSelectedTests = function() {
 		var listbox = document.getElementById("testing-listbox");
 		var count = listbox.selectedCount;
 		while (count--) {
@@ -981,20 +972,20 @@ var Scaffold = new function() {
 	 * Load the import input for the first selected test in the import pane,
 	 * from the UI.
 	 */	
-	function editImportFromTest() {
+	this.editImportFromTest = function() {
 		var listbox = document.getElementById("testing-listbox");
 		var item = listbox.selectedItems[0];
 		var test = JSON.parse(item.getUserData("test-string"));
 		if (test.input === undefined) {
 			_logOutput("Can't edit import data for a non-import test.");
 		}
-		_editors["import"].getSession().setValue(test.input);
+		_editors.import.getSession().setValue(test.input);
 	}
 	
 	/*
 	 * Run selected test(s)
 	 */
-	function runSelectedTests() {
+	this.runSelectedTests = function() {
 		_clearOutput();
 		
 		var listbox = document.getElementById("testing-listbox");
