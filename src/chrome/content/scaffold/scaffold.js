@@ -54,9 +54,6 @@ var Scaffold = new function() {
 	this.generateTranslatorID = generateTranslatorID;
 	this.testTargetRegex = testTargetRegex;
 	this.onResize = onResize;
-	this.increaseFontSize = increaseFontSize;
-	this.decreaseFontSize = decreaseFontSize;
-	this.setFontSize = setFontSize;
 	this.populateTests = populateTests;
 	this.runSelectedTests = runSelectedTests;
 	this.deleteSelectedTests = deleteSelectedTests;
@@ -123,7 +120,7 @@ var Scaffold = new function() {
 		// Set font size from previous session
 		var size = Zotero.Prefs.get("scaffold.fontSize");
 		if (size) {
-			setFontSize(size);
+			this.setFontSize(size);
 		}
 
 		// Set resize handler
@@ -161,22 +158,27 @@ var Scaffold = new function() {
 		return true;
 	}
 
-	function setFontSize(size) {
+	this.setFontSize = function(size) {
 		var sizeWithPX = size + 'px';
-		_editors["import"].setOptions({fontSize: sizeWithPX});
-		_editors["code"].setOptions({fontSize: sizeWithPX});
-		_editors["tests"].setOptions({fontSize: sizeWithPX});
+		_editors.import.setOptions({fontSize: sizeWithPX});
+		_editors.code.setOptions({fontSize: sizeWithPX});
+		_editors.tests.setOptions({fontSize: sizeWithPX});
 		document.getElementById("scaffold-pane").style.fontSize = sizeWithPX;
-		Zotero.Prefs.set("scaffold.fontSize", size);
+		if (size==11) {
+			// for the default value 11, clear the prefs
+			Zotero.Prefs.clear('scaffold.fontSize');
+		} else {
+			Zotero.Prefs.set("scaffold.fontSize", size);
+		}
 	}
 
-	function increaseFontSize() {
+	this.increaseFontSize = function() {
 		var currentSize = Zotero.Prefs.get("scaffold.fontSize") || 11;
-		setFontSize(currentSize+2);
+		this.setFontSize(currentSize+2);
 	}
-	function decreaseFontSize() {
+	this.decreaseFontSize = function() {
 		var currentSize = Zotero.Prefs.get("scaffold.fontSize") || 11;
-		setFontSize(currentSize-2);
+		this.setFontSize(currentSize-2);
 	}
 
 	/*
