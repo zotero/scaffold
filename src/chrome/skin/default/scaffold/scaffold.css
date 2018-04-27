@@ -77,3 +77,7 @@ listbox {
 #editor-external-box label {
 	margin-left: 1px;
 }
+
+browser {
+	background: white;
+}
