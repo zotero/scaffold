@@ -214,7 +214,7 @@
 								</menulist>
 							</hbox>
 							
-							<browser src="about:blank" flex="1"></browser>
+							<browser src="about:blank" type="content" flex="1"></browser>
 						</vbox>
 					</tabpanel>
 				</tabpanels>
