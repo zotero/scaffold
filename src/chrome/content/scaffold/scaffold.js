@@ -88,7 +88,10 @@ var Scaffold = new function() {
 		let browserUrl = document.getElementById("browser-url");
 		browserUrl.addEventListener('keypress', function(e) {
 			if (e.keyCode == e.DOM_VK_RETURN) {
-				_browser.loadURI(browserUrl.value);
+				_browser.loadURIWithFlags(
+					browserUrl.value,
+					Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE
+				);
 			}
 		});
 		
