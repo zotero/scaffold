@@ -46,6 +46,8 @@
 <!ENTITY scaffold.metadata.browserSupport.ie		"Internet Explorer">
 <!ENTITY scaffold.metadata.browserSupport.bookmarklet	"Bookmarklet">
 <!ENTITY scaffold.metadata.browserSupport.server	"Server">
+<!ENTITY scaffold.metadata.targetAll.label			"Target All:">
+<!ENTITY scaffold.metadata.hiddenPrefs.label			"Hidden Preferences:">
 
 <!ENTITY scaffold.metadata.label.default		"Untitled">
 <!ENTITY scaffold.metadata.priority.default		"100">

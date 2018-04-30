@@ -108,6 +108,10 @@
 								<textbox id="textbox-target" flex="1"/>
 								<button label="&scaffold.metadata.target.testRegex;" oncommand="Scaffold.testTargetRegex()"/>
 							</hbox>
+							<hbox style="display:none">
+								<label class="label-metadata" value="&scaffold.metadata.targetAll.label;" control="textbox-target-all"/>
+								<textbox id="textbox-target-all" flex="1"/>
+							</hbox>
 							<hbox>
 								<label class="label-metadata" value="&scaffold.metadata.configOptions.label;" control="textbox-configOptions"/>
 								<textbox id="textbox-configOptions" flex="1"/>
@@ -123,6 +127,10 @@
 								<textbox id="textbox-maxVersion" flex="1"/>
 								<label class="label-metadata" value="&scaffold.metadata.priority.label;" control="textbox-priority"/>
 								<textbox id="textbox-priority" flex="1" value="&scaffold.metadata.priority.default;"/>
+							</hbox>
+							<hbox style="display:none">
+								<label class="label-metadata" value="&scaffold.metadata.hiddenPrefs.label;" control="textbox-hidden-prefs"/>
+								<textbox id="textbox-hidden-prefs" flex="1"/>
 							</hbox>
 							<grid flex="1">
 								<columns>

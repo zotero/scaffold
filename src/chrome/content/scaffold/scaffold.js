@@ -71,7 +71,9 @@ var Scaffold = new function() {
 		'textbox-target':'target',
 		'textbox-minVersion':'minVersion',
 		'textbox-maxVersion':'maxVersion',
-		'textbox-priority':'priority'
+		'textbox-priority':'priority',
+		'textbox-target-all':'targetAll',
+		'textbox-hidden-prefs':'hiddenPrefs'
 	};
 
 	function onLoad(e) {
@@ -167,7 +169,7 @@ var Scaffold = new function() {
 		if (!translator) return false;
 
 		for(var id in _propertyMap) {
-			document.getElementById(id).value = translator[_propertyMap[id]];
+			document.getElementById(id).value = translator[_propertyMap[id]] || "";
 		}
 
 		//Strip JSON metadata
@@ -239,6 +241,14 @@ var Scaffold = new function() {
 			maxVersion: document.getElementById('textbox-maxVersion').value,
 			priority: parseInt(document.getElementById('textbox-priority').value)
 		};
+		
+		// optional (hidden) metadata
+		if (document.getElementById('textbox-target-all').value) {
+			metadata.targetAll = document.getElementById('textbox-target-all').value;
+		}
+		if (document.getElementById('textbox-hidden-prefs').value) {
+			metadata.hiddenPrefs = document.getElementById('textbox-hidden-prefs').value;
+		}
 
 		if (document.getElementById('textbox-configOptions').value) {
 		    metadata.configOptions = JSON.parse(document.getElementById('textbox-configOptions').value);
@@ -586,7 +596,7 @@ var Scaffold = new function() {
 	function _metaToTranslator(translator, metadata) {
 		var props = ["translatorID", "translatorType", "label", "creator", "target",
 			"minVersion", "maxVersion", "priority", "lastUpdated", "inRepository", "configOptions",
-			"displayOptions", "browserSupport"];
+			"displayOptions", "browserSupport", "targetAll", "hiddenPrefs"];
 		for (var i=0; i<props.length; i++) {
 			translator[props[i]] = metadata[props[i]];
 		}
