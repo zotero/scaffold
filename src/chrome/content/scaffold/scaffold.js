@@ -353,8 +353,6 @@ var Scaffold = new function() {
 	 * add template code
 	 */
 	this.addTemplate = Zotero.Promise.coroutine(function* (template, second) {
-		var cursorPos = _editors.code.getSession().selection.getCursor();
-		var value = "";
 		switch(template) {
 			case "templateNewItem":
 				var outputObject = {};
@@ -381,13 +379,18 @@ var Scaffold = new function() {
 				var typeNames = Zotero.ItemTypes.getTypes().map(t => t.name);
 				document.getElementById('output').value = JSON.stringify(typeNames, null, '\t');
 				break;
+			case "shortcuts":
+				var value = Zotero.File.getContentsFromURL(`chrome://scaffold/content/templates/shortcuts.txt`);
+				document.getElementById('output').value = value;
+				break
 			default:
 				//newWeb, scrapeEM, scrapeRIS, scrapeBibTeX, scrapeMARC
 				//These names in the XUL file have to match the file names in template folder.
-				value = Zotero.File.getContentsFromURL(`chrome://scaffold/content/templates/${template}.js`);
+				var cursorPos = _editors.code.getSession().selection.getCursor();
+				var value = Zotero.File.getContentsFromURL(`chrome://scaffold/content/templates/${template}.js`);
+				_editors.code.getSession().insert(cursorPos, value);
 				break
 		}
-		_editors.code.getSession().insert(cursorPos, value);
 	});
 
 	/*

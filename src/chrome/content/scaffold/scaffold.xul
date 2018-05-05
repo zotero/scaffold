@@ -66,6 +66,7 @@
 							</menu>
 						</menupopup>
 					</menu>
+					<menuitem id="mb-help-shortcuts" label="&scaffold.toolbar.help.shortcuts;" oncommand="Scaffold.addTemplate('shortcuts')"/>
 				</menupopup>
 			</menu>
 		</menubar>
