@@ -107,6 +107,9 @@ var Scaffold = new function() {
 
 		_editors["code"].getSession().setMode(new codeWin.JavaScriptMode);
 		_editors["code"].getSession().setUseSoftTabs(false);
+		// The first code line is preceeded by some metadata lines, such that
+		// the code lines start (usually) at line 15.
+		_editors.code.getSession().setOption("firstLineNumber", 15);
 
 		_editors["tests"].getSession().setUseWorker(false);
 		_editors["tests"].getSession().setMode(new testsWin.JavaScriptMode);
@@ -177,7 +180,10 @@ var Scaffold = new function() {
 		var lastUpdatedIndex = code.indexOf('"lastUpdated"');
 		var header = code.substr(0, lastUpdatedIndex + 50);
 		var m = /^\s*{[\S\s]*?}\s*?[\r\n]+/.exec(header);
-		var fixedCode = code.substr(m[0].length);
+		var fixedCode = code.substr(m[0].length); 
+		// adjust the first line number when there are an unusual number of metadata lines
+		var linesOfMetadata = m[0].split('\n').length;
+		_editors.code.getSession().setOption("firstLineNumber", linesOfMetadata);
 		// load tests into test editing pane, but clear it first
 		_editors["tests"].getSession().setValue('');
 		_loadTests(fixedCode);
@@ -516,7 +522,8 @@ var Scaffold = new function() {
 	function _error(obj, error) {
 		if(error && error.lineNumber &&
 				error.fileName == obj.translator[0].label ) {
-			_editors["code"].gotoLine(error.lineNumber-2);	// subtract two lines for metadata and FW
+			var lines = _editors.code.getSession().getOption("firstLineNumber");
+			_editors.code.gotoLine(error.lineNumber-lines+1);	// subtract the metadata lines
 		}
 	}
 
@@ -621,7 +628,7 @@ var Scaffold = new function() {
 		//copy metadata into the translator object
 		_metaToTranslator(translator, metadata);
 
-		metadata = JSON.stringify(metadata) + ";\n";
+		metadata = JSON.stringify(metadata, null, "\t") + ";\n";
 
 		translator.code = metadata + "\n" + _editors["code"].getSession().getValue();
 
