@@ -10,9 +10,9 @@
             <em:version>3.3.1</em:version>
             <em:targetApplication>
               <RDF:Description>
-                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-                <em:minVersion>38.0</em:minVersion>
-                <em:maxVersion>43.*</em:maxVersion>
+                <em:id>zotero@chnm.gmu.edu</em:id>
+                <em:minVersion>4.999</em:minVersion>
+                <em:maxVersion>5.*</em:maxVersion>
                 <em:updateLink>https://github.com/zotero/scaffold/releases/download/v3.3.1/scaffold-3.3.1.xpi</em:updateLink>
                 <em:updateHash>sha1:bbbd2f448dac18728ee4c7d596ead69af107679fda513b587891599c2522cec5b0acd1175b165c57</em:updateHash>
                 <em:updateInfoURL>https://github.com/zotero/scaffold/releases/tag/v3.3.1</em:updateInfoURL>
