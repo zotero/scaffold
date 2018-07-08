@@ -986,6 +986,28 @@ var Scaffold = new function() {
 	}
 	
 	/*
+	 * Copy the url or data of the first selected test to the clipboard.
+	 */	
+	this.copyToClipboard = function() {
+		var listbox = document.getElementById("testing-listbox");
+		var item = listbox.selectedItems[0];
+		var url = item.getElementsByTagName("listcell")[0].getAttribute("label");
+		var test = JSON.parse(item.getUserData("test-string"));
+		var urlOrData = (test.input !== undefined) ? test.input : url;
+		Zotero.Utilities.Internal.copyTextToClipboard(urlOrData);
+	}
+	
+	/*
+	 * Open the url of the first selected test in the browser.
+	 */	
+	this.openURL = function() {
+		var listbox = document.getElementById("testing-listbox");
+		var item = listbox.selectedItems[0];
+		var url = item.getElementsByTagName("listcell")[0].getAttribute("label");
+		Zotero.launchURL(url);
+	}
+	
+	/*
 	 * Run selected test(s)
 	 */
 	this.runSelectedTests = function() {
