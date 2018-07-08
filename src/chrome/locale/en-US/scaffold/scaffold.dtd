@@ -19,6 +19,7 @@
 <!ENTITY scaffold.toolbar.template.itemTypes.label			"List all item types">
 <!ENTITY scaffold.toolbar.template.newItem.label			"List all fields for item type">
 <!ENTITY scaffold.toolbar.template.more.label			"More">
+<!ENTITY scaffold.toolbar.help.shortcuts			"Keyboard Shortcuts">
 
 <!ENTITY scaffold.tabUrl.label			"URL:">
 <!ENTITY scaffold.testFrame.label			"Test Frame:">
