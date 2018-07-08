@@ -14,7 +14,7 @@
                 <em:minVersion>4.999</em:minVersion>
                 <em:maxVersion>5.*</em:maxVersion>
                 <em:updateLink>https://github.com/zotero/scaffold/releases/download/v3.3.2/scaffold-3.3.2.xpi</em:updateLink>
-                <em:updateHash>sha1:a5a859b487ef6fac21482a0a5ed17527a11c36d7bbbd2f448dac18728ee4c7d596ead69af107679fda513b587891599c2522cec5b0acd1175b165c57</em:updateHash>
+                <em:updateHash>sha1:a5a859b487ef6fac21482a0a5ed17527a11c36d7</em:updateHash>
                 <em:updateInfoURL>https://github.com/zotero/scaffold/releases/tag/v3.3.2</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
