@@ -1,3 +1,12 @@
+Version 3.3.2
+* Add keyboard shortcuts
+* Add test cases as possible urls in browse tab (#79)
+* Juris-M compatibility (#84)
+* Support optional metadata: targetAll, hiddenPrefs (#89)
+* Change first line number in code editor (#91)
+* Key shortcuts for increase/decrease/reset font size
+* Open URL in browser, copy to clipboard and edit import in a context menue (#83)
+
 Version 3.3.1
 * Activate live syntax checker in ACE for code window
 * List fields also for all other item types (#68)
