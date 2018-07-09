@@ -38,27 +38,8 @@ git add "$changeLog"
 ##############
 installRDF="$srcPath/install.rdf"
 
-minVersion=`perl -ne 'print m/<em:minVersion>([^<]+)/;' $installRDF`
-newMinVersion=""
-read -p "Update minVersion? [$minVersion] " newMinVersion
-
-maxVersion=`perl -ne 'print m/<em:maxVersion>([^<]+)/;' $installRDF`
-newMaxVersion=""
-read -p "Update maxVersion? [$maxVersion] " newMaxVersion
-
-if [ -z "$newMinVersion"]; then
-	newMinVersion="$minVersion"
-fi
-if [ -z "$newMaxVersion"]; then
-	newMaxVersion="$maxVersion"
-fi
-
-perl -pi -e "s/<em:version>[^<]*/<em:version>$version/;" \
-          -e "s/<em:minVersion>[^<]*/<em:minVersion>$newMinVersion/;" \
-          -e "s/<em:maxVersion>[^<]*/<em:maxVersion>$newMaxVersion/;" \
-    $installRDF
+perl -pi -e "s/<em:version>[^<]*/<em:version>$version/;"  $installRDF
 rm "$installRDF.bak"
-
 git add "$installRDF"
 
 ##############
@@ -81,10 +62,11 @@ SHA1=`$SHACMD build/scaffold-$version.xpi | cut -d' ' -f1`
 
 perl -pi -e "s/<em:version>[^<]*/<em:version>$version/;" \
           -e "s/<em:updateLink>[^<]*/<em:updateLink>https:\/\/github.com\/zotero\/scaffold\/releases\/download\/v$version\/scaffold-$version.xpi/;" \
-          -e "s/sha1:/sha1:$SHA1/g;" \
+          -e "s/sha1:[\dabcdef]*/sha1:$SHA1/g;" \
           -e "s/<em:updateInfoURL>[^<]*/<em:updateInfoURL>https:\/\/github.com\/zotero\/scaffold\/releases\/tag\/v$version/;" \
     docs/scaffold.rdf
 git add "docs/scaffold.rdf"
+rm "docs/scaffold.rdf.bak"
 
 ##############
 ## Commit everything
