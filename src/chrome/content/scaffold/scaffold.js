@@ -300,25 +300,28 @@ var Scaffold = new function() {
 			metadata.translatorType += 8;
 		}
 		
-		metadata.browserSupport = "";
-		if(document.getElementById('checkbox-gecko').checked) {
-			metadata.browserSupport += "g";
-		}
-		if(document.getElementById('checkbox-chrome').checked) {
-			metadata.browserSupport += "c";
-		}
-		if(document.getElementById('checkbox-safari').checked) {
-			metadata.browserSupport += "s";
-		}
-		if(document.getElementById('checkbox-ie').checked) {
-			metadata.browserSupport += "i";
-		}
-		if(document.getElementById('checkbox-bookmarklet').checked) {
-			metadata.browserSupport += "b";
-		}
-		if(document.getElementById('checkbox-server').checked) {
-			metadata.browserSupport += "v";
-		}
+    if (document.getElementById('checkbox-web').checked) {
+      // save browserSupport only for web tranlsators
+  		metadata.browserSupport = "";
+  		if(document.getElementById('checkbox-gecko').checked) {
+  			metadata.browserSupport += "g";
+  		}
+  		if(document.getElementById('checkbox-chrome').checked) {
+  			metadata.browserSupport += "c";
+  		}
+  		if(document.getElementById('checkbox-safari').checked) {
+  			metadata.browserSupport += "s";
+  		}
+  		if(document.getElementById('checkbox-ie').checked) {
+  			metadata.browserSupport += "i";
+  		}
+  		if(document.getElementById('checkbox-bookmarklet').checked) {
+  			metadata.browserSupport += "b";
+  		}
+  		if(document.getElementById('checkbox-server').checked) {
+  			metadata.browserSupport += "v";
+  		}
+    }
 
 		var date = new Date();
 		metadata.lastUpdated = date.getUTCFullYear()
