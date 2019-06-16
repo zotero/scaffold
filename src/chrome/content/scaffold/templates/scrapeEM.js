@@ -10,7 +10,7 @@ function scrape(doc, url) {
 		item.complete();
 	});
 
-	translator.getTranslatorObject(function(trans) {
+	translator.getTranslatorObject(function (trans) {
 		trans.itemType = "newspaperArticle";
 		// TODO map additional meta tags here, or delete completely
 		trans.addCustomFields({
