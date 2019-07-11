@@ -257,7 +257,7 @@ var Scaffold = new function() {
 
 	});
 
-	function _getMetadataObject() {
+	function _getMetadataObject(updateDate) {
 		var metadata = {
 			translatorID: document.getElementById('textbox-translatorID').value,
 			label: document.getElementById('textbox-label').value,
@@ -300,33 +300,38 @@ var Scaffold = new function() {
 			metadata.translatorType += 8;
 		}
 		
-		metadata.browserSupport = "";
-		if(document.getElementById('checkbox-gecko').checked) {
-			metadata.browserSupport += "g";
-		}
-		if(document.getElementById('checkbox-chrome').checked) {
-			metadata.browserSupport += "c";
-		}
-		if(document.getElementById('checkbox-safari').checked) {
-			metadata.browserSupport += "s";
-		}
-		if(document.getElementById('checkbox-ie').checked) {
-			metadata.browserSupport += "i";
-		}
-		if(document.getElementById('checkbox-bookmarklet').checked) {
-			metadata.browserSupport += "b";
-		}
-		if(document.getElementById('checkbox-server').checked) {
-			metadata.browserSupport += "v";
-		}
+    if (document.getElementById('checkbox-web').checked) {
+      // save browserSupport only for web tranlsators
+  		metadata.browserSupport = "";
+  		if(document.getElementById('checkbox-gecko').checked) {
+  			metadata.browserSupport += "g";
+  		}
+  		if(document.getElementById('checkbox-chrome').checked) {
+  			metadata.browserSupport += "c";
+  		}
+  		if(document.getElementById('checkbox-safari').checked) {
+  			metadata.browserSupport += "s";
+  		}
+  		if(document.getElementById('checkbox-ie').checked) {
+  			metadata.browserSupport += "i";
+  		}
+  		if(document.getElementById('checkbox-bookmarklet').checked) {
+  			metadata.browserSupport += "b";
+  		}
+  		if(document.getElementById('checkbox-server').checked) {
+  			metadata.browserSupport += "v";
+  		}
+    }
 
-		var date = new Date();
-		metadata.lastUpdated = date.getUTCFullYear()
-			+"-"+Zotero.Utilities.lpad(date.getUTCMonth()+1, '0', 2)
-			+"-"+Zotero.Utilities.lpad(date.getUTCDate(), '0', 2)
-			+" "+Zotero.Utilities.lpad(date.getUTCHours(), '0', 2)
-			+":"+Zotero.Utilities.lpad(date.getUTCMinutes(), '0', 2)
-			+":"+Zotero.Utilities.lpad(date.getUTCSeconds(), '0', 2);
+		if (updateDate) {
+			var date = new Date();
+			metadata.lastUpdated = date.getUTCFullYear()
+				+"-"+Zotero.Utilities.lpad(date.getUTCMonth()+1, '0', 2)
+				+"-"+Zotero.Utilities.lpad(date.getUTCDate(), '0', 2)
+				+" "+Zotero.Utilities.lpad(date.getUTCHours(), '0', 2)
+				+":"+Zotero.Utilities.lpad(date.getUTCMinutes(), '0', 2)
+				+":"+Zotero.Utilities.lpad(date.getUTCSeconds(), '0', 2);
+		}
 
 		return metadata;
 	}
@@ -334,12 +339,12 @@ var Scaffold = new function() {
 	/*
 	 * save translator to database
 	 */
-	this.save = Zotero.Promise.coroutine(function* () {
+	this.save = Zotero.Promise.coroutine(function* (updateDate) {
 		var code = _editors.code.getSession().getValue();
 		var tests = _editors.tests.getSession().getValue();
 		code += tests;
 
-		var metadata = _getMetadataObject();
+		var metadata = _getMetadataObject(updateDate);
 		if (metadata.label === "Untitled") {
 			_logOutput("Can't save an untitled translator.");
 			return;
@@ -409,7 +414,7 @@ var Scaffold = new function() {
 			var translatorID = document.getElementById('textbox-translatorID').value;
 			yield this.load(translatorID);
 		} else {
-			yield this.save();
+			yield this.save(false);
 		}
 		
 		// Handle generic call run('detect'), run('do')
@@ -646,7 +651,7 @@ var Scaffold = new function() {
 	function _getTranslator() {
 		//create a barebones translator
 		var translator = new Object();
-		var metadata = _getMetadataObject();
+		var metadata = _getMetadataObject(true);
 
 		//copy metadata into the translator object
 		_metaToTranslator(translator, metadata);
@@ -671,7 +676,7 @@ var Scaffold = new function() {
 		var testEnd   = code.indexOf("/** END TEST CASES **/"); 
 		if (testStart !== -1 && testEnd !== -1) {
 			test = code.substring(testStart + 24, testEnd);
-			test = test.replace(/var testCases = /,'');
+			test = test.replace(/var testCases = /,'').trim();
 			// The JSON parser doesn't like final semicolons
 			if (test.lastIndexOf(';') == (test.length-1))
 				test = test.slice(0,-1);
@@ -956,7 +961,7 @@ var Scaffold = new function() {
 			i++;
 		}
 		_writeTests(_stringifyTests(tests));
-		return this.save();
+		return this.save(true);
 	});
 
 	/*
