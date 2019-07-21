@@ -1,17 +1,26 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
-#tb toolbarbutton .toolbarbutton-text {
+toolbar {
+	height: 32px;
+	padding-left: 6px;
+}
+
+.toolbarbutton-text {
 	margin:0 2px;
 }
-#tb .toolbarbutton-menu-dropmarker {
+.toolbarbutton-menu-dropmarker {
 	margin-right:4px;
 }
-#tb .toolbarbutton-text, #zotero-editpane-dynamic-fields .toolbarbutton-text {
+.toolbarbutton-text {
 	margin:0;
 }
-#tb toolbarbutton, #tb toolbarseparator {
-	height:24px;
+.toolbarbutton-icon {
+	height: 16px;
+}
+
+toolbarseparator {
+	height: 24px;
 }
 
 #tb-load {
@@ -19,6 +28,9 @@
 }
 #tb-save {
 	list-style-image: url('chrome://scaffold/skin/save.png');
+}
+#tb-saveToZotero {
+	list-style-image: url('chrome://scaffold/skin/saveToZotero.png');
 }
 #tb-template {
 	list-style-image: url('chrome://scaffold/skin/add.png');
@@ -47,6 +59,9 @@
 #tb-doImport {
 	list-style-image: url('chrome://scaffold/skin/doImport.png');
 }
+#tb-setTranslatorsDir {
+	list-style-image: url('chrome://scaffold/skin/setTranslatorsDir.png');
+}
 #tb-reference {
 	list-style-image: url('chrome://scaffold/skin/reference.png');
 }
@@ -68,6 +83,10 @@
 
 listbox {
 	min-width:200px;
+}
+
+#editor-toolbar {
+	margin-bottom: 3px;
 }
 
 #editor-external-box {

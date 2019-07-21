@@ -30,13 +30,14 @@ var Scaffold_Load = new function() {
 		var translators = {};		
 
 		// Get the matching translators		
+		var translatorProvider = window.arguments[0].translatorProvider;
 		var url = window.arguments[0].url;
 		var rootUrl = window.arguments[0].rootUrl
 		url = Zotero.Proxies.proxyToProper(url);
-		translators["Matching Translators"] = (yield Zotero.Translators.getWebTranslatorsForLocation(url, rootUrl))[0];
-		translators["Web Translators"] = (yield Zotero.Translators.getAllForType("web"))
+		translators["Matching Translators"] = (yield translatorProvider.getWebTranslatorsForLocation(url, rootUrl))[0];
+		translators["Web Translators"] = (yield translatorProvider.getAllForType("web"))
 			.sort((a, b) => a.label.localeCompare(b.label));
-		translators["Import Translators"] = (yield Zotero.Translators.getAllForType("import"))
+		translators["Import Translators"] = (yield translatorProvider.getAllForType("import"))
 			.sort((a, b) => a.label.localeCompare(b.label));
 
 		for (set in translators) {
@@ -67,7 +68,7 @@ var Scaffold_Load = new function() {
 	
 	this.accept = function () {
 		var translatorID = document.getElementById("listbox").selectedItem.getUserData("zotero-id");
-		var translator = Zotero.Translators.get(translatorID);
+		var translator = window.arguments[0].translatorProvider.get(translatorID);
 		
 		Zotero.debug(translatorID);
 		window.arguments[0].dataOut = translator;

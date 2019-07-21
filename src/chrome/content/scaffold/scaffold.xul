@@ -29,17 +29,18 @@
 
 <!DOCTYPE window SYSTEM "chrome://scaffold/locale/scaffold.dtd">
 
-<window id="window" width="600" height="600" minheight="600" persist="screenX screenY width height"
+<window id="scaffold" width="600" height="600" minheight="600" persist="screenX screenY width height"
  title="Zotero Scaffold"
  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script src="chrome://zotero/content/include.js"/>
 	<script src="chrome://zotero/content/tools/testTranslators/translatorTester.js"/>
+	<script src="translators.js"/>
 	<script src="scaffold.js"/>
 	
 	<keyset>
 		<key id="run-do-web" modifiers="accel" key="R" oncommand="Scaffold.run('do')"/>
 		<key id="detect-web" modifiers="accel" key="T" oncommand="Scaffold.run('detect')"/>
-		<key id="save" modifiers="accel" key="S" oncommand="Scaffold.save(true)"/>
+		<key id="save" modifiers="accel" key="S" oncommand="Scaffold.save()"/>
 		<key id="increase-font-size" modifiers="accel" key="+" oncommand="Scaffold.increaseFontSize()"/>
 		<key id="decrease-font-size" modifiers="accel" key="-" oncommand="Scaffold.decreaseFontSize()"/>
 		<key id="restore-font-size" modifiers="accel" key="0" oncommand="Scaffold.setFontSize(11)"/>
@@ -81,13 +82,16 @@
 		
 		<toolbar id="tb" align="center">
 			<toolbarbutton id="tb-load" tooltiptext="&scaffold.toolbar.load.label;" oncommand="Scaffold.load()" />
-			<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save(true)" />
+			<toolbarbutton id="tb-save" tooltiptext="&scaffold.toolbar.saveToZotero.label;" oncommand="Scaffold.save()" />
+			<toolbarbutton id="tb-saveToZotero" tooltiptext="&scaffold.toolbar.save.label;" oncommand="Scaffold.save(true)" />
 			<toolbarseparator/>
 			<toolbarbutton id="tb-detectWeb" tooltiptext="&scaffold.toolbar.detectWeb.label;" oncommand="Scaffold.run('detectWeb')" />
 			<toolbarbutton id="tb-doWeb" tooltiptext="&scaffold.toolbar.doWeb.label;" oncommand="Scaffold.run('doWeb')" />
 			<toolbarseparator/>
 			<toolbarbutton id="tb-detectImport" tooltiptext="&scaffold.toolbar.detectImport.label;" oncommand="Scaffold.run('detectImport')" />
 			<toolbarbutton id="tb-doImport" tooltiptext="&scaffold.toolbar.doImport.label;" oncommand="Scaffold.run('doImport')" />
+			<toolbarseparator/>
+			<toolbarbutton id="tb-setTranslatorsDir" tooltiptext="&scaffold.toolbar.setTranslatorsDir.label;" oncommand="Scaffold.promptForTranslatorsDirectory()" />
 		</toolbar>
 		<hbox flex="1">
 			<tabbox id="left-tabbox" flex="1" width="300">

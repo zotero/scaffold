@@ -1,5 +1,6 @@
 <!ENTITY scaffold.toolbar.load.label			"Load">
 <!ENTITY scaffold.toolbar.save.label			"Save">
+<!ENTITY scaffold.toolbar.saveToZotero.label   "Save to Zotero">
 <!ENTITY scaffold.toolbar.template.label			"Add a template">
 <!ENTITY scaffold.toolbar.template.newWeb.label			"Add web translator template">
 <!ENTITY scaffold.toolbar.template.scrape.label			"Add scrape function using…">
@@ -8,6 +9,7 @@
 <!ENTITY scaffold.toolbar.doWeb.label			"Run doWeb">
 <!ENTITY scaffold.toolbar.detectImport.label		"Run detectImport">
 <!ENTITY scaffold.toolbar.doImport.label		"Run doImport">
+<!ENTITY scaffold.toolbar.setTranslatorsDir.label		"Set translators directory">
 
 <!ENTITY scaffold.tabs.metadata.label			"Metadata">
 <!ENTITY scaffold.tabs.code.label			"Code">
