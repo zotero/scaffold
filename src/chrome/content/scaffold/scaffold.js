@@ -323,7 +323,7 @@ var Scaffold = new function() {
 
 	});
 
-	function _getMetadataObject(updateDate) {
+	function _getMetadataObject() {
 		var metadata = {
 			translatorID: document.getElementById('textbox-translatorID').value,
 			label: document.getElementById('textbox-label').value,
@@ -389,15 +389,13 @@ var Scaffold = new function() {
   		}
     }
 
-		if (updateDate) {
-			var date = new Date();
-			metadata.lastUpdated = date.getUTCFullYear()
-				+"-"+Zotero.Utilities.lpad(date.getUTCMonth()+1, '0', 2)
-				+"-"+Zotero.Utilities.lpad(date.getUTCDate(), '0', 2)
-				+" "+Zotero.Utilities.lpad(date.getUTCHours(), '0', 2)
-				+":"+Zotero.Utilities.lpad(date.getUTCMinutes(), '0', 2)
-				+":"+Zotero.Utilities.lpad(date.getUTCSeconds(), '0', 2);
-		}
+		var date = new Date();
+		metadata.lastUpdated = date.getUTCFullYear()
+			+"-"+Zotero.Utilities.lpad(date.getUTCMonth()+1, '0', 2)
+			+"-"+Zotero.Utilities.lpad(date.getUTCDate(), '0', 2)
+			+" "+Zotero.Utilities.lpad(date.getUTCHours(), '0', 2)
+			+":"+Zotero.Utilities.lpad(date.getUTCMinutes(), '0', 2)
+			+":"+Zotero.Utilities.lpad(date.getUTCSeconds(), '0', 2);
 
 		return metadata;
 	}
@@ -410,7 +408,7 @@ var Scaffold = new function() {
 		var tests = _editors.tests.getSession().getValue();
 		code += tests;
 
-		var metadata = _getMetadataObject(updateDate);
+		var metadata = _getMetadataObject();
 		if (metadata.label === "Untitled") {
 			_logOutput("Can't save an untitled translator.");
 			return;
