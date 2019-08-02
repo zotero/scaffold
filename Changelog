@@ -1,3 +1,7 @@
+Version 3.3.3
+This is an empty version that can be uninstalled. Scaffold is now bundled with
+Zotero 5.0.73, accessible from the Developer menu.
+
 Version 3.3.2
 * Add keyboard shortcuts
 * Add test cases as possible urls in browse tab (#79)

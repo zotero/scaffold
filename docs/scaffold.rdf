@@ -7,15 +7,15 @@
       <RDF:Seq>
         <RDF:li>
           <RDF:Description>
-            <em:version>3.3.2</em:version>
+            <em:version>3.3.3</em:version>
             <em:targetApplication>
               <RDF:Description>
                 <em:id>zotero@chnm.gmu.edu</em:id>
                 <em:minVersion>4.999</em:minVersion>
                 <em:maxVersion>5.*</em:maxVersion>
-                <em:updateLink>https://github.com/zotero/scaffold/releases/download/v3.3.2/scaffold-3.3.2.xpi</em:updateLink>
-                <em:updateHash>sha1:a5a859b487ef6fac21482a0a5ed17527a11c36d7</em:updateHash>
-                <em:updateInfoURL>https://github.com/zotero/scaffold/releases/tag/v3.3.2</em:updateInfoURL>
+                <em:updateLink>https://github.com/zotero/scaffold/releases/download/v3.3.3/scaffold-3.3.3.xpi</em:updateLink>
+                <em:updateHash>sha1:a84097989fa9fdc26b6212fd694c3b99a30fb115</em:updateHash>
+                <em:updateInfoURL>https://github.com/zotero/scaffold/releases/tag/v3.3.3</em:updateInfoURL>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>
