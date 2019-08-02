@@ -1,6 +1,0 @@
-content	scaffold				chrome/content/scaffold/
-locale	scaffold	en-US		chrome/locale/en-US/scaffold/
-skin	scaffold	default		chrome/skin/default/scaffold/
-
-overlay	chrome://zotero/content/standalone/standalone.xul chrome://scaffold/content/overlay.xul application=zotero@chnm.gmu.edu
-overlay	chrome://zotero/content/standalone/standalone.xul chrome://scaffold/content/overlay.xul application=juris-m@juris-m.github.io
